@@ -235,10 +235,10 @@ call invade_cubic_lattice_fast(nx,              &
 !
 ! Uncomment one of the following to choose the desired file format
 !
-!file_name = 'example_selected_sites_cubic_lattice.vtp' ! if you want a vtk file
-file_name = 'example_selected_sites_cubic_lattice.cvs' ! if you want a cvs file
-!file_name = 'example_selected_sites_cubic_lattice.dat' ! if you want an ascii file
-!file_name = 'example_selected_sites_cubic_lattice.bin' ! if you want a binary file
+!file_name = 'example_save_selected_sites_cubic_lattice.vtp' ! if you want a vtk file
+file_name = 'example_save_selected_sites_cubic_lattice.csv' ! if you want a csv file
+!file_name = 'example_save_selected_sites_cubic_lattice.dat' ! if you want an ascii file
+!file_name = 'example_save_selected_sites_cubic_lattice.bin' ! if you want a binary file
 ! 
 call save_selected_sites_cubic_lattice(invaded,          &
                                        states,           &
@@ -254,8 +254,8 @@ call save_selected_sites_cubic_lattice(invaded,          &
 !
 ! Uncomment one of the following to choose the desired file format
 !
-!file_name = 'example_save_cubic_lattice.vti' ! if you want a vtk file
-file_name = 'example_save_sites_cubic_lattice.cvs' ! if you want a cvs file
+file_name = 'example_save_cubic_lattice.vti' ! if you want a vtk file
+!file_name = 'example_save_sites_cubic_lattice.csv' ! if you want a csv file
 !file_name = 'example_save_sites_cubic_lattice.dat' ! if you want an ascii file
 !file_name = 'example_save_sites_cubic_lattice.bin' ! if you want a binary file
 !
