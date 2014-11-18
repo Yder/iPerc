@@ -582,6 +582,7 @@ close(unit_vtk)
 !
 case default
    print*, 'WARNING: Wrong file extension in subroutine save_arbitrary_lattice !'
+   print*, 'Allowed extensions: .dat .vtp .bin. .csv'
    read(*,*)
 end select
 !
@@ -972,6 +973,7 @@ case('.bin')
    !
 case default
    print*, 'WARNING: Wrong file extension in subroutine save_arbitrary_lattice !'
+   print*, 'Allowed extensions: .dat .vti .bin. .csv'
    read(*,*)
 end select
 !
@@ -1187,6 +1189,7 @@ case('.bin')
                                file_unit  ) 
 case default
    print*, 'WARNING: Wrong file extension in subroutine save_selected_sites_cubic_lattice !'
+   print*, 'Allowed extensions: .dat .vtp .bin. .csv'
    read(*,*)
 end select
 !
@@ -1326,6 +1329,7 @@ case('.bin')
                                file_unit  ) 
 case default
    print*, 'WARNING: Wrong file extension in subroutine save_selected_sites_cubic_lattice !'
+   print*, 'Allowed extensions: .dat .vti .bin. .csv'
    read(*,*)
 end select
 !
