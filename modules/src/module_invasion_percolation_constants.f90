@@ -150,8 +150,8 @@ end module module_invasion_percolation_constants
 !>
 !> ! Delare your variables here, e.g.:
 !>
-!> integer :: some integers
-!> real :: a few reals
+!> integer :: some, integers
+!> real :: a, few, reals
 !> logical :: etc
 !>
 !> !==============!
@@ -161,7 +161,7 @@ end module module_invasion_percolation_constants
 !> ! This is where you write your code
 !> ! See the following sections for more details
 !> 
-!> print*, 'This is my frst iPerc project !'
+!> print*, 'This is my first iPerc project !'
 !>
 !> !========!
 !> ! FOOTER !
