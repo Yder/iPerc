@@ -1,0 +1,452 @@
+\hypertarget{classmodule__write__output__files}{
+\section{module\-\_\-write\-\_\-output\-\_\-files \-Module \-Reference}
+\label{classmodule__write__output__files}\index{module\-\_\-write\-\_\-output\-\_\-files@{module\-\_\-write\-\_\-output\-\_\-files}}
+}
+
+
+\-This modulecontains functions for writing the simulations results into data file, e,g., for post-\/processing and visualization.  
+
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{classmodule__write__output__files_a7eaf6a7a72042af7e798b22cbb31c7a6}{save\-\_\-arbitrary\-\_\-lattice} (n\-\_\-sites, states, values, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, offsets, connectivity, x, y, z, file\-\_\-name, unit\-\_\-vtk)
+\begin{DoxyCompactList}\small\item\em write arbitrary lattice info to \-V\-T\-K file (.vtp) for viewing with e.\-g. \-Paraview \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__write__output__files_a797815f313c92d6f89153b98218acb93}{save\-\_\-cubic\-\_\-lattice} (states, values, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, nx, ny, nz, dx, dy, dz, period\-\_\-x, period\-\_\-y, period\-\_\-z, file\-\_\-name, unit\-\_\-vtk)
+\begin{DoxyCompactList}\small\item\em write cubic lattice info to \-V\-T\-K file (.vti) for viewing with e.\-g. \-Paraview \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__write__output__files_a142e1aedf3a8689d5a8741677c83140d}{funny\-\_\-3\-D} (mat, nx, ny, nz, matval)
+\item 
+subroutine \hyperlink{classmodule__write__output__files_a11e4aabe30309ad685551fecf4cdf068}{save\-\_\-selected\-\_\-sites\-\_\-arbitrary\-\_\-lattice} (select\-\_\-state, n\-\_\-sites, states, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, x, y, z, file\-\_\-name, file\-\_\-unit)
+\item 
+subroutine \hyperlink{classmodule__write__output__files_a352c5578525c6ae1cf3b27ae535f29d7}{save\-\_\-selected\-\_\-sites\-\_\-cubic\-\_\-lattice} (select\-\_\-state, states, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, nx, ny, nz, dx, dy, dz, file\-\_\-name, file\-\_\-unit)
+\item 
+subroutine \hyperlink{classmodule__write__output__files_a9d1d4e84225ea6841af4aba75bc3f513}{write\-\_\-points\-\_\-to\-\_\-vtp} (n\-\_\-points, x\-\_\-points, y\-\_\-points, z\-\_\-points, file\-\_\-name, file\-\_\-unit)
+\begin{DoxyCompactList}\small\item\em \-Write the list of points sites to a \-V\-T\-K file (i.\-e. a polydata xml file with extension .vtp) for viewing with e.\-g. \-Paraview. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__write__output__files_abfb1114cfc68ccb7574e800405d987fe}{write\-\_\-points\-\_\-to\-\_\-csv} (n\-\_\-points, x\-\_\-points, y\-\_\-points, z\-\_\-points, file\-\_\-name, file\-\_\-unit)
+\begin{DoxyCompactList}\small\item\em \-Write the list of points sites to a .csv file (i.\-e. an ascii file with comma separated values) \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__write__output__files_a2a4a5e5bafeb70b518474f4d72aa67cd}{write\-\_\-points\-\_\-to\-\_\-ascii} (n\-\_\-points, x\-\_\-points, y\-\_\-points, z\-\_\-points, file\-\_\-name, file\-\_\-unit)
+\begin{DoxyCompactList}\small\item\em \-Write the list of points sites to an ascii file. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__write__output__files_a06e16bb131fd2b2a3646fa9b7b8bbe2d}{write\-\_\-points\-\_\-to\-\_\-binary} (n\-\_\-points, x\-\_\-points, y\-\_\-points, z\-\_\-points, file\-\_\-name, file\-\_\-unit)
+\begin{DoxyCompactList}\small\item\em \-Write the list of points sites to binary stream file. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-This modulecontains functions for writing the simulations results into data file, e,g., for post-\/processing and visualization. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-November 9, 2014 
+\end{DoxyDate}
+
+
+\subsection{\-Member \-Function/\-Subroutine \-Documentation}
+\hypertarget{classmodule__write__output__files_a142e1aedf3a8689d5a8741677c83140d}{
+\index{module\-\_\-write\-\_\-output\-\_\-files@{module\-\_\-write\-\_\-output\-\_\-files}!funny\-\_\-3\-D@{funny\-\_\-3\-D}}
+\index{funny\-\_\-3\-D@{funny\-\_\-3\-D}!module_write_output_files@{module\-\_\-write\-\_\-output\-\_\-files}}
+\subsubsection[{funny\-\_\-3\-D}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-write\-\_\-output\-\_\-files\-::funny\-\_\-3\-D (
+\begin{DoxyParamCaption}
+\item[{integer, dimension(nx,ny,nz)}]{mat, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{integer}]{matval}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__write__output__files_a142e1aedf3a8689d5a8741677c83140d}
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 30, 2014  \-Produces a minimalistic 3\-D rendering of \-I\-P clusters inside a terninal
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em nx} & grid dimension in the x direction ({\bfseries \-Input})\\
+\hline
+{\em ny} & grid dimension in the y direction ({\bfseries \-Input})\\
+\hline
+{\em nz} & grid dimension in the z direction ({\bfseries \-Input})\\
+\hline
+{\em mat} & input matrix ({\bfseries \-Input})\\
+\hline
+{\em matval} & \-Value to render, i.\-e. only the cells where {\bfseries mat(i,j,k) = matval} will be showed ({\bfseries \-Input}) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__write__output__files_a7eaf6a7a72042af7e798b22cbb31c7a6}{
+\index{module\-\_\-write\-\_\-output\-\_\-files@{module\-\_\-write\-\_\-output\-\_\-files}!save\-\_\-arbitrary\-\_\-lattice@{save\-\_\-arbitrary\-\_\-lattice}}
+\index{save\-\_\-arbitrary\-\_\-lattice@{save\-\_\-arbitrary\-\_\-lattice}!module_write_output_files@{module\-\_\-write\-\_\-output\-\_\-files}}
+\subsubsection[{save\-\_\-arbitrary\-\_\-lattice}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-write\-\_\-output\-\_\-files\-::save\-\_\-arbitrary\-\_\-lattice (
+\begin{DoxyParamCaption}
+\item[{integer, intent(in)}]{n\-\_\-sites, }
+\item[{integer, dimension(\-:), intent(in)}]{states, }
+\item[{real, dimension(\-:), intent(in)}]{values, }
+\item[{integer, intent(in)}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:), intent(in)}]{invasion\-\_\-list, }
+\item[{integer, dimension(\-:), intent(in)}]{offsets, }
+\item[{integer, dimension(\-:), intent(in)}]{connectivity, }
+\item[{real, dimension(\-:), intent(in)}]{x, }
+\item[{real, dimension(\-:), intent(in)}]{y, }
+\item[{real, dimension(\-:), intent(in)}]{z, }
+\item[{character(len=$\ast$), intent(in)}]{file\-\_\-name, }
+\item[{integer, intent(in)}]{unit\-\_\-vtk}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__write__output__files_a7eaf6a7a72042af7e798b22cbb31c7a6}
+
+
+write arbitrary lattice info to \-V\-T\-K file (.vtp) for viewing with e.\-g. \-Paraview 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 28, 2014
+\end{DoxyDate}
+\-The states and values data are attached to points (i.\-e. sites), you can view these using a glyph filter, for example. \par
+ \-The bonds linking sites can be visualized by plotting the wireframe. 
+\begin{DoxyParams}[1]{\-Parameters}
+\mbox{\tt in}  & {\em n\-\_\-sites} & \-Total number of sites in the lattice \\
+\hline
+\mbox{\tt in}  & {\em states} & \-Sites's states as defiend in invasion percolation module \\
+\hline
+\mbox{\tt in}  & {\em values} & \-Sites's values as defiend in invasion percolation module \\
+\hline
+\mbox{\tt in}  & {\em n\-\_\-sites\-\_\-invaded} & number of sites invaded \\
+\hline
+\mbox{\tt in}  & {\em invasion\-\_\-list} & list of invaded sites \\
+\hline
+\mbox{\tt in}  & {\em offsets} & \-Array containing the offsets of the data stored in the connectivity array \\
+\hline
+\mbox{\tt in}  & {\em connectivity} & \-Array containing thelattice connectivity \par
+ \-For a given site {\bfseries i}, with offset {\bfseries j = offsets(i)} \-: \par
+ {\bfseries n=connectivity(j)} is the number of sites neighboring site {\bfseries i}. \par
+ {\bfseries connectivity(j+1, j+2, ... ,j+n)} contains the indices of the sites that are neighboring site {\bfseries i}. \\
+\hline
+\mbox{\tt in}  & {\em x} & \-Array containing the x coordinates of the sites \\
+\hline
+\mbox{\tt in}  & {\em y} & \-Array containing the y coordinates of the sites \\
+\hline
+\mbox{\tt in}  & {\em z} & \-Array containing the z coordinates of the sites \\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-name} & \-Output file name, must have the.\-vtu extension \\
+\hline
+\mbox{\tt in}  & {\em unit\-\_\-vtk} & logical unit for output file \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__write__output__files_a797815f313c92d6f89153b98218acb93}{
+\index{module\-\_\-write\-\_\-output\-\_\-files@{module\-\_\-write\-\_\-output\-\_\-files}!save\-\_\-cubic\-\_\-lattice@{save\-\_\-cubic\-\_\-lattice}}
+\index{save\-\_\-cubic\-\_\-lattice@{save\-\_\-cubic\-\_\-lattice}!module_write_output_files@{module\-\_\-write\-\_\-output\-\_\-files}}
+\subsubsection[{save\-\_\-cubic\-\_\-lattice}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-write\-\_\-output\-\_\-files\-::save\-\_\-cubic\-\_\-lattice (
+\begin{DoxyParamCaption}
+\item[{integer, dimension(nx,ny,nz), intent(in)}]{states, }
+\item[{real, dimension(nx,ny,nz), intent(in)}]{values, }
+\item[{integer, intent(in)}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:), intent(in)}]{invasion\-\_\-list, }
+\item[{integer, intent(in)}]{nx, }
+\item[{integer, intent(in)}]{ny, }
+\item[{integer, intent(in)}]{nz, }
+\item[{real, intent(in)}]{dx, }
+\item[{real, intent(in)}]{dy, }
+\item[{real, intent(in)}]{dz, }
+\item[{logical, intent(in)}]{period\-\_\-x, }
+\item[{logical, intent(in)}]{period\-\_\-y, }
+\item[{logical, intent(in)}]{period\-\_\-z, }
+\item[{character(len=$\ast$), intent(in)}]{file\-\_\-name, }
+\item[{integer, intent(in)}]{unit\-\_\-vtk}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__write__output__files_a797815f313c92d6f89153b98218acb93}
+
+
+write cubic lattice info to \-V\-T\-K file (.vti) for viewing with e.\-g. \-Paraview 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 30, 2014
+\end{DoxyDate}
+\-The states and values data are attached to cells (i.\-e. cells represent sites) 
+\begin{DoxyParams}[1]{\-Parameters}
+\mbox{\tt in}  & {\em values} & values array as defined in the invasion percolation module \\
+\hline
+\mbox{\tt in}  & {\em states} & states array as defined in the invasion percolation module \\
+\hline
+\mbox{\tt in}  & {\em n\-\_\-sites\-\_\-invaded} & number of sites invaded \\
+\hline
+\mbox{\tt in}  & {\em invasion\-\_\-list} & list of invaded sites \\
+\hline
+\mbox{\tt in}  & {\em nx} & grid dimension in the x direction \\
+\hline
+\mbox{\tt in}  & {\em ny} & grid dimension in the y direction \\
+\hline
+\mbox{\tt in}  & {\em nz} & grid dimension in the z direction \\
+\hline
+\mbox{\tt in}  & {\em dx} & grid spacing in the x direction \\
+\hline
+\mbox{\tt in}  & {\em dy} & grid spacing in the y direction \\
+\hline
+\mbox{\tt in}  & {\em dz} & grid spacing in the z direction \\
+\hline
+\mbox{\tt in}  & {\em period\-\_\-x} & flag for periodic boundaries in the x direction \\
+\hline
+\mbox{\tt in}  & {\em period\-\_\-y} & flag for periodic boundaries in the y direction \\
+\hline
+\mbox{\tt in}  & {\em period\-\_\-z} & flag for periodic boundaries in the z direction \\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-name} & \-Output file name, must have the.\-vtu extension \\
+\hline
+\mbox{\tt in}  & {\em unit\-\_\-vtk} & logical unit for output file \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__write__output__files_a11e4aabe30309ad685551fecf4cdf068}{
+\index{module\-\_\-write\-\_\-output\-\_\-files@{module\-\_\-write\-\_\-output\-\_\-files}!save\-\_\-selected\-\_\-sites\-\_\-arbitrary\-\_\-lattice@{save\-\_\-selected\-\_\-sites\-\_\-arbitrary\-\_\-lattice}}
+\index{save\-\_\-selected\-\_\-sites\-\_\-arbitrary\-\_\-lattice@{save\-\_\-selected\-\_\-sites\-\_\-arbitrary\-\_\-lattice}!module_write_output_files@{module\-\_\-write\-\_\-output\-\_\-files}}
+\subsubsection[{save\-\_\-selected\-\_\-sites\-\_\-arbitrary\-\_\-lattice}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-write\-\_\-output\-\_\-files\-::save\-\_\-selected\-\_\-sites\-\_\-arbitrary\-\_\-lattice (
+\begin{DoxyParamCaption}
+\item[{integer, intent(in)}]{select\-\_\-state, }
+\item[{integer, intent(in)}]{n\-\_\-sites, }
+\item[{integer, dimension(\-:), intent(in)}]{states, }
+\item[{integer, intent(in)}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:), intent(in)}]{invasion\-\_\-list, }
+\item[{real, dimension(\-:), intent(in)}]{x, }
+\item[{real, dimension(\-:), intent(in)}]{y, }
+\item[{real, dimension(\-:), intent(in)}]{z, }
+\item[{character(len=$\ast$), intent(in)}]{file\-\_\-name, }
+\item[{integer, intent(in)}]{file\-\_\-unit}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__write__output__files_a11e4aabe30309ad685551fecf4cdf068}
+
+\begin{DoxyParams}[1]{\-Parameters}
+\mbox{\tt in}  & {\em select\-\_\-state} & \-Selection flag, all the sites where state(i)=select\-\_\-state will be written to file\\
+\hline
+\mbox{\tt in}  & {\em n\-\_\-sites} & \-Total number of sites in the lattice\\
+\hline
+\mbox{\tt in}  & {\em states} & \-Sites's states as defiend in invasion percolation module\\
+\hline
+\mbox{\tt in}  & {\em n\-\_\-sites\-\_\-invaded} & number of sites invaded\\
+\hline
+\mbox{\tt in}  & {\em invasion\-\_\-list} & list of invaded sites\\
+\hline
+\mbox{\tt in}  & {\em x} & \-Array containing the x coordinates of the sites\\
+\hline
+\mbox{\tt in}  & {\em y} & \-Array containing the y coordinates of the sites\\
+\hline
+\mbox{\tt in}  & {\em z} & \-Array containing the z coordinates of the sites\\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-name} & \-Output file name, must have the.\-vtu extension\\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-unit} & logical unit for output file \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__write__output__files_a352c5578525c6ae1cf3b27ae535f29d7}{
+\index{module\-\_\-write\-\_\-output\-\_\-files@{module\-\_\-write\-\_\-output\-\_\-files}!save\-\_\-selected\-\_\-sites\-\_\-cubic\-\_\-lattice@{save\-\_\-selected\-\_\-sites\-\_\-cubic\-\_\-lattice}}
+\index{save\-\_\-selected\-\_\-sites\-\_\-cubic\-\_\-lattice@{save\-\_\-selected\-\_\-sites\-\_\-cubic\-\_\-lattice}!module_write_output_files@{module\-\_\-write\-\_\-output\-\_\-files}}
+\subsubsection[{save\-\_\-selected\-\_\-sites\-\_\-cubic\-\_\-lattice}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-write\-\_\-output\-\_\-files\-::save\-\_\-selected\-\_\-sites\-\_\-cubic\-\_\-lattice (
+\begin{DoxyParamCaption}
+\item[{integer, intent(in)}]{select\-\_\-state, }
+\item[{integer, dimension(nx,ny,nz), intent(in)}]{states, }
+\item[{integer, intent(in)}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:), intent(in)}]{invasion\-\_\-list, }
+\item[{integer, intent(in)}]{nx, }
+\item[{integer, intent(in)}]{ny, }
+\item[{integer, intent(in)}]{nz, }
+\item[{real, intent(in)}]{dx, }
+\item[{real, intent(in)}]{dy, }
+\item[{real, intent(in)}]{dz, }
+\item[{character(len=$\ast$), intent(in)}]{file\-\_\-name, }
+\item[{integer, intent(in)}]{file\-\_\-unit}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__write__output__files_a352c5578525c6ae1cf3b27ae535f29d7}
+
+\begin{DoxyParams}[1]{\-Parameters}
+\mbox{\tt in}  & {\em select\-\_\-state} & \-Selection flag, all the sites where state(i)=select\-\_\-state will be written to file\\
+\hline
+\mbox{\tt in}  & {\em states} & states array as defined in the invasion percolation module\\
+\hline
+\mbox{\tt in}  & {\em n\-\_\-sites\-\_\-invaded} & number of sites invaded\\
+\hline
+\mbox{\tt in}  & {\em invasion\-\_\-list} & list of invaded sites\\
+\hline
+\mbox{\tt in}  & {\em nx} & grid dimension in the x direction\\
+\hline
+\mbox{\tt in}  & {\em ny} & grid dimension in the y direction\\
+\hline
+\mbox{\tt in}  & {\em nz} & grid dimension in the z direction\\
+\hline
+\mbox{\tt in}  & {\em dx} & grid spacing in the x direction\\
+\hline
+\mbox{\tt in}  & {\em dy} & grid spacing in the y direction\\
+\hline
+\mbox{\tt in}  & {\em dz} & grid spacing in the z direction\\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-name} & \-Output file name, must have the.\-vtu extension\\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-unit} & logical unit for output file \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__write__output__files_a2a4a5e5bafeb70b518474f4d72aa67cd}{
+\index{module\-\_\-write\-\_\-output\-\_\-files@{module\-\_\-write\-\_\-output\-\_\-files}!write\-\_\-points\-\_\-to\-\_\-ascii@{write\-\_\-points\-\_\-to\-\_\-ascii}}
+\index{write\-\_\-points\-\_\-to\-\_\-ascii@{write\-\_\-points\-\_\-to\-\_\-ascii}!module_write_output_files@{module\-\_\-write\-\_\-output\-\_\-files}}
+\subsubsection[{write\-\_\-points\-\_\-to\-\_\-ascii}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-write\-\_\-output\-\_\-files\-::write\-\_\-points\-\_\-to\-\_\-ascii (
+\begin{DoxyParamCaption}
+\item[{integer, intent(in)}]{n\-\_\-points, }
+\item[{real, dimension(n\-\_\-points), intent(in)}]{x\-\_\-points, }
+\item[{real, dimension(n\-\_\-points), intent(in)}]{y\-\_\-points, }
+\item[{real, dimension(n\-\_\-points), intent(in)}]{z\-\_\-points, }
+\item[{character (len=$\ast$), intent(in)}]{file\-\_\-name, }
+\item[{integer, intent(in)}]{file\-\_\-unit}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__write__output__files_a2a4a5e5bafeb70b518474f4d72aa67cd}
+
+
+\-Write the list of points sites to an ascii file. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-November 5, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}[1]{\-Parameters}
+\mbox{\tt in}  & {\em n\-\_\-points} & number of points \\
+\hline
+\mbox{\tt in}  & {\em x\-\_\-points} & x coordinates of the points \\
+\hline
+\mbox{\tt in}  & {\em y\-\_\-points} & y coordinates of the points \\
+\hline
+\mbox{\tt in}  & {\em z\-\_\-points} & z coordinates of the points \\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-name} & \-Output file name \\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-unit} & \-Logical file unit \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__write__output__files_a06e16bb131fd2b2a3646fa9b7b8bbe2d}{
+\index{module\-\_\-write\-\_\-output\-\_\-files@{module\-\_\-write\-\_\-output\-\_\-files}!write\-\_\-points\-\_\-to\-\_\-binary@{write\-\_\-points\-\_\-to\-\_\-binary}}
+\index{write\-\_\-points\-\_\-to\-\_\-binary@{write\-\_\-points\-\_\-to\-\_\-binary}!module_write_output_files@{module\-\_\-write\-\_\-output\-\_\-files}}
+\subsubsection[{write\-\_\-points\-\_\-to\-\_\-binary}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-write\-\_\-output\-\_\-files\-::write\-\_\-points\-\_\-to\-\_\-binary (
+\begin{DoxyParamCaption}
+\item[{integer, intent(in)}]{n\-\_\-points, }
+\item[{real, dimension(n\-\_\-points), intent(in)}]{x\-\_\-points, }
+\item[{real, dimension(n\-\_\-points), intent(in)}]{y\-\_\-points, }
+\item[{real, dimension(n\-\_\-points), intent(in)}]{z\-\_\-points, }
+\item[{character (len=$\ast$), intent(in)}]{file\-\_\-name, }
+\item[{integer, intent(in)}]{file\-\_\-unit}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__write__output__files_a06e16bb131fd2b2a3646fa9b7b8bbe2d}
+
+
+\-Write the list of points sites to binary stream file. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-November 5, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}[1]{\-Parameters}
+\mbox{\tt in}  & {\em n\-\_\-points} & number of points \\
+\hline
+\mbox{\tt in}  & {\em x\-\_\-points} & x coordinates of the points \\
+\hline
+\mbox{\tt in}  & {\em y\-\_\-points} & y coordinates of the points \\
+\hline
+\mbox{\tt in}  & {\em z\-\_\-points} & z coordinates of the points \\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-name} & \-Output file name \\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-unit} & \-Logical file unit \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__write__output__files_abfb1114cfc68ccb7574e800405d987fe}{
+\index{module\-\_\-write\-\_\-output\-\_\-files@{module\-\_\-write\-\_\-output\-\_\-files}!write\-\_\-points\-\_\-to\-\_\-csv@{write\-\_\-points\-\_\-to\-\_\-csv}}
+\index{write\-\_\-points\-\_\-to\-\_\-csv@{write\-\_\-points\-\_\-to\-\_\-csv}!module_write_output_files@{module\-\_\-write\-\_\-output\-\_\-files}}
+\subsubsection[{write\-\_\-points\-\_\-to\-\_\-csv}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-write\-\_\-output\-\_\-files\-::write\-\_\-points\-\_\-to\-\_\-csv (
+\begin{DoxyParamCaption}
+\item[{integer, intent(in)}]{n\-\_\-points, }
+\item[{real, dimension(n\-\_\-points), intent(in)}]{x\-\_\-points, }
+\item[{real, dimension(n\-\_\-points), intent(in)}]{y\-\_\-points, }
+\item[{real, dimension(n\-\_\-points), intent(in)}]{z\-\_\-points, }
+\item[{character (len=$\ast$), intent(in)}]{file\-\_\-name, }
+\item[{integer, intent(in)}]{file\-\_\-unit}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__write__output__files_abfb1114cfc68ccb7574e800405d987fe}
+
+
+\-Write the list of points sites to a .csv file (i.\-e. an ascii file with comma separated values) 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-November 5, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}[1]{\-Parameters}
+\mbox{\tt in}  & {\em n\-\_\-points} & number of points \\
+\hline
+\mbox{\tt in}  & {\em x\-\_\-points} & x coordinates of the points \\
+\hline
+\mbox{\tt in}  & {\em y\-\_\-points} & y coordinates of the points \\
+\hline
+\mbox{\tt in}  & {\em z\-\_\-points} & z coordinates of the points \\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-name} & \-Output file name \\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-unit} & \-Logical file unit \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__write__output__files_a9d1d4e84225ea6841af4aba75bc3f513}{
+\index{module\-\_\-write\-\_\-output\-\_\-files@{module\-\_\-write\-\_\-output\-\_\-files}!write\-\_\-points\-\_\-to\-\_\-vtp@{write\-\_\-points\-\_\-to\-\_\-vtp}}
+\index{write\-\_\-points\-\_\-to\-\_\-vtp@{write\-\_\-points\-\_\-to\-\_\-vtp}!module_write_output_files@{module\-\_\-write\-\_\-output\-\_\-files}}
+\subsubsection[{write\-\_\-points\-\_\-to\-\_\-vtp}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-write\-\_\-output\-\_\-files\-::write\-\_\-points\-\_\-to\-\_\-vtp (
+\begin{DoxyParamCaption}
+\item[{integer, intent(in)}]{n\-\_\-points, }
+\item[{real, dimension(n\-\_\-points), intent(in)}]{x\-\_\-points, }
+\item[{real, dimension(n\-\_\-points), intent(in)}]{y\-\_\-points, }
+\item[{real, dimension(n\-\_\-points), intent(in)}]{z\-\_\-points, }
+\item[{character (len=$\ast$), intent(in)}]{file\-\_\-name, }
+\item[{integer, intent(in)}]{file\-\_\-unit}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__write__output__files_a9d1d4e84225ea6841af4aba75bc3f513}
+
+
+\-Write the list of points sites to a \-V\-T\-K file (i.\-e. a polydata xml file with extension .vtp) for viewing with e.\-g. \-Paraview. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-November 5, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}[1]{\-Parameters}
+\mbox{\tt in}  & {\em n\-\_\-points} & number of points \\
+\hline
+\mbox{\tt in}  & {\em x\-\_\-points} & x coordinates of the points \\
+\hline
+\mbox{\tt in}  & {\em y\-\_\-points} & y coordinates of the points \\
+\hline
+\mbox{\tt in}  & {\em z\-\_\-points} & z coordinates of the points \\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-name} & \-Output file name \\
+\hline
+\mbox{\tt in}  & {\em file\-\_\-unit} & \-Logical file unit \\
+\hline
+\end{DoxyParams}
+
+
+\-The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+modules/src/\hyperlink{module__write__output__files_8f90}{module\-\_\-write\-\_\-output\-\_\-files.\-f90}\end{DoxyCompactItemize}

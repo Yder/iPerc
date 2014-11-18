@@ -1,0 +1,209 @@
+\hypertarget{classmodule__disjoint__set}{
+\section{module\-\_\-disjoint\-\_\-set \-Module \-Reference}
+\label{classmodule__disjoint__set}\index{module\-\_\-disjoint\-\_\-set@{module\-\_\-disjoint\-\_\-set}}
+}
+
+
+\-Define disjoint set data structure and the associated {\bfseries \-Union}, {\bfseries \-Find} and {\bfseries \-Create\-\_\-set} procedures.  
+
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+integer function \hyperlink{classmodule__disjoint__set_a769c6fb3576cdcd2f96f2cabcf76cf10}{create\-\_\-set} (\hyperlink{classmodule__disjoint__set_a2ef0620ab0fd7047b16e522c4db4c590}{largest\-\_\-label})
+\begin{DoxyCompactList}\small\item\em \-Create a new label or class with label {\bfseries largest\-\_\-label}. \end{DoxyCompactList}\item 
+integer integer function \hyperlink{classmodule__disjoint__set_aab6780106768f39173390102bb951275}{find} (label)
+\begin{DoxyCompactList}\small\item\em \-This function returns the canonical label (tree's root) or class associated with {\bfseries label}. \end{DoxyCompactList}\item 
+integer function \hyperlink{classmodule__disjoint__set_a0ce8857aac3e2281a0010c81f02d00f1}{union} (label1, label2)
+\begin{DoxyCompactList}\small\item\em \-Set {\bfseries label1} and {\bfseries label2} to equivalence classes (i.\-e. after the call {\bfseries label1} and {\bfseries label2} will point to the same canonical root label). \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__disjoint__set_aa43d8eb044efd1e8db88393da2ebb954}{allocate\-\_\-disjoint\-\_\-set} (new\-\_\-size)
+\begin{DoxyCompactList}\small\item\em \-Allocate memory for the arrays {\bfseries labels} and {\bfseries ranks}. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__disjoint__set_a717efa42d58a94fd3ba616cce27db828}{deallocate\-\_\-disjoint\-\_\-set} ()
+\end{DoxyCompactItemize}
+\subsection*{\-Public \-Attributes}
+\begin{DoxyCompactItemize}
+\item 
+integer, dimension(\-:), allocatable \hyperlink{classmodule__disjoint__set_afd35cdfbb8e055e9e184b5359627bf5e}{labels}
+\begin{DoxyCompactList}\small\item\em \-Array containing the label trees, each label {\bfseries i} points toward its parent {\bfseries labels(i)} the root or canonical labels satisfies {\bfseries labels(i)=i}. \end{DoxyCompactList}\item 
+integer, dimension(\-:), allocatable \hyperlink{classmodule__disjoint__set_af861c992aa8ba85ccc2943ec786d9ceb}{ranks}
+\begin{DoxyCompactList}\small\item\em \-Array containing the label trees's ranks. \-It is used for union by rank (also called weighted union) \end{DoxyCompactList}\item 
+integer \hyperlink{classmodule__disjoint__set_a2ef0620ab0fd7047b16e522c4db4c590}{largest\-\_\-label}
+\begin{DoxyCompactList}\small\item\em \-Number of labels currently used. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-Define disjoint set data structure and the associated {\bfseries \-Union}, {\bfseries \-Find} and {\bfseries \-Create\-\_\-set} procedures. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-Masson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 6, 2014
+\end{DoxyDate}
+\-Path compression and union by rank are implemented for efficiency. \-See subroutines's descriptions for more details. \begin{DoxySeeAlso}{\-See also}
+\href{http://en.wikipedia.org/wiki/Disjoint-set_data_structure}{\tt http\-://en.\-wikipedia.\-org/wiki/\-Disjoint-\/set\-\_\-data\-\_\-structure} 
+\end{DoxySeeAlso}
+
+
+\subsection{\-Member \-Function/\-Subroutine \-Documentation}
+\hypertarget{classmodule__disjoint__set_aa43d8eb044efd1e8db88393da2ebb954}{
+\index{module\-\_\-disjoint\-\_\-set@{module\-\_\-disjoint\-\_\-set}!allocate\-\_\-disjoint\-\_\-set@{allocate\-\_\-disjoint\-\_\-set}}
+\index{allocate\-\_\-disjoint\-\_\-set@{allocate\-\_\-disjoint\-\_\-set}!module_disjoint_set@{module\-\_\-disjoint\-\_\-set}}
+\subsubsection[{allocate\-\_\-disjoint\-\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-disjoint\-\_\-set\-::allocate\-\_\-disjoint\-\_\-set (
+\begin{DoxyParamCaption}
+\item[{integer}]{new\-\_\-size}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__disjoint__set_aa43d8eb044efd1e8db88393da2ebb954}
+
+
+\-Allocate memory for the arrays {\bfseries labels} and {\bfseries ranks}. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-Masson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 6, 2014
+\end{DoxyDate}
+\-When needed, use the intrinsic function {\bfseries move\-\_\-alloc} to increase the size of the arrays on the fly. \-To avoid reallocation, allocate enough memory at first call. \begin{DoxySeeAlso}{\-See also}
+\href{https://gcc.gnu.org/onlinedocs/gfortran/MOVE_005fALLOC.html}{\tt https\-://gcc.\-gnu.\-org/onlinedocs/gfortran/\-M\-O\-V\-E\-\_\-005f\-A\-L\-L\-O\-C.\-html} 
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{\-Parameters}
+{\em new\-\_\-size} & \-Desired dimension for \-: {\bfseries ranks} and {\bfseries labels} arrays. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__disjoint__set_a769c6fb3576cdcd2f96f2cabcf76cf10}{
+\index{module\-\_\-disjoint\-\_\-set@{module\-\_\-disjoint\-\_\-set}!create\-\_\-set@{create\-\_\-set}}
+\index{create\-\_\-set@{create\-\_\-set}!module_disjoint_set@{module\-\_\-disjoint\-\_\-set}}
+\subsubsection[{create\-\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}integer function module\-\_\-disjoint\-\_\-set\-::create\-\_\-set (
+\begin{DoxyParamCaption}
+\item[{integer}]{largest\-\_\-label}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__disjoint__set_a769c6fb3576cdcd2f96f2cabcf76cf10}
+
+
+\-Create a new label or class with label {\bfseries largest\-\_\-label}. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-Masson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 6, 2014
+\end{DoxyDate}
+\-This function allocates more memory to arrays {\bfseries labels} and {\bfseries ranks} if needed \begin{DoxySeeAlso}{\-See also}
+\href{http://en.wikipedia.org/wiki/Disjoint-set_data_structure}{\tt http\-://en.\-wikipedia.\-org/wiki/\-Disjoint-\/set\-\_\-data\-\_\-structure} 
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{\-Parameters}
+{\em largest\-\_\-label} & \-Number of labels currently used \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__disjoint__set_a717efa42d58a94fd3ba616cce27db828}{
+\index{module\-\_\-disjoint\-\_\-set@{module\-\_\-disjoint\-\_\-set}!deallocate\-\_\-disjoint\-\_\-set@{deallocate\-\_\-disjoint\-\_\-set}}
+\index{deallocate\-\_\-disjoint\-\_\-set@{deallocate\-\_\-disjoint\-\_\-set}!module_disjoint_set@{module\-\_\-disjoint\-\_\-set}}
+\subsubsection[{deallocate\-\_\-disjoint\-\_\-set}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-disjoint\-\_\-set\-::deallocate\-\_\-disjoint\-\_\-set (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__disjoint__set_a717efa42d58a94fd3ba616cce27db828}
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-Masson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 6, 2014 \-Deallocate the {\bfseries labels} and {\bfseries ranks} arrays. 
+\end{DoxyDate}
+\hypertarget{classmodule__disjoint__set_aab6780106768f39173390102bb951275}{
+\index{module\-\_\-disjoint\-\_\-set@{module\-\_\-disjoint\-\_\-set}!find@{find}}
+\index{find@{find}!module_disjoint_set@{module\-\_\-disjoint\-\_\-set}}
+\subsubsection[{find}]{\setlength{\rightskip}{0pt plus 5cm}integer integer function module\-\_\-disjoint\-\_\-set\-::find (
+\begin{DoxyParamCaption}
+\item[{integer}]{label}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__disjoint__set_aab6780106768f39173390102bb951275}
+
+
+\-This function returns the canonical label (tree's root) or class associated with {\bfseries label}. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-Masson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 6, 2014
+\end{DoxyDate}
+\-Path compression is implemented for more efficiency. \begin{DoxySeeAlso}{\-See also}
+\href{http://en.wikipedia.org/wiki/Disjoint-set_data_structure}{\tt http\-://en.\-wikipedia.\-org/wiki/\-Disjoint-\/set\-\_\-data\-\_\-structure} 
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{\-Parameters}
+{\em label} & label for wich we search root or canonical label or class \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__disjoint__set_a0ce8857aac3e2281a0010c81f02d00f1}{
+\index{module\-\_\-disjoint\-\_\-set@{module\-\_\-disjoint\-\_\-set}!union@{union}}
+\index{union@{union}!module_disjoint_set@{module\-\_\-disjoint\-\_\-set}}
+\subsubsection[{union}]{\setlength{\rightskip}{0pt plus 5cm}integer function module\-\_\-disjoint\-\_\-set\-::union (
+\begin{DoxyParamCaption}
+\item[{integer}]{label1, }
+\item[{integer}]{label2}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__disjoint__set_a0ce8857aac3e2281a0010c81f02d00f1}
+
+
+\-Set {\bfseries label1} and {\bfseries label2} to equivalence classes (i.\-e. after the call {\bfseries label1} and {\bfseries label2} will point to the same canonical root label). 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-Masson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 6, 2014
+\end{DoxyDate}
+\-This function returns canonical label or class of the union. \-The union by rank alogorithm (also called weighted union) is implemented. \begin{DoxySeeAlso}{\-See also}
+\href{http://en.wikipedia.org/wiki/Disjoint-set_data_structure}{\tt http\-://en.\-wikipedia.\-org/wiki/\-Disjoint-\/set\-\_\-data\-\_\-structure} 
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{\-Parameters}
+{\em label1} & input label 1 \\
+\hline
+{\em label2} & input label 2 \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{\-Member \-Data \-Documentation}
+\hypertarget{classmodule__disjoint__set_afd35cdfbb8e055e9e184b5359627bf5e}{
+\index{module\-\_\-disjoint\-\_\-set@{module\-\_\-disjoint\-\_\-set}!labels@{labels}}
+\index{labels@{labels}!module_disjoint_set@{module\-\_\-disjoint\-\_\-set}}
+\subsubsection[{labels}]{\setlength{\rightskip}{0pt plus 5cm}integer, dimension(\-:), allocatable {\bf module\-\_\-disjoint\-\_\-set\-::labels}}}
+\label{classmodule__disjoint__set_afd35cdfbb8e055e9e184b5359627bf5e}
+
+
+\-Array containing the label trees, each label {\bfseries i} points toward its parent {\bfseries labels(i)} the root or canonical labels satisfies {\bfseries labels(i)=i}. 
+
+\hypertarget{classmodule__disjoint__set_a2ef0620ab0fd7047b16e522c4db4c590}{
+\index{module\-\_\-disjoint\-\_\-set@{module\-\_\-disjoint\-\_\-set}!largest\-\_\-label@{largest\-\_\-label}}
+\index{largest\-\_\-label@{largest\-\_\-label}!module_disjoint_set@{module\-\_\-disjoint\-\_\-set}}
+\subsubsection[{largest\-\_\-label}]{\setlength{\rightskip}{0pt plus 5cm}integer {\bf module\-\_\-disjoint\-\_\-set\-::largest\-\_\-label}}}
+\label{classmodule__disjoint__set_a2ef0620ab0fd7047b16e522c4db4c590}
+
+
+\-Number of labels currently used. 
+
+\hypertarget{classmodule__disjoint__set_af861c992aa8ba85ccc2943ec786d9ceb}{
+\index{module\-\_\-disjoint\-\_\-set@{module\-\_\-disjoint\-\_\-set}!ranks@{ranks}}
+\index{ranks@{ranks}!module_disjoint_set@{module\-\_\-disjoint\-\_\-set}}
+\subsubsection[{ranks}]{\setlength{\rightskip}{0pt plus 5cm}integer, dimension(\-:), allocatable {\bf module\-\_\-disjoint\-\_\-set\-::ranks}}}
+\label{classmodule__disjoint__set_af861c992aa8ba85ccc2943ec786d9ceb}
+
+
+\-Array containing the label trees's ranks. \-It is used for union by rank (also called weighted union) 
+
+
+
+\-The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+modules/src/\hyperlink{module__disjoint__set_8f90}{module\-\_\-disjoint\-\_\-set.\-f90}\end{DoxyCompactItemize}

@@ -1,0 +1,414 @@
+\hypertarget{module__random__media_8f90_source}{
+\section{modules/src/module\-\_\-random\-\_\-media.f90}
+}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{!=============================!}
+00002 \textcolor{comment}{!                             !}
+00003 \textcolor{comment}{!                             !}
+00004 \textcolor{comment}{!     MODULE RANDOM MEDIA     !}
+00005 \textcolor{comment}{!                             !}
+00006 \textcolor{comment}{!                             !}
+00007 \textcolor{comment}{!=============================!}
+00008 \textcolor{comment}{!}
+\hypertarget{module__random__media_8f90_source_l00018}{}\hyperlink{classmodule__random__media}{00018} \textcolor{keyword}{module} \hyperlink{classmodule__random__media}{module_random_media}
+00019 \textcolor{comment}{!=========================}
+00020   \textcolor{comment}{!}
+00021 \textcolor{keyword}{contains}
+00022   \textcolor{comment}{!}
+\hypertarget{module__random__media_8f90_source_l00050}{}\hyperlink{classmodule__random__media_a20add11a88ee91f087cddbfb6554f08b}{00050}   \textcolor{keyword}{subroutine }gen\_random\_media\_3D (mat,                & 
+00051                                   nx, ny, nz,         &
+00052                                   dx, dy, dz,         &
+00053                                   H,                  &
+00054                                   ak,                 &
+00055                                   ag,                 &
+00056                                   correlation\_function)
+00057   \textcolor{comment}{!----------------------------------------------------}
+00058     \textcolor{comment}{!}
+00059     \textcolor{keyword}{implicit none}
+00060     \textcolor{comment}{!}
+00061     \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(nx,ny,nz)} :: mat \textcolor{comment}{!< 3D matrix containing the random values
+       (\(\backslash\)b Output)}
+00062     \textcolor{comment}{!}
+00063     \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< Grid dimension in the x direction (\(\backslash\)b Input)}
+00064     \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< Grid dimension in the y directionn (\(\backslash\)b Input)}
+00065     \textcolor{keywordtype}{integer} :: nz \textcolor{comment}{!< Grid dimension in the z directionn (\(\backslash\)b Input)}
+00066     \textcolor{comment}{!}
+00067     \textcolor{keywordtype}{real} :: dx \textcolor{comment}{!< Grid spacing in the x directionn (\(\backslash\)b Input)}
+00068     \textcolor{keywordtype}{real} :: dy \textcolor{comment}{!< Grid spacing in the y directionn (\(\backslash\)b Input)}
+00069     \textcolor{keywordtype}{real} :: dz \textcolor{comment}{!< Grid spacing in the z directionn (\(\backslash\)b Input)}
+00070     \textcolor{comment}{!}
+00071     \textcolor{keywordtype}{real} :: H \textcolor{comment}{!< Hurst exponent \(\backslash\)f$ H \(\backslash\)f$ n (\(\backslash\)b Input)}
+00072     \textcolor{keywordtype}{real} :: ak \textcolor{comment}{!< Von karman correlation length \(\backslash\)f$ a \(\backslash\)f$ n (\(\backslash\)b Input)}
+00073     \textcolor{keywordtype}{real} :: ag \textcolor{comment}{!< Gaussian correlation length \(\backslash\)f$ a\_G \(\backslash\)f$ n (\(\backslash\)b Input)}
+00074     \textcolor{comment}{!}
+00089     \textcolor{keywordtype}{character(len=*)} :: correlation\_function 
+00090     \textcolor{comment}{!}
+00091     \textcolor{comment}{! internal variables}
+00092     \textcolor{comment}{!}
+00093     \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{parameter} :: ndim = 3
+00094     \textcolor{keywordtype}{integer} :: nn(ndim),i ,j, k, n
+00095     \textcolor{keywordtype}{real} :: kx, ky, kz, dkx, dky, dkz, k2, pi, filter
+00096     \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(:)}, \textcolor{keywordtype}{allocatable} :: fft\_mat
+00097     \textcolor{comment}{!      }
+00098     \textcolor{comment}{! define PI}
+00099     \textcolor{comment}{!}
+00100     PI = 4.0*atan(1.0)
+00101     \textcolor{comment}{!}
+00102     \textcolor{comment}{! get fft\_mat dimension (nn(i) must be a power of 2)}
+00103     \textcolor{comment}{!}
+00104     nn(1) = 2**ceiling(log10(dble(nx))/log10(dble(2)))
+00105     nn(2) = 2**ceiling(log10(dble(ny))/log10(dble(2)))
+00106     nn(3) = 2**ceiling(log10(dble(nz))/log10(dble(2)))
+00107     \textcolor{comment}{!}
+00108     \textcolor{comment}{! allocate memory for fft\_mat}
+00109     \textcolor{comment}{!}
+00110     \textcolor{keyword}{allocate}(fft\_mat(2*nn(1)*nn(2)*nn(3)))
+00111     \textcolor{comment}{!}
+00112     \textcolor{comment}{! determine wavenumber spacings}
+00113     \textcolor{comment}{!}
+00114     dkx = 2 * pi / \textcolor{keywordtype}{real(nn(1))} / \textcolor{keywordtype}{real}(dx)
+00115     dky = 2 * pi / \textcolor{keywordtype}{real(nn(2))} / \textcolor{keywordtype}{real}(dy)
+00116     dkz = 2 * pi / \textcolor{keywordtype}{real(nn(3))} / \textcolor{keywordtype}{real}(dz)
+00117     \textcolor{comment}{!}
+00118     \textcolor{comment}{! fill work array with random numbers having zero mean}
+00119     \textcolor{comment}{!}
+00120     \textcolor{keyword}{do} n = 1,nn(1)*nn(2)*nn(3)*2,2
+00121        fft\_mat(n) = rand()-0.5
+00122        fft\_mat(n+1) = 0.E0
+00123     \textcolor{keyword}{enddo}
+00124     \textcolor{comment}{!}
+00125     \textcolor{comment}{! compute fft}
+00126     \textcolor{comment}{!}
+00127     call fourn (fft\_mat, nn, ndim, 1)
+00128     \textcolor{comment}{!}
+00129     \textcolor{comment}{! force zero mean}
+00130     \textcolor{comment}{!}
+00131     fft\_mat(1) = 0.E0 \textcolor{comment}{! real part}
+00132     fft\_mat(2) = 0.E0 \textcolor{comment}{! imaginary part}
+00133     \textcolor{comment}{!}
+00134     n = 1
+00135     \textcolor{comment}{!}
+00136     \textcolor{keyword}{do} k = 1, nn(3)
+00137        \textcolor{comment}{!}
+00138        kz = k-1
+00139        \textcolor{keyword}{if}(k>nn(3)/2+1)kz = kz-nn(3)
+00140        kz = kz*dkz
+00141        \textcolor{comment}{!}
+00142        \textcolor{keyword}{do} j = 1, nn(2)
+00143           \textcolor{comment}{!}
+00144           ky = j-1
+00145           \textcolor{keyword}{if}(j>nn(2)/2+1)ky = ky-nn(2)
+00146           ky = ky*dky
+00147           \textcolor{comment}{!}
+00148           \textcolor{keyword}{do} i = 1, nn(1)
+00149              \textcolor{comment}{!}
+00150              kx = i-1
+00151              \textcolor{keyword}{if}(i>nn(1)/2+1)kx = kx-nn(1)
+00152              kx = kx*dkx
+00153              \textcolor{comment}{!}
+00154              k2 = kx**2 + ky**2 + kz**2
+00155              \textcolor{comment}{!}
+00156              \textcolor{comment}{! get filter value}
+00157              \textcolor{comment}{!}
+00158              \textcolor{keyword}{select} \textcolor{keyword}{case}(correlation\_function)
+00159              \textcolor{keyword}{case}(\textcolor{stringliteral}{'general'}) 
+00160                 filter = (ak**(-2)+k2)**(-\textcolor{keywordtype}{real}(ndim)/4.-H/2.)*exp(-(ag**2*k2/8.
+      ))
+00161              \textcolor{keyword}{case} (\textcolor{stringliteral}{'gaussian'}) 
+00162                 filter = exp(-(ag**2*k2/8.))
+00163              \textcolor{keyword}{case} (\textcolor{stringliteral}{'von\_karman'}) 
+00164                 filter = (ak**(-2)+k2)**(-\textcolor{keywordtype}{real}(ndim)/4.-H/2.)
+00165              \textcolor{keyword}{case} (\textcolor{stringliteral}{'exponential'}) 
+00166                 filter = (ak**(-2)+k2)**(-\textcolor{keywordtype}{real}(ndim+1)/4.)
+00167              \textcolor{keyword}{case} (\textcolor{stringliteral}{'self\_affine'}) 
+00168                 filter = k2**(-\textcolor{keywordtype}{real}(ndim)/2.-H)
+00169              \textcolor{keyword}{case} (\textcolor{stringliteral}{'kummer'}) 
+00170                 filter = k2**(-\textcolor{keywordtype}{real}(ndim)/2.-H)*exp(-(ag**2*k2/8.))
+00171              \textcolor{keyword}{case} (\textcolor{stringliteral}{'white\_noise'}) 
+00172                 filter = 1.
+00173              \textcolor{keyword}{case} default
+00174                 print*,\textcolor{stringliteral}{'Error: Wrong correlation\_function in
+       gen\_random\_media\_3D.'}
+00175              \textcolor{keyword}{end select}
+00176              \textcolor{comment}{!}
+00177              \textcolor{keyword}{if}(k2==0)filter = 0
+00178              \textcolor{comment}{!}
+00179              fft\_mat(n)   = filter * fft\_mat(n)   \textcolor{comment}{! real part}
+00180              fft\_mat(n+1) = filter * fft\_mat(n+1) \textcolor{comment}{! imaginary part}
+00181              \textcolor{comment}{!}
+00182              n = n+2
+00183              \textcolor{comment}{!}
+00184           \textcolor{keyword}{enddo}
+00185        \textcolor{keyword}{enddo}
+00186     \textcolor{keyword}{enddo}
+00187     \textcolor{comment}{!}
+00188     \textcolor{comment}{! compute inverse fft}
+00189     \textcolor{comment}{!}
+00190     call fourn (fft\_mat, nn, ndim, -1)
+00191     \textcolor{comment}{!}
+00192     n = 1
+00193     \textcolor{comment}{!}
+00194     \textcolor{keyword}{do} k = 1,nn(3)
+00195        \textcolor{keyword}{do} j = 1,nn(2)
+00196           \textcolor{keyword}{do} i = 1,nn(1)
+00197              \textcolor{keyword}{if}(i<=nx.and.j<=ny.and.k<=nz)mat(i,j,k) = fft\_mat(n)
+00198              n = n+2
+00199           \textcolor{keyword}{enddo}
+00200        \textcolor{keyword}{enddo}
+00201     \textcolor{keyword}{enddo}
+00202     \textcolor{comment}{!}
+00203     \textcolor{comment}{! free memory}
+00204     \textcolor{comment}{!}
+00205     \textcolor{keyword}{deallocate}(fft\_mat)
+00206     \textcolor{comment}{!}
+00207     \textcolor{comment}{! substract mean}
+00208     \textcolor{comment}{!}
+00209     mat = mat - sum(mat)/\textcolor{keyword}{size}(mat)
+00210     \textcolor{comment}{!}
+00211     \textcolor{comment}{! normalize standard deviation}
+00212     \textcolor{comment}{!}
+00213     mat = mat/sqrt(sum(mat**2)/\textcolor{keyword}{size}(mat))
+00214     \textcolor{comment}{!}
+00215     \textcolor{comment}{!-----}
+00216     return
+00217     \textcolor{comment}{!-----}
+00218     \textcolor{comment}{!}
+00219   \textcolor{comment}{!---------------------------------}
+00220 \textcolor{keyword}{  end subroutine gen\_random\_media\_3D}
+00221   \textcolor{comment}{!---------------------------------}
+00222   \textcolor{comment}{!}
+\hypertarget{module__random__media_8f90_source_l00250}{}\hyperlink{classmodule__random__media_aa23f1e2861b1a505d3d7545e54337bab}{00250}   \textcolor{keyword}{subroutine }gen\_random\_media\_2D (mat,                & 
+00251                                   nx, ny,             &
+00252                                   dx, dy,             &
+00253                                   H,                  &
+00254                                   ak,                 &
+00255                                   ag,                 &
+00256                                   correlation\_function)
+00257   \textcolor{comment}{!----------------------------------------------------}
+00258     \textcolor{comment}{!}
+00259     \textcolor{keyword}{implicit none}
+00260     \textcolor{comment}{!}
+00261     \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(nx,ny)} :: mat \textcolor{comment}{!< 2D matrix containing the random values (\(\backslash\)b
+       Output)}
+00262     \textcolor{comment}{!}
+00263     \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< Grid dimension in the x direction (\(\backslash\)b Input)}
+00264     \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< Grid dimension in the y directionn (\(\backslash\)b Input)}
+00265     \textcolor{comment}{!}
+00266     \textcolor{keywordtype}{real} :: dx \textcolor{comment}{!< Grid spacing in the x directionn (\(\backslash\)b Input)}
+00267     \textcolor{keywordtype}{real} :: dy \textcolor{comment}{!< Grid spacing in the y directionn (\(\backslash\)b Input)}
+00268     \textcolor{comment}{!}
+00269     \textcolor{keywordtype}{real} :: H \textcolor{comment}{!< Hurst exponent \(\backslash\)f$ H \(\backslash\)f$ n (\(\backslash\)b Input)}
+00270     \textcolor{keywordtype}{real} :: ak \textcolor{comment}{!< Von karman correlation length \(\backslash\)f$ a \(\backslash\)f$ n (\(\backslash\)b Input)}
+00271     \textcolor{keywordtype}{real} :: ag \textcolor{comment}{!< Gaussian correlation length \(\backslash\)f$ a\_G \(\backslash\)f$ n (\(\backslash\)b Input)}
+00272     \textcolor{comment}{!}
+00287     \textcolor{keywordtype}{character(len=*)} :: correlation\_function 
+00288     \textcolor{comment}{!}
+00289     \textcolor{comment}{! internal variables}
+00290     \textcolor{comment}{!}
+00291     \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{parameter} :: ndim = 2
+00292     \textcolor{keywordtype}{integer} :: nn(ndim),i ,j, n
+00293     \textcolor{keywordtype}{real} :: kx, ky, dkx, dky, k2, pi, filter
+00294     \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(:)}, \textcolor{keywordtype}{allocatable} :: fft\_mat
+00295     \textcolor{comment}{!      }
+00296     \textcolor{comment}{! define PI}
+00297     \textcolor{comment}{!}
+00298     PI = 4.0*atan(1.0)
+00299     \textcolor{comment}{!}
+00300     \textcolor{comment}{! get fft\_mat dimension (nn(i) must be a power of 2)}
+00301     \textcolor{comment}{!}
+00302     nn(1) = 2**ceiling(log10(dble(nx))/log10(dble(2)))
+00303     nn(2) = 2**ceiling(log10(dble(ny))/log10(dble(2)))
+00304     \textcolor{comment}{!}
+00305     \textcolor{comment}{! allocate memory for fft\_mat}
+00306     \textcolor{comment}{!}
+00307     \textcolor{keyword}{allocate}(fft\_mat(2*nn(1)*nn(2)))
+00308     \textcolor{comment}{!}
+00309     \textcolor{comment}{! determine wavenumber spacings}
+00310     \textcolor{comment}{!}
+00311     dkx = 2 * pi / \textcolor{keywordtype}{real(nn(1))} / \textcolor{keywordtype}{real}(dx)
+00312     dky = 2 * pi / \textcolor{keywordtype}{real(nn(2))} / \textcolor{keywordtype}{real}(dy)
+00313     \textcolor{comment}{!}
+00314     \textcolor{comment}{! fill work array with random numbers having zero mean}
+00315     \textcolor{comment}{!}
+00316     \textcolor{keyword}{do} n = 1,nn(1)*nn(2)*2,2
+00317        fft\_mat(n) = rand()-0.5
+00318        fft\_mat(n+1) = 0.E0
+00319     \textcolor{keyword}{enddo}
+00320     \textcolor{comment}{!}
+00321     \textcolor{comment}{! compute fft}
+00322     \textcolor{comment}{!}
+00323     call fourn (fft\_mat, nn, ndim, 1)
+00324     \textcolor{comment}{!}
+00325     \textcolor{comment}{! force zero mean}
+00326     \textcolor{comment}{!}
+00327     fft\_mat(1) = 0.E0 \textcolor{comment}{! real part}
+00328     fft\_mat(2) = 0.E0 \textcolor{comment}{! imaginary part}
+00329     \textcolor{comment}{!}
+00330     n = 1
+00331     \textcolor{comment}{!}
+00332     \textcolor{keyword}{do} j = 1, nn(2)
+00333        \textcolor{comment}{!}
+00334        ky = j-1
+00335        \textcolor{keyword}{if}(j>nn(2)/2+1)ky = ky-nn(2)
+00336        ky = ky*dky
+00337        \textcolor{comment}{!}
+00338        \textcolor{keyword}{do} i = 1, nn(1)
+00339           \textcolor{comment}{!}
+00340           kx = i-1
+00341           \textcolor{keyword}{if}(i>nn(1)/2+1)kx = kx-nn(1)
+00342           kx = kx*dkx
+00343           \textcolor{comment}{!}
+00344           k2 = kx**2 + ky**2
+00345           \textcolor{comment}{!}
+00346           \textcolor{comment}{! get filter value}
+00347           \textcolor{comment}{!}
+00348           \textcolor{keyword}{select} \textcolor{keyword}{case}(correlation\_function)
+00349           \textcolor{keyword}{case}(\textcolor{stringliteral}{'general'}) 
+00350              filter = (ak**(-2)+k2)**(-\textcolor{keywordtype}{real}(ndim)/4.-H/2.)*exp(-(ag**2*k2/8.))
+00351           \textcolor{keyword}{case} (\textcolor{stringliteral}{'gaussian'}) 
+00352              filter = exp(-(ag**2*k2/8.))
+00353           \textcolor{keyword}{case} (\textcolor{stringliteral}{'von\_karman'}) 
+00354              filter = (ak**(-2)+k2)**(-\textcolor{keywordtype}{real}(ndim)/4.-H/2.)
+00355           \textcolor{keyword}{case} (\textcolor{stringliteral}{'exponential'}) 
+00356              filter = (ak**(-2)+k2)**(-\textcolor{keywordtype}{real}(ndim+1)/4.)
+00357           \textcolor{keyword}{case} (\textcolor{stringliteral}{'self\_affine'}) 
+00358              filter = k2**(-\textcolor{keywordtype}{real}(ndim)/2.-H)
+00359           \textcolor{keyword}{case} (\textcolor{stringliteral}{'kummer'}) 
+00360              filter = k2**(-\textcolor{keywordtype}{real}(ndim)/2.-H)*exp(-(ag**2*k2/8.))
+00361           \textcolor{keyword}{case} (\textcolor{stringliteral}{'white\_noise'}) 
+00362              filter = 1.
+00363           \textcolor{keyword}{case} default
+00364              print*,\textcolor{stringliteral}{'Error: Wrong correlation\_function in gen\_random\_media\_3D.'}
+00365           \textcolor{keyword}{end select}
+00366           \textcolor{comment}{!}
+00367           \textcolor{keyword}{if}(k2==0)filter = 0
+00368           \textcolor{comment}{!}
+00369           fft\_mat(n)   = filter * fft\_mat(n)   \textcolor{comment}{! real part}
+00370           fft\_mat(n+1) = filter * fft\_mat(n+1) \textcolor{comment}{! imaginary part}
+00371           \textcolor{comment}{!}
+00372           n = n+2
+00373           \textcolor{comment}{!}
+00374        \textcolor{keyword}{enddo}
+00375     \textcolor{keyword}{enddo}
+00376     \textcolor{comment}{!}
+00377     \textcolor{comment}{! compute inverse fft}
+00378     \textcolor{comment}{!}
+00379     call fourn (fft\_mat, nn, ndim, -1)
+00380     \textcolor{comment}{!}
+00381     n = 1
+00382     \textcolor{comment}{!}
+00383     \textcolor{keyword}{do} j = 1,nn(2)
+00384        \textcolor{keyword}{do} i = 1,nn(1)
+00385           \textcolor{keyword}{if}(i<=nx.and.j<=ny)mat(i,j) = fft\_mat(n)
+00386           n = n+2
+00387        \textcolor{keyword}{enddo}
+00388     \textcolor{keyword}{enddo}
+00389     \textcolor{comment}{!}
+00390     \textcolor{comment}{! free memory}
+00391     \textcolor{comment}{!}
+00392     \textcolor{keyword}{deallocate}(fft\_mat)
+00393     \textcolor{comment}{!}
+00394     \textcolor{comment}{! substract mean}
+00395     \textcolor{comment}{!}
+00396     mat = mat - sum(mat)/\textcolor{keyword}{size}(mat)
+00397     \textcolor{comment}{!}
+00398     \textcolor{comment}{! normalize standard deviation}
+00399     \textcolor{comment}{!}
+00400     mat = mat/sqrt(sum(mat**2)/\textcolor{keyword}{size}(mat))
+00401     \textcolor{comment}{!}
+00402     \textcolor{comment}{!-----}
+00403     return
+00404     \textcolor{comment}{!-----}
+00405     \textcolor{comment}{!}
+00406   \textcolor{comment}{!---------------------------------}
+00407 \textcolor{keyword}{  end subroutine gen\_random\_media\_2D}
+00408   \textcolor{comment}{!---------------------------------}
+00409   \textcolor{comment}{!}
+00410   \textcolor{comment}{! @brief Fast Fourier Transform}
+00411   \textcolor{comment}{!-----------------------------------}
+\hypertarget{module__random__media_8f90_source_l00412}{}\hyperlink{classmodule__random__media_acca655a7647ef0bd11dc4365dbd2557e}{00412}   \textcolor{keyword}{subroutine }fourn(data,nn,ndim,isign)
+00413   \textcolor{comment}{!-----------------------------------}
+00414     \textcolor{comment}{!}
+00415     \textcolor{keyword}{implicit none}
+00416     \textcolor{comment}{!}
+00417     \textcolor{keywordtype}{integer} :: isign,ndim,nn(ndim)
+00418     \textcolor{keywordtype}{real} :: data(*)
+00419     \textcolor{keywordtype}{integer} :: i1,i2,i2rev,i3,i3rev,ibit,idim
+00420     \textcolor{keywordtype}{integer} :: ifp1,ifp2,ip1,ip2,ip3,k1,k2,n,nprev,nrem,ntot
+00421     \textcolor{keywordtype}{real} :: tempi,tempr
+00422     \textcolor{keywordtype}{double precision} :: theta,wi,wpi,wpr,wr,wtemp
+00423     \textcolor{comment}{!}
+00424     ntot=1
+00425     \textcolor{keyword}{do} idim=1,ndim
+00426        ntot=ntot*nn(idim)
+00427     \textcolor{keyword}{enddo}
+00428     nprev=1
+00429     \textcolor{keyword}{do} idim=1,ndim
+00430        n=nn(idim)
+00431        nrem=ntot/(n*nprev)
+00432        ip1=2*nprev
+00433        ip2=ip1*n
+00434        ip3=ip2*nrem
+00435        i2rev=1
+00436        \textcolor{keyword}{do} i2=1,ip2,ip1
+00437           \textcolor{keyword}{if}(i2.lt.i2rev)\textcolor{keyword}{then}
+00438              \textcolor{keyword}{do} i1=i2,i2+ip1-2,2
+00439                 \textcolor{keyword}{do} i3=i1,ip3,ip2
+00440                    i3rev=i2rev+i3-i2
+00441                    tempr=\textcolor{keyword}{data}(i3)
+00442                    tempi=\textcolor{keyword}{data}(i3+1)
+00443                    \textcolor{keyword}{data}(i3)=\textcolor{keyword}{data}(i3rev)
+00444                    \textcolor{keyword}{data}(i3+1)=\textcolor{keyword}{data}(i3rev+1)
+00445                    \textcolor{keyword}{data}(i3rev)=tempr
+00446                    \textcolor{keyword}{data}(i3rev+1)=tempi
+00447                 \textcolor{keyword}{enddo}
+00448              \textcolor{keyword}{enddo}
+00449           \textcolor{keyword}{endif}
+00450           ibit=ip2/2
+00451           \textcolor{keyword}{do} \textcolor{keyword}{while}((ibit.ge.ip1).and.(i2rev.gt.ibit)) 
+00452              i2rev=i2rev-ibit
+00453              ibit=ibit/2
+00454           \textcolor{keyword}{enddo}
+00455           i2rev=i2rev+ibit
+00456        \textcolor{keyword}{enddo}
+00457        ifp1=ip1
+00458        \textcolor{keyword}{do} \textcolor{keyword}{while}(ifp1.lt.ip2)
+00459           ifp2=2*ifp1
+00460           theta=isign*6.28318530717959d0/(ifp2/ip1)
+00461           wpr=-2.d0*sin(0.5d0*theta)**2
+00462           wpi=sin(theta)
+00463           wr=1.d0
+00464           wi=0.d0
+00465           \textcolor{keyword}{do} i3=1,ifp1,ip1
+00466              \textcolor{keyword}{do} i1=i3,i3+ip1-2,2
+00467                 \textcolor{keyword}{do} i2=i1,ip3,ifp2
+00468                    k1=i2
+00469                    k2=k1+ifp1
+00470                    tempr=sngl(wr)*\textcolor{keyword}{data}(k2)-sngl(wi)*\textcolor{keyword}{data}(k2+1)
+00471                    tempi=sngl(wr)*\textcolor{keyword}{data}(k2+1)+sngl(wi)*\textcolor{keyword}{data}(k2)
+00472                    \textcolor{keyword}{data}(k2)=\textcolor{keyword}{data}(k1)-tempr
+00473                    \textcolor{keyword}{data}(k2+1)=\textcolor{keyword}{data}(k1+1)-tempi
+00474                    \textcolor{keyword}{data}(k1)=\textcolor{keyword}{data}(k1)+tempr
+00475                    \textcolor{keyword}{data}(k1+1)=\textcolor{keyword}{data}(k1+1)+tempi
+00476                 \textcolor{keyword}{enddo}
+00477              \textcolor{keyword}{enddo}
+00478              wtemp=wr
+00479              wr=wr*wpr-wi*wpi+wr
+00480              wi=wi*wpr+wtemp*wpi+wi
+00481           \textcolor{keyword}{enddo}
+00482           ifp1=ifp2
+00483        \textcolor{keyword}{enddo}
+00484        nprev=n*nprev
+00485     \textcolor{keyword}{enddo}
+00486     \textcolor{comment}{!}
+00487     return
+00488     \textcolor{comment}{!}
+00489   \textcolor{comment}{!-------------------}
+00490 \textcolor{keyword}{  end subroutine fourn}
+00491   \textcolor{comment}{!-------------------}
+00492   \textcolor{comment}{!}
+00493 \textcolor{comment}{!=============================}
+00494 \textcolor{keyword}{end module module\_random\_media}
+00495 \textcolor{comment}{!=============================}
+\end{DoxyCode}

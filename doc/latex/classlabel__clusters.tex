@@ -1,0 +1,150 @@
+\hypertarget{classlabel__clusters}{
+\section{label\-\_\-clusters \-Module \-Reference}
+\label{classlabel__clusters}\index{label\-\_\-clusters@{label\-\_\-clusters}}
+}
+
+
+\-This module contains functions for cluster labeling, these are used to identify trapped regions.  
+
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{classlabel__clusters_ae0e346b0206ffd792328330e1e6c9337}{label\-\_\-clusters\-\_\-cubic} (mat, nx, ny, nz, period\-\_\-x, period\-\_\-y, period\-\_\-z)
+\begin{DoxyCompactList}\small\item\em \-Label clusters on a 3\-D cubic lattice. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classlabel__clusters_af97342658225cc0c41afea95cfc32fb0}{label\-\_\-clusters\-\_\-arbitrary} (mat, n\-\_\-sites, offsets, connectivity)
+\begin{DoxyCompactList}\small\item\em \-Label clusters on arbitrary lattices. \end{DoxyCompactList}\item 
+integer function \hyperlink{classlabel__clusters_aa8db8972e6da8009cebd34907a6a5fb4}{get\-\_\-label\-\_\-mat} (n, lc)
+\begin{DoxyCompactList}\small\item\em \-Get label based on the neighbor's label \par
+ \-If the site has neighbors, the site's label is the union of all neighbors's labels \par
+ \-If the site has no neighbor, a new label is created. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-This module contains functions for cluster labeling, these are used to identify trapped regions. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 23, 2014 
+\end{DoxyDate}
+
+
+\subsection{\-Member \-Function/\-Subroutine \-Documentation}
+\hypertarget{classlabel__clusters_aa8db8972e6da8009cebd34907a6a5fb4}{
+\index{label\-\_\-clusters@{label\-\_\-clusters}!get\-\_\-label\-\_\-mat@{get\-\_\-label\-\_\-mat}}
+\index{get\-\_\-label\-\_\-mat@{get\-\_\-label\-\_\-mat}!label_clusters@{label\-\_\-clusters}}
+\subsubsection[{get\-\_\-label\-\_\-mat}]{\setlength{\rightskip}{0pt plus 5cm}integer function label\-\_\-clusters\-::get\-\_\-label\-\_\-mat (
+\begin{DoxyParamCaption}
+\item[{integer}]{n, }
+\item[{integer, dimension(\-:)}]{lc}
+\end{DoxyParamCaption}
+)}}
+\label{classlabel__clusters_aa8db8972e6da8009cebd34907a6a5fb4}
+
+
+\-Get label based on the neighbor's label \par
+ \-If the site has neighbors, the site's label is the union of all neighbors's labels \par
+ \-If the site has no neighbor, a new label is created. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 23, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em n} & \-Number of neighbors \\
+\hline
+{\em lc} & \-Array containing the indices of the neighbors \\
+\hline
+\end{DoxyParams}
+\hypertarget{classlabel__clusters_af97342658225cc0c41afea95cfc32fb0}{
+\index{label\-\_\-clusters@{label\-\_\-clusters}!label\-\_\-clusters\-\_\-arbitrary@{label\-\_\-clusters\-\_\-arbitrary}}
+\index{label\-\_\-clusters\-\_\-arbitrary@{label\-\_\-clusters\-\_\-arbitrary}!label_clusters@{label\-\_\-clusters}}
+\subsubsection[{label\-\_\-clusters\-\_\-arbitrary}]{\setlength{\rightskip}{0pt plus 5cm}subroutine label\-\_\-clusters\-::label\-\_\-clusters\-\_\-arbitrary (
+\begin{DoxyParamCaption}
+\item[{integer, dimension(n\-\_\-sites)}]{mat, }
+\item[{integer}]{n\-\_\-sites, }
+\item[{integer, dimension(\-:)}]{offsets, }
+\item[{integer, dimension(\-:)}]{connectivity}
+\end{DoxyParamCaption}
+)}}
+\label{classlabel__clusters_af97342658225cc0c41afea95cfc32fb0}
+
+
+\-Label clusters on arbitrary lattices. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 23, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em n\-\_\-sites} & \-Number of sites invaded ({\bfseries output}) \\
+\hline
+{\em mat} & \-Matrix of clusters labels ({\bfseries input} /{\bfseries output}) \par
+ \-At input time, {\bfseries mat(i)=-\/1} at sites belonging to cluster to be labeled (sites filled with the defending fluid) and {\bfseries mat(i)= 0} otherwise (sites filled with the invading fluid) \par
+ \-At output time, {\bfseries mat(i)=\-L} where {\bfseries \-L} is the label of the cluster to which the site with index {\bfseries i} belongs to \\
+\hline
+{\em offsets} & \-Array containing the offsets of the data stored in the connectivity array ({\bfseries \-Input}) \\
+\hline
+{\em connectivity} & \-Array containing thelattice connectivity ({\bfseries input}) \par
+ \-For a given site {\bfseries i}, with offset {\bfseries j = offsets(i)} \-: \par
+ {\bfseries n=connectivity(j)} is the number of sites neighboring site {\bfseries i}. \par
+ {\bfseries connectivity(j+1, j+2, ... ,j+n)} contains the indices of the sites that are neighboring site {\bfseries i}. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classlabel__clusters_ae0e346b0206ffd792328330e1e6c9337}{
+\index{label\-\_\-clusters@{label\-\_\-clusters}!label\-\_\-clusters\-\_\-cubic@{label\-\_\-clusters\-\_\-cubic}}
+\index{label\-\_\-clusters\-\_\-cubic@{label\-\_\-clusters\-\_\-cubic}!label_clusters@{label\-\_\-clusters}}
+\subsubsection[{label\-\_\-clusters\-\_\-cubic}]{\setlength{\rightskip}{0pt plus 5cm}subroutine label\-\_\-clusters\-::label\-\_\-clusters\-\_\-cubic (
+\begin{DoxyParamCaption}
+\item[{integer, dimension(nx,ny,nz)}]{mat, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{logical}]{period\-\_\-x, }
+\item[{logical}]{period\-\_\-y, }
+\item[{logical}]{period\-\_\-z}
+\end{DoxyParamCaption}
+)}}
+\label{classlabel__clusters_ae0e346b0206ffd792328330e1e6c9337}
+
+
+\-Label clusters on a 3\-D cubic lattice. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 23, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em nx} & \-Grid dimension in the x direction ({\bfseries input}) \\
+\hline
+{\em ny} & \-Grid dimension in the y direction ({\bfseries input}) \\
+\hline
+{\em nz} & \-Grid dimension in the z direction ({\bfseries input}) \\
+\hline
+{\em mat} & \-Matrix of clusters labels ({\bfseries input} /{\bfseries output}) \par
+ \-At input time, {\bfseries mat(i,j,k)=-\/1} at sites belonging to cluster to be labeled (sites filled with the defending fluid) and {\bfseries mat(i,j,k)= 0} otherwise (sites filled with the invading fluid) \par
+ \-At output time, {\bfseries mat(i,j,k)=\-L} where {\bfseries \-L} is the label of the cluster to which the site with index (i,j,k) belongs to \\
+\hline
+{\em period\-\_\-x} & \-Flag for periodic boundaries in the x direction ({\bfseries input}) \\
+\hline
+{\em period\-\_\-y} & \-Flag for periodic boundaries in the y direction ({\bfseries input}) \\
+\hline
+{\em period\-\_\-z} & \-Flag for periodic boundaries in the z direction ({\bfseries input}) \\
+\hline
+\end{DoxyParams}
+
+
+\-The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+modules/src/\hyperlink{module__label__clusters_8f90}{module\-\_\-label\-\_\-clusters.\-f90}\end{DoxyCompactItemize}

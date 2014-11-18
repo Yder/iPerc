@@ -1,0 +1,421 @@
+\hypertarget{module__trapping_8f90_source}{
+\section{modules/src/module\-\_\-trapping.f90}
+}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{!=========================!}
+00002 \textcolor{comment}{!                         !}
+00003 \textcolor{comment}{!                         !}
+00004 \textcolor{comment}{!     MODULE TRAPPING     !}
+00005 \textcolor{comment}{!                         !}
+00006 \textcolor{comment}{!                         !}
+00007 \textcolor{comment}{!=========================!}
+00008 \textcolor{comment}{!}
+\hypertarget{module__trapping_8f90_source_l00014}{}\hyperlink{classmodule__trapping}{00014} \textcolor{keyword}{module} \hyperlink{classmodule__trapping}{module_trapping}
+00015 \textcolor{comment}{!=====================}
+00016   \textcolor{comment}{!}
+00017   use \textcolor{keywordflow}{module\_cubic\_indices}
+00018   use \textcolor{keywordflow}{module\_disjoint\_set}
+00019   use \textcolor{keywordflow}{module\_label\_clusters}
+00020   use \textcolor{keywordflow}{module\_invasion\_percolation\_constants}
+00021   \textcolor{comment}{!}
+00022 \textcolor{keyword}{contains}
+00023   \textcolor{comment}{!}
+\hypertarget{module__trapping_8f90_source_l00030}{}\hyperlink{classmodule__trapping_acc4be246fb79d0cc00ed4f436feabd21}{00030}   \textcolor{keyword}{integer }\textcolor{keyword}{function }get\_label\_free\_clusters(n\_sites,states,mat)
+00031   \textcolor{comment}{!-----------------------------------------------------------}
+00032     \textcolor{comment}{!}
+00033     \textcolor{keywordtype}{integer} :: states(n\_sites) \textcolor{comment}{!< Array containing the sites's states (\(\backslash\)b
+       input)}
+00034     \textcolor{keywordtype}{integer} :: mat(n\_sites) \textcolor{comment}{!< Array containing the clusters's labels (\(\backslash\)b
+       input)}
+00035     \textcolor{keywordtype}{integer} :: label\_free\_clusters \textcolor{comment}{!< free cluster's label}
+00036     \textcolor{comment}{!}
+00037     \textcolor{comment}{! create a new set}
+00038     \textcolor{comment}{!}
+00039     label\_free\_clusters = create\_set(largest\_label)
+00040     \textcolor{comment}{!}
+00041     \textcolor{comment}{! union all exit sites's clusters}
+00042     \textcolor{comment}{! (fluid is free to escape at all sites}
+00043     \textcolor{comment}{! connected to exit sites)}
+00044     \textcolor{comment}{!}
+00045     \textcolor{keyword}{do} i = 1,n\_sites
+00046        \textcolor{keyword}{if}(states(i)==exit\_site)\textcolor{keyword}{then}
+00047           label\_free\_clusters = union(mat(i),label\_free\_clusters)
+00048        \textcolor{keyword}{endif}
+00049     \textcolor{keyword}{enddo}
+00050     \textcolor{comment}{!}
+00051     get\_label\_free\_clusters = label\_free\_clusters
+00052     \textcolor{comment}{!}
+00053     return
+00054     \textcolor{comment}{!}
+00055   \textcolor{comment}{!-----------------------------------}
+00056 \textcolor{keyword}{  end function get\_label\_free\_clusters}
+00057   \textcolor{comment}{!-----------------------------------}
+00058   \textcolor{comment}{!}
+\hypertarget{module__trapping_8f90_source_l00066}{}\hyperlink{classmodule__trapping_a15f5caceb776482e66d04fad11d9b5b1}{00066}   \textcolor{keyword}{subroutine }find\_trapped\_sites\_cubic(nx,                &
+00067                                       ny,                &
+00068                                       nz,                &
+00069                                       states,            &
+00070                                       period\_x,          &
+00071                                       period\_y,          &
+00072                                       period\_z,          &
+00073                                       n\_sites\_invaded,   &
+00074                                       invasion\_list,     &
+00075                                       undo\_invasion      )
+00076   \textcolor{comment}{!-------------------------------------------------------}
+00077     \textcolor{comment}{!}
+00078     \textcolor{keyword}{implicit none}
+00079     \textcolor{comment}{!}
+00080     \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< Grid dimension in the x direction (\(\backslash\)b input)}
+00081     \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< Grid dimension in the y direction (\(\backslash\)b input)}
+00082     \textcolor{keywordtype}{integer} :: nz \textcolor{comment}{!< Grid dimension in the z direction (\(\backslash\)b input)}
+00083     \textcolor{comment}{!}
+00084     \textcolor{keywordtype}{integer} :: states(nx,ny,nz) \textcolor{comment}{!< Array containing the sites's states (\(\backslash\)b
+       input/\(\backslash\)b output)}
+00085     \textcolor{comment}{!! \(\backslash\)n The state of trapped sites is updated to <b>state(i,j,k)=trapped</b>}
+00086     \textcolor{comment}{!}
+00087     \textcolor{keywordtype}{logical} :: period\_x \textcolor{comment}{!< Flag for periodic boundaries in the x direction (\(\backslash\)b
+       input)}
+00088     \textcolor{keywordtype}{logical} :: period\_y \textcolor{comment}{!< Flag for periodic boundaries in the y direction (\(\backslash\)b
+       input)}
+00089     \textcolor{keywordtype}{logical} :: period\_z \textcolor{comment}{!< Flag for periodic boundaries in the z direction (\(\backslash\)b
+       input)}
+00090     \textcolor{comment}{!}
+00091     \textcolor{keywordtype}{logical} :: undo\_invasion \textcolor{comment}{!< Flag: If <b>undo\_invasion==.true.</b>}
+00092     \textcolor{comment}{!! Then use fast a posteriori method for trapping (\(\backslash\)b input)}
+00093     \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{!< Number of invaded sites (\(\backslash\)b input)}
+00094     \textcolor{keywordtype}{integer} :: invasion\_list(:) \textcolor{comment}{!< List of invaded sites }
+00095     \textcolor{comment}{!! sorted in chronological order (\(\backslash\)b input)}
+00096     \textcolor{comment}{!}
+00097     \textcolor{comment}{! internal variables}
+00098     \textcolor{comment}{! }
+00099     \textcolor{keywordtype}{integer} :: label\_free\_clusters \textcolor{comment}{!< Free cluster's label}
+00100     \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable}, \textcolor{keywordtype}{dimension(:,:,:)} :: mat \textcolor{comment}{!< bufer for cluster labeling}
+00101     \textcolor{keywordtype}{integer} :: i,j,k,n,in1,in2,jn1,jn2,kn1,kn2,is,js,ks,i\_site,lc(6)
+00102     \textcolor{keywordtype}{integer} :: n\_sites\_invaded\_with\_trapping
+00103     \textcolor{comment}{!}
+00104     \textcolor{comment}{! init mat}
+00105     \textcolor{comment}{!}
+00106     \textcolor{keyword}{allocate}(mat(nx,ny,nz))
+00107     \textcolor{comment}{!}
+00108     \textcolor{keyword}{do} k = 1,nz
+00109        \textcolor{keyword}{do} j = 1,ny
+00110           \textcolor{keyword}{do} i = 1,nx
+00111              \textcolor{keyword}{if}(states(i,j,k)==invaded)\textcolor{keyword}{then}
+00112                 mat(i,j,k) = 0
+00113              \textcolor{keyword}{else}
+00114                 mat(i,j,k) =-1
+00115              \textcolor{keyword}{endif}
+00116           \textcolor{keyword}{enddo}
+00117        \textcolor{keyword}{enddo}
+00118     \textcolor{keyword}{enddo}
+00119     \textcolor{comment}{!}
+00120     \textcolor{comment}{! label cluster}
+00121     \textcolor{comment}{!}
+00122     call label\_clusters\_cubic(mat,nx,ny,nz,period\_x,period\_y,period\_z)
+00123     \textcolor{comment}{!}
+00124     \textcolor{comment}{! find free cluster's label}
+00125     \textcolor{comment}{!}
+00126     label\_free\_clusters = get\_label\_free\_clusters(nx*ny*nz,states,mat)
+00127     \textcolor{comment}{!}
+00128     \textcolor{comment}{! update trapped sites's states}
+00129     \textcolor{comment}{!}
+00130     \textcolor{keyword}{do} k = 1,nz
+00131        \textcolor{keyword}{do} j = 1,ny
+00132           \textcolor{keyword}{do} i = 1,nx
+00133              \textcolor{keyword}{if}(mat(i,j,k)/=0.and.mat(i,j,k)/=label\_free\_clusters)\textcolor{keyword}{then}
+00134                 states(i,j,k) = trapped
+00135              \textcolor{keyword}{endif}
+00136           \textcolor{keyword}{enddo}
+00137        \textcolor{keyword}{enddo}
+00138     \textcolor{keyword}{enddo}
+00139     \textcolor{comment}{!}
+00140     \textcolor{keyword}{if}(undo\_invasion)\textcolor{keyword}{then}
+00141        \textcolor{comment}{!}
+00142        \textcolor{keyword}{do} i\_site = n\_sites\_invaded,1,-1
+00143           \textcolor{comment}{!}
+00144           \textcolor{comment}{! get site's 3d indices}
+00145           \textcolor{comment}{!}
+00146           call ind2ijk(nx,ny,invasion\_list(i\_site),is,js,ks)
+00147           \textcolor{comment}{!   }
+00148           in1 = is-1
+00149           in2 = is+1
+00150           jn1 = js-1
+00151           jn2 = js+1
+00152           kn1 = ks-1
+00153           kn2 = ks+1
+00154           \textcolor{comment}{!}
+00155           \textcolor{comment}{! account for periodic boundaries}
+00156           \textcolor{comment}{!}
+00157           \textcolor{keyword}{if}(in1<1 .and.period\_x) in1 = in1+nx
+00158           \textcolor{keyword}{if}(in2>nx.and.period\_x) in2 = in2-nx
+00159           \textcolor{keyword}{if}(jn1<1 .and.period\_y) jn1 = jn1+ny
+00160           \textcolor{keyword}{if}(jn2>ny.and.period\_y) jn2 = jn2-ny
+00161           \textcolor{keyword}{if}(kn1<1 .and.period\_z) kn1 = kn1+nz
+00162           \textcolor{keyword}{if}(kn2>nz.and.period\_z) kn2 = kn2-nz
+00163           \textcolor{comment}{!}
+00164           \textcolor{comment}{!  scan neighboring sites}
+00165           \textcolor{comment}{!}
+00166           n = 0
+00167           \textcolor{comment}{!}
+00168           \textcolor{keyword}{if}(in1>=1 .and.mat(in1,js,ks)/=0)\textcolor{keyword}{then} 
+00169              n = n + 1
+00170              lc(n) = mat(in1,js,ks) 
+00171           \textcolor{keyword}{endif}
+00172           \textcolor{keyword}{if}(in2<=nx.and.mat(in2,js,ks)/=0)\textcolor{keyword}{then}
+00173              n = n + 1
+00174              lc(n) = mat(in2,js,ks)
+00175           \textcolor{keyword}{endif}
+00176           \textcolor{keyword}{if}(jn1>=1 .and.mat(is,jn1,ks)/=0)\textcolor{keyword}{then}
+00177              n = n + 1
+00178              lc(n) = mat(is,jn1,ks) 
+00179           \textcolor{keyword}{endif}
+00180           \textcolor{keyword}{if}(jn2<=ny.and.mat(is,jn2,ks)/=0)\textcolor{keyword}{then} 
+00181              n = n + 1
+00182              lc(n) = mat(is,jn2,ks) 
+00183           \textcolor{keyword}{endif}
+00184           \textcolor{keyword}{if}(kn1>=1 .and.mat(is,js,kn1)/=0)\textcolor{keyword}{then} 
+00185              n = n + 1
+00186              lc(n) = mat(is,js,kn1) 
+00187           \textcolor{keyword}{endif}
+00188           \textcolor{keyword}{if}(kn2<=nz.and.mat(is,js,kn2)/=0)\textcolor{keyword}{then} 
+00189              n = n + 1
+00190              lc(n) = mat(is,js,kn2) 
+00191           \textcolor{keyword}{endif}
+00192           \textcolor{comment}{!}
+00193           mat(is,js,ks) = get\_label\_mat(n,lc)
+00194           \textcolor{comment}{!}
+00195           \textcolor{keyword}{if}(find(mat(is,js,ks))/=find(label\_free\_clusters))\textcolor{keyword}{then}
+00196              states(is,js,ks) = trapped
+00197           \textcolor{keyword}{endif}
+00198           \textcolor{comment}{!}
+00199        \textcolor{keyword}{enddo}
+00200        \textcolor{comment}{!}
+00201        \textcolor{comment}{! remove trapped sites from invasion\_list}
+00202        \textcolor{comment}{!}
+00203        n\_sites\_invaded\_with\_trapping = 0
+00204        \textcolor{comment}{!}
+00205        \textcolor{keyword}{do} i\_site = 1,n\_sites\_invaded
+00206           \textcolor{comment}{!}
+00207           \textcolor{comment}{! get site's 3d indices}
+00208           \textcolor{comment}{!}
+00209           call ind2ijk(nx,ny,invasion\_list(i\_site),is,js,ks)
+00210           \textcolor{keyword}{if}(states(is,js,ks)/=trapped)\textcolor{keyword}{then}
+00211              n\_sites\_invaded\_with\_trapping = n\_sites\_invaded\_with\_trapping+1
+00212              invasion\_list(n\_sites\_invaded\_with\_trapping) = invasion\_list(
+      i\_site)
+00213           \textcolor{keyword}{endif}
+00214        \textcolor{keyword}{enddo}
+00215        \textcolor{comment}{!}
+00216        n\_sites\_invaded = n\_sites\_invaded\_with\_trapping
+00217        \textcolor{comment}{!}
+00218     \textcolor{keyword}{endif}
+00219     \textcolor{comment}{!}
+00220     \textcolor{keyword}{deallocate}(mat)
+00221     call deallocate\_disjoint\_set
+00222     \textcolor{comment}{!}
+00223     return
+00224     \textcolor{comment}{!}
+00225   \textcolor{comment}{!--------------------------------------}
+00226 \textcolor{keyword}{  end subroutine find\_trapped\_sites\_cubic}
+00227   \textcolor{comment}{!--------------------------------------}
+00228   \textcolor{comment}{!}
+\hypertarget{module__trapping_8f90_source_l00237}{}\hyperlink{classmodule__trapping_ae74b46d92d3e8dfd116fa288aa279107}{00237}   \textcolor{keyword}{subroutine }find\_trapped\_sites\_arbitrary(n\_sites,           &
+00238                                           states,            &
+00239                                           offsets,           &
+00240                                           connectivity,      &
+00241                                           n\_sites\_invaded,   &
+00242                                           invasion\_list,     &
+00243                                           undo\_invasion      )
+00244   \textcolor{comment}{!-----------------------------------------------------------}
+00245     \textcolor{comment}{!}
+00246     \textcolor{keyword}{implicit none}
+00247     \textcolor{comment}{!}
+00248     \textcolor{keywordtype}{integer} :: n\_sites \textcolor{comment}{! Total number of sites in the lattice}
+00249     \textcolor{keywordtype}{integer} :: states(:) \textcolor{comment}{!< Array containing the sites's states (\(\backslash\)b input/\(\backslash\)b
+       output)}
+00250     \textcolor{comment}{!! \(\backslash\)n The state of trapped sites is updated to <b>state(i)=trapped</b>}
+00251     \textcolor{keywordtype}{logical} :: undo\_invasion \textcolor{comment}{!< Flag: If <b>undo\_invasion==.true.</b>}
+00252     \textcolor{comment}{!! Then use fast a posteriori method for trapping (\(\backslash\)b input)}
+00253     \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{! Number of sites invaded (\(\backslash\)b input)}
+00254     \textcolor{keywordtype}{integer} :: invasion\_list(:) \textcolor{comment}{!< List of invaded sites }
+00255     \textcolor{comment}{!! sorted in chronological order (\(\backslash\)b input)}
+00258     \textcolor{keywordtype}{integer} :: offsets(:)
+00259 
+00264     \textcolor{keywordtype}{integer} :: connectivity(:)
+00265     \textcolor{comment}{!}
+00266     \textcolor{comment}{! internal variables}
+00267     \textcolor{comment}{!}
+00268     \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable}, \textcolor{keywordtype}{dimension(:)} :: mat
+00269     \textcolor{keywordtype}{integer} :: i,n,i\_site,j,i\_start,i\_end,n\_neighbors
+00270     \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)}, \textcolor{keywordtype}{allocatable} :: lc
+00271     \textcolor{keywordtype}{integer} :: label\_free\_clusters
+00272     \textcolor{keywordtype}{integer} :: n\_sites\_invaded\_with\_trapping
+00273     \textcolor{comment}{!}
+00274     \textcolor{comment}{! label clusters for final state}
+00275     \textcolor{comment}{!}
+00276     \textcolor{keyword}{allocate}(mat(n\_sites))
+00277     \textcolor{comment}{! init mat}
+00278     \textcolor{keyword}{do} i = 1,n\_sites
+00279        \textcolor{keyword}{if}(states(i)==invaded)\textcolor{keyword}{then}
+00280           mat(i) = 0
+00281        \textcolor{keyword}{else}
+00282           mat(i) =-1
+00283        \textcolor{keyword}{endif}
+00284     \textcolor{keyword}{enddo}
+00285     \textcolor{comment}{! label cluster}
+00286     call label\_clusters\_arbitrary(mat,n\_sites,offsets,connectivity)
+00287     \textcolor{comment}{! find free cluster's label}
+00288     label\_free\_clusters = get\_label\_free\_clusters(n\_sites,states,mat)
+00289     \textcolor{comment}{! update trapped sites's states}
+00290     \textcolor{keyword}{do} i = 1,n\_sites
+00291        \textcolor{keyword}{if}(mat(i)/=0.and.mat(i)/=label\_free\_clusters)\textcolor{keyword}{then}
+00292           states(i) = trapped
+00293        \textcolor{keyword}{endif}
+00294     \textcolor{keyword}{enddo}
+00295     \textcolor{comment}{!}
+00296     \textcolor{keyword}{if}(undo\_invasion)\textcolor{keyword}{then}
+00297        \textcolor{comment}{!}
+00298        \textcolor{comment}{! undo invasion}
+00299        \textcolor{comment}{!}
+00300        \textcolor{keyword}{do} j = n\_sites\_invaded,1,-1
+00301           \textcolor{comment}{!}
+00302           i\_site = invasion\_list(j) 
+00303           i = offsets(i\_site)
+00304           n\_neighbors = connectivity(i)
+00305           i\_start = i+1
+00306           i\_end  = i+n\_neighbors
+00307           \textcolor{comment}{!}
+00308           \textcolor{keyword}{if}(.not.\textcolor{keyword}{allocated}(lc))\textcolor{keyword}{allocate}(lc(n\_neighbors))
+00309           \textcolor{keyword}{if}(n\_neighbors>\textcolor{keyword}{size}(lc))\textcolor{keyword}{then}
+00310              \textcolor{keyword}{deallocate}(lc)
+00311              \textcolor{keyword}{allocate}(lc(n\_neighbors))
+00312           \textcolor{keyword}{endif}
+00313           \textcolor{comment}{!}
+00314           n = 0
+00315           \textcolor{comment}{!}
+00316           \textcolor{keyword}{do} i = i\_start,i\_end 
+00317              \textcolor{keyword}{if}(mat(connectivity(i))>0)\textcolor{keyword}{then}
+00318                 n = n+1
+00319                 lc(n) = mat(connectivity(i))
+00320              \textcolor{keyword}{endif}
+00321           \textcolor{keyword}{enddo}
+00322           \textcolor{comment}{!}
+00323           mat(i\_site) = get\_label\_mat(n,lc)
+00324           \textcolor{comment}{!}
+00325           \textcolor{keyword}{if}(find(mat(i\_site))/=find(label\_free\_clusters))\textcolor{keyword}{then}
+00326              states(i\_site) = trapped
+00327           \textcolor{keyword}{endif}
+00328        \textcolor{keyword}{enddo}
+00329        \textcolor{comment}{!}
+00330        \textcolor{comment}{! remove trapped sites from invasion\_list}
+00331        \textcolor{comment}{!}
+00332        n\_sites\_invaded\_with\_trapping = 0
+00333        \textcolor{comment}{!}
+00334        \textcolor{keyword}{do} i\_site = 1,n\_sites\_invaded
+00335           \textcolor{keyword}{if}(states(invasion\_list(i\_site))/=trapped)\textcolor{keyword}{then}
+00336              n\_sites\_invaded\_with\_trapping = n\_sites\_invaded\_with\_trapping+1
+00337              invasion\_list(n\_sites\_invaded\_with\_trapping) = invasion\_list(
+      i\_site)
+00338           \textcolor{keyword}{endif}
+00339        \textcolor{keyword}{enddo}
+00340        \textcolor{comment}{!}
+00341        n\_sites\_invaded = n\_sites\_invaded\_with\_trapping
+00342        \textcolor{comment}{!}
+00343     \textcolor{keyword}{endif}
+00344     \textcolor{comment}{!}
+00345     \textcolor{keyword}{deallocate}(mat)
+00346     call deallocate\_disjoint\_set
+00347     \textcolor{comment}{!}
+00348     return
+00349     \textcolor{comment}{!}
+00350   \textcolor{comment}{!------------------------------------------}
+00351 \textcolor{keyword}{  end subroutine find\_trapped\_sites\_arbitrary}
+00352   \textcolor{comment}{!------------------------------------------}
+00353   \textcolor{comment}{!}
+\hypertarget{module__trapping_8f90_source_l00361}{}\hyperlink{classmodule__trapping_acd41f4131aacecfd7ecbfd9846c13a9a}{00361}   \textcolor{keyword}{subroutine }get\_trapping\_times\_arbitrary(n\_sites,           &
+00362                                           states,            &
+00363                                           offsets,           &
+00364                                           connectivity,      &
+00365                                           n\_sites\_invaded,   &
+00366                                           invasion\_list,     &
+00367                                           trapping\_times     )
+00368   \textcolor{comment}{!-----------------------------------------------------------}
+00369     \textcolor{comment}{!}
+00370     \textcolor{keyword}{implicit none}
+00371     \textcolor{comment}{!}
+00372     \textcolor{keywordtype}{integer} :: n\_sites \textcolor{comment}{! Total number of sites in the lattice}
+00373     \textcolor{keywordtype}{integer} :: states(:) \textcolor{comment}{!< Array containing the sites's states (\(\backslash\)b input/\(\backslash\)b
+       output)}
+00374     \textcolor{comment}{!! \(\backslash\)n The state of trapped sites is updated to <b>state(i)=trapped</b>}
+00375     \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{! Number of sites invaded (\(\backslash\)b input)}
+00376     \textcolor{keywordtype}{integer} :: invasion\_list(:) \textcolor{comment}{!< List of invaded sites }
+00377     \textcolor{comment}{!! sorted in chronological order (\(\backslash\)b input)}
+00380     \textcolor{keywordtype}{integer} :: offsets(:)
+00381 
+00386     \textcolor{keywordtype}{integer} :: connectivity(:)
+00387 
+00389     \textcolor{keywordtype}{integer} :: trapping\_times(:)
+00390     \textcolor{comment}{!}
+00391     \textcolor{comment}{! internal variables}
+00392     \textcolor{comment}{! }
+00393     \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)}, \textcolor{keywordtype}{allocatable} :: labels\_times
+00394     \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable}, \textcolor{keywordtype}{dimension(:)} :: mat
+00395     \textcolor{keywordtype}{integer} :: offset
+00396     \textcolor{keywordtype}{integer} :: i,i\_site,j,n\_neighbors
+00397     \textcolor{keywordtype}{integer} :: label\_free\_clusters
+00398     \textcolor{comment}{!}
+00399     \textcolor{comment}{!}
+00400     \textcolor{comment}{! label clusters }
+00401     \textcolor{comment}{!}
+00402     \textcolor{keyword}{allocate}(mat(n\_sites))
+00403     \textcolor{comment}{! init mat}
+00404     \textcolor{keyword}{do} i = 1,n\_sites
+00405        \textcolor{keyword}{if}(states(i)==trapped)\textcolor{keyword}{then}
+00406           mat(i) =-1
+00407        \textcolor{keyword}{else}
+00408           mat(i) = 0
+00409        \textcolor{keyword}{endif}
+00410     \textcolor{keyword}{enddo}
+00411     \textcolor{comment}{! label cluster}
+00412     call label\_clusters\_arbitrary(mat,n\_sites,offsets,connectivity)
+00413     \textcolor{comment}{!}
+00414     \textcolor{keyword}{allocate}(labels\_times(largest\_label))
+00415     \textcolor{comment}{!}
+00416     labels\_times(:) = -1
+00417     \textcolor{comment}{!}
+00418     \textcolor{keyword}{do} j = 1,n\_sites\_invaded
+00419        \textcolor{comment}{!}
+00420        i\_site = invasion\_list(j) 
+00421        offset = offsets(i\_site)
+00422        n\_neighbors = connectivity(offset)
+00423        \textcolor{comment}{!}
+00424        \textcolor{keyword}{do} i = offset+1,offset+n\_neighbors 
+00425           \textcolor{keyword}{if}(states(connectivity(i))==trapped)\textcolor{keyword}{then}
+00426              labels\_times(labels(mat(connectivity(i)))) = j
+00427           \textcolor{keyword}{endif}
+00428        \textcolor{keyword}{enddo}
+00429     \textcolor{keyword}{enddo}
+00430     \textcolor{comment}{!}
+00431     \textcolor{keyword}{do} i\_site = 1,n\_sites
+00432        \textcolor{keyword}{if}(states(i\_site)==trapped)\textcolor{keyword}{then}
+00433           trapping\_times(i\_site) = labels\_times(mat(i\_site))
+00434        \textcolor{keyword}{else}
+00435           trapping\_times(i\_site) = -1
+00436        \textcolor{keyword}{endif}
+00437     \textcolor{keyword}{enddo}
+00438     \textcolor{comment}{!}
+00439     \textcolor{keyword}{deallocate}(labels\_times)
+00440     \textcolor{keyword}{deallocate}(mat)
+00441     call deallocate\_disjoint\_set
+00442     \textcolor{comment}{!}
+00443     return
+00444     \textcolor{comment}{!}
+00445   \textcolor{comment}{!------------------------------------------}
+00446 \textcolor{keyword}{  end subroutine get\_trapping\_times\_arbitrary}
+00447   \textcolor{comment}{!------------------------------------------}
+00448   \textcolor{comment}{!}
+00449 \textcolor{comment}{!=========================}
+00450 \textcolor{keyword}{end module module\_trapping}
+00451 \textcolor{comment}{!=========================}
+\end{DoxyCode}

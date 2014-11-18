@@ -1,0 +1,212 @@
+\hypertarget{classmodule__random__media}{
+\section{module\-\_\-random\-\_\-media \-Module \-Reference}
+\label{classmodule__random__media}\index{module\-\_\-random\-\_\-media@{module\-\_\-random\-\_\-media}}
+}
+
+
+\-This module contains function for generating random media having a determined correlation function.  
+
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{classmodule__random__media_a20add11a88ee91f087cddbfb6554f08b}{gen\-\_\-random\-\_\-media\-\_\-3\-D} (mat, nx, ny, nz, dx, dy, dz, \-H, ak, ag, correlation\-\_\-function)
+\begin{DoxyCompactList}\small\item\em \-Generates a 3\-D matrix of random real numbers with zero mean and unity standard deviation and having a given correlation function. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__random__media_aa23f1e2861b1a505d3d7545e54337bab}{gen\-\_\-random\-\_\-media\-\_\-2\-D} (mat, nx, ny, dx, dy, \-H, ak, ag, correlation\-\_\-function)
+\begin{DoxyCompactList}\small\item\em \-Generates a 3\-D matrix of random real numbers with zero mean and unity standard deviation and having a given correlation function. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__random__media_acca655a7647ef0bd11dc4365dbd2557e}{fourn} (data, nn, ndim, isign)
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-This module contains function for generating random media having a determined correlation function. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-November 9, 2014 
+\end{DoxyDate}
+\begin{DoxySeeAlso}{\-See also}
+\-K\-L\-I\-M\-EŠ, \-Lulěk. \-Correlation functions of random media. \-Pure and applied geophysics, 2002, vol. 159, no 7-\/8, p. 1811-\/1831. 
+\end{DoxySeeAlso}
+
+
+\subsection{\-Member \-Function/\-Subroutine \-Documentation}
+\hypertarget{classmodule__random__media_acca655a7647ef0bd11dc4365dbd2557e}{
+\index{module\-\_\-random\-\_\-media@{module\-\_\-random\-\_\-media}!fourn@{fourn}}
+\index{fourn@{fourn}!module_random_media@{module\-\_\-random\-\_\-media}}
+\subsubsection[{fourn}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-random\-\_\-media\-::fourn (
+\begin{DoxyParamCaption}
+\item[{real, dimension($\ast$)}]{data, }
+\item[{integer, dimension(ndim)}]{nn, }
+\item[{integer}]{ndim, }
+\item[{integer}]{isign}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__random__media_acca655a7647ef0bd11dc4365dbd2557e}
+\hypertarget{classmodule__random__media_aa23f1e2861b1a505d3d7545e54337bab}{
+\index{module\-\_\-random\-\_\-media@{module\-\_\-random\-\_\-media}!gen\-\_\-random\-\_\-media\-\_\-2\-D@{gen\-\_\-random\-\_\-media\-\_\-2\-D}}
+\index{gen\-\_\-random\-\_\-media\-\_\-2\-D@{gen\-\_\-random\-\_\-media\-\_\-2\-D}!module_random_media@{module\-\_\-random\-\_\-media}}
+\subsubsection[{gen\-\_\-random\-\_\-media\-\_\-2\-D}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-random\-\_\-media\-::gen\-\_\-random\-\_\-media\-\_\-2\-D (
+\begin{DoxyParamCaption}
+\item[{real, dimension(nx,ny)}]{mat, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{real}]{dx, }
+\item[{real}]{dy, }
+\item[{real}]{\-H, }
+\item[{real}]{ak, }
+\item[{real}]{ag, }
+\item[{character(len=$\ast$)}]{correlation\-\_\-function}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__random__media_aa23f1e2861b1a505d3d7545e54337bab}
+
+
+\-Generates a 3\-D matrix of random real numbers with zero mean and unity standard deviation and having a given correlation function. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-November 8, 2014
+\end{DoxyDate}
+\-The correlation function currently available are \-: \par
+ \par
+ \par
+ \-General \-: $ \hat{f}(k) = \kappa \left[ a^{-2}+k^2\right]^{-\frac{d}{4}-\frac{H}{2}} \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$ \par
+ \par
+ \-Gaussian \-: $ \hat{f}(k) = \kappa \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$ \par
+ \par
+ \-Von \-Karman \-: $ \hat{f}(k) = \kappa \left[ a^{-2}+k^2\right]^{-\frac{d}{4}-\frac{H}{2}}$ \par
+ \par
+ \-Exponential \-: $ \hat{f}(k) = \kappa \left[ a^{-2}+k^2\right]^{-\frac{d+1}{4}}$ \par
+ \par
+ \-Self-\/affine \-: $ \hat{f}(k) = \kappa k^{-\frac{d}{2}-H}$ \par
+ \par
+ \-Kummer \-: $ \hat{f}(k) = \kappa k^{-\frac{d}{2}-H} \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$ \par
+ \par
+ \-White noise \-: $ \hat{f}(k) = \kappa $ \par
+ \par
+ in the above expression $ d = 2$ in 2\-D
+
+\begin{DoxySeeAlso}{\-See also}
+\-K\-L\-I\-M\-EŠ, \-Lulěk. \-Correlation functions of random media. \-Pure and applied geophysics, 2002, vol. 159, no 7-\/8, p. 1811-\/1831. 
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{\-Parameters}
+{\em mat} & 2\-D matrix containing the random values ({\bfseries \-Output}) \\
+\hline
+{\em nx} & \-Grid dimension in the x direction ({\bfseries \-Input}) \\
+\hline
+{\em ny} & \-Grid dimension in the y directionn ({\bfseries \-Input}) \\
+\hline
+{\em dx} & \-Grid spacing in the x directionn ({\bfseries \-Input}) \\
+\hline
+{\em dy} & \-Grid spacing in the y directionn ({\bfseries \-Input}) \\
+\hline
+{\em \-H} & \-Hurst exponent $ H $ n ({\bfseries \-Input}) \\
+\hline
+{\em ak} & \-Von karman correlation length $ a $ n ({\bfseries \-Input}) \\
+\hline
+{\em ag} & \-Gaussian correlation length $ a_G $ n ({\bfseries \-Input}) \\
+\hline
+{\em correlation\-\_\-function} & \-Desired correlation function (character string {\bfseries \-Input}) \-: \par
+ \par
+ use {\bfseries correlation\-\_\-function='general'} for the most general correlation function \par
+ use {\bfseries correlation\-\_\-function='gaussian'} for a gaussian correlation function \par
+ use {\bfseries correlation\-\_\-function='von\-\_\-karman'} for a \-Von \-Karman correlation function \par
+ use {\bfseries correlation\-\_\-function='self\-\_\-affine'} for a self-\/affine correlation function \par
+ use {\bfseries correlation\-\_\-function='kummer'} for a \-Kummer correlation function \par
+ use {\bfseries correlation\-\_\-function='white\-\_\-noise'} for a white noise (you may not need this function for that) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__random__media_a20add11a88ee91f087cddbfb6554f08b}{
+\index{module\-\_\-random\-\_\-media@{module\-\_\-random\-\_\-media}!gen\-\_\-random\-\_\-media\-\_\-3\-D@{gen\-\_\-random\-\_\-media\-\_\-3\-D}}
+\index{gen\-\_\-random\-\_\-media\-\_\-3\-D@{gen\-\_\-random\-\_\-media\-\_\-3\-D}!module_random_media@{module\-\_\-random\-\_\-media}}
+\subsubsection[{gen\-\_\-random\-\_\-media\-\_\-3\-D}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-random\-\_\-media\-::gen\-\_\-random\-\_\-media\-\_\-3\-D (
+\begin{DoxyParamCaption}
+\item[{real, dimension(nx,ny,nz)}]{mat, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{real}]{dx, }
+\item[{real}]{dy, }
+\item[{real}]{dz, }
+\item[{real}]{\-H, }
+\item[{real}]{ak, }
+\item[{real}]{ag, }
+\item[{character(len=$\ast$)}]{correlation\-\_\-function}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__random__media_a20add11a88ee91f087cddbfb6554f08b}
+
+
+\-Generates a 3\-D matrix of random real numbers with zero mean and unity standard deviation and having a given correlation function. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-November 8, 2014
+\end{DoxyDate}
+\-The correlation function currently available are \-: \par
+ \par
+ \par
+ \-General \-: $ \hat{f}(k) = \kappa \left[ a^{-2}+k^2\right]^{-\frac{d}{4}-\frac{H}{2}} \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$ \par
+ \par
+ \-Gaussian \-: $ \hat{f}(k) = \kappa \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$ \par
+ \par
+ \-Von \-Karman \-: $ \hat{f}(k) = \kappa \left[ a^{-2}+k^2\right]^{-\frac{d}{4}-\frac{H}{2}}$ \par
+ \par
+ \-Exponential \-: $ \hat{f}(k) = \kappa \left[ a^{-2}+k^2\right]^{-\frac{d+1}{4}}$ \par
+ \par
+ \-Self-\/affine \-: $ \hat{f}(k) = \kappa k^{-\frac{d}{2}-H}$ \par
+ \par
+ \-Kummer \-: $ \hat{f}(k) = \kappa k^{-\frac{d}{2}-H} \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$ \par
+ \par
+ \-White noise \-: $ \hat{f}(k) = \kappa $ \par
+ \par
+ in the above expression $ d = 3$ in 3\-D
+
+\begin{DoxySeeAlso}{\-See also}
+\-K\-L\-I\-M\-EŠ, \-Lulěk. \-Correlation functions of random media. \-Pure and applied geophysics, 2002, vol. 159, no 7-\/8, p. 1811-\/1831. 
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{\-Parameters}
+{\em mat} & 3\-D matrix containing the random values ({\bfseries \-Output}) \\
+\hline
+{\em nx} & \-Grid dimension in the x direction ({\bfseries \-Input}) \\
+\hline
+{\em ny} & \-Grid dimension in the y directionn ({\bfseries \-Input}) \\
+\hline
+{\em nz} & \-Grid dimension in the z directionn ({\bfseries \-Input}) \\
+\hline
+{\em dx} & \-Grid spacing in the x directionn ({\bfseries \-Input}) \\
+\hline
+{\em dy} & \-Grid spacing in the y directionn ({\bfseries \-Input}) \\
+\hline
+{\em dz} & \-Grid spacing in the z directionn ({\bfseries \-Input}) \\
+\hline
+{\em \-H} & \-Hurst exponent $ H $ n ({\bfseries \-Input}) \\
+\hline
+{\em ak} & \-Von karman correlation length $ a $ n ({\bfseries \-Input}) \\
+\hline
+{\em ag} & \-Gaussian correlation length $ a_G $ n ({\bfseries \-Input}) \\
+\hline
+{\em correlation\-\_\-function} & \-Desired correlation function (character string {\bfseries \-Input}) \-: \par
+ \par
+ use {\bfseries correlation\-\_\-function='general'} for the most general correlation function \par
+ use {\bfseries correlation\-\_\-function='gaussian'} for a gaussian correlation function \par
+ use {\bfseries correlation\-\_\-function='von\-\_\-karman'} for a \-Von \-Karman correlation function \par
+ use {\bfseries correlation\-\_\-function='self\-\_\-affine'} for a self-\/affine correlation function \par
+ use {\bfseries correlation\-\_\-function='kummer'} for a \-Kummer correlation function \par
+ use {\bfseries correlation\-\_\-function='white\-\_\-noise'} for a white noise (you may not need this function for that) \\
+\hline
+\end{DoxyParams}
+
+
+\-The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+modules/src/\hyperlink{module__random__media_8f90}{module\-\_\-random\-\_\-media.\-f90}\end{DoxyCompactItemize}

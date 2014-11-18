@@ -1,0 +1,382 @@
+\hypertarget{test__invasion__percolation_8f90_source}{
+\section{examples/src/test\-\_\-invasion\-\_\-percolation.f90}
+}
+
+\begin{DoxyCode}
+00001 
+\hypertarget{test__invasion__percolation_8f90_source_l00006}{}\hyperlink{test__invasion__percolation_8f90_ad5c91e8965b4fdd846307042d97f5d65}{00006} \textcolor{keyword}{program} \hyperlink{test__invasion__percolation_8f90_ad5c91e8965b4fdd846307042d97f5d65}{test_invasion_percolation}
+00007 \textcolor{comment}{!================================}
+00008 \textcolor{comment}{!}
+00009 use \textcolor{keywordflow}{module\_invasion\_percolation}
+00010 \textcolor{comment}{!}
+00011 \textcolor{keyword}{implicit none}
+00012 \textcolor{comment}{!}
+00013 \textcolor{keywordtype}{integer} :: nx
+00014 \textcolor{keywordtype}{integer} :: ny
+00015 \textcolor{keywordtype}{integer} :: nz
+00016 \textcolor{keywordtype}{integer} :: n\_sites
+00017 \textcolor{comment}{!}
+00018 \textcolor{keywordtype}{real} :: dx 
+00019 \textcolor{keywordtype}{real} :: dy 
+00020 \textcolor{keywordtype}{real} :: dz 
+00021 \textcolor{comment}{!}
+00022 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{allocatable} :: x(:), y(:), z(:)
+00023 \textcolor{comment}{!}
+00024 \textcolor{keywordtype}{logical} :: period\_x 
+00025 \textcolor{keywordtype}{logical} :: period\_y
+00026 \textcolor{keywordtype}{logical} :: period\_z 
+00027 \textcolor{comment}{!}
+00028 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{allocatable} :: values(:,:,:) 
+00029 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{allocatable} :: values\_cubic(:,:,:) 
+00030 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{allocatable} :: values\_cubic\_simple(:,:,:) 
+00031 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{allocatable} :: values\_arbitrary(:) 
+00032 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{allocatable} :: values\_arbitrary\_simple(:) 
+00033 \textcolor{comment}{!}
+00034 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: states(:,:,:) 
+00035 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: states\_cubic(:,:,:) 
+00036 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: states\_cubic\_simple(:,:,:) 
+00037 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: states\_arbitrary(:) 
+00038 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: states\_arbitrary\_simple(:) 
+00039 \textcolor{comment}{!}
+00040 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: offsets(:) 
+00041 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: connectivity(:) 
+00042 \textcolor{comment}{!}
+00043 \textcolor{keywordtype}{integer} :: n\_sites\_invaded\_cubic
+00044 \textcolor{keywordtype}{integer} :: n\_sites\_invaded\_cubic\_simple
+00045 \textcolor{keywordtype}{integer} :: n\_sites\_invaded\_arbitrary
+00046 \textcolor{keywordtype}{integer} :: n\_sites\_invaded\_arbitrary\_simple
+00047 \textcolor{comment}{!}
+00048 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: invasion\_list\_cubic(:)
+00049 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: invasion\_list\_cubic\_simple(:)
+00050 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: invasion\_list\_arbitrary(:)
+00051 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: invasion\_list\_arbitrary\_simple(:)
+00052 \textcolor{comment}{!}
+00053 \textcolor{keywordtype}{logical} :: gravity 
+00054 \textcolor{keywordtype}{logical} :: trapping 
+00055 \textcolor{comment}{!}
+00056 \textcolor{keywordtype}{real} :: sigma
+00057 \textcolor{keywordtype}{real} :: theta\_c 
+00058 \textcolor{keywordtype}{real} :: delta\_rho 
+00059 \textcolor{keywordtype}{real} :: pi
+00060 \textcolor{comment}{!}
+00061 \textcolor{keywordtype}{real} :: gx
+00062 \textcolor{keywordtype}{real} :: gy 
+00063 \textcolor{keywordtype}{real} :: gz 
+00064 \textcolor{comment}{!}
+00065 \textcolor{keywordtype}{integer} :: i,j,k,l, n, offset, i\_site, j\_site, k\_site
+00066 \textcolor{keywordtype}{integer} :: i\_plus\_one, i\_minus\_one
+00067 \textcolor{keywordtype}{integer} :: j\_plus\_one, j\_minus\_one
+00068 \textcolor{keywordtype}{integer} :: k\_plus\_one, k\_minus\_one
+00069 \textcolor{comment}{!}
+00070 pi = 4.*atan(1.)
+00071 \textcolor{comment}{!}
+00072 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00073 \textcolor{comment}{!!! setting up an Invasion Percolation simulation !!!}
+00074 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00075 \textcolor{comment}{!}
+00076 \textcolor{comment}{! setup grid dimensions :}
+00077 \textcolor{comment}{!}
+00078 nx = 20
+00079 ny = 13
+00080 nz = 45
+00081 \textcolor{comment}{!}
+00082 n\_sites = nx*ny*nz
+00083 \textcolor{comment}{!}
+00084 dx = 1.0
+00085 dy = 1.0
+00086 dz = 1.0
+00087 \textcolor{comment}{!}
+00088 \textcolor{keyword}{allocate}(x(n\_sites))
+00089 \textcolor{keyword}{allocate}(y(n\_sites))
+00090 \textcolor{keyword}{allocate}(z(n\_sites))
+00091 \textcolor{comment}{!}
+00092 l = 0
+00093 \textcolor{comment}{!}
+00094 \textcolor{keyword}{do} k = 1,nz
+00095    \textcolor{keyword}{do} j = 1,ny
+00096       \textcolor{keyword}{do} i = 1,nx
+00097          l = l+1
+00098          x(l) = (i-1)*dx 
+00099          y(l) = (j-1)*dy 
+00100          z(l) = (k-1)*dz 
+00101       \textcolor{keyword}{enddo}
+00102    \textcolor{keyword}{enddo}
+00103 \textcolor{keyword}{enddo}
+00104 \textcolor{comment}{!}
+00105 \textcolor{comment}{! setup domain boundaries : }
+00106 \textcolor{comment}{!}
+00107 \textcolor{comment}{! use period\_x = .true. for periodic bondaries in the x direction}
+00108 \textcolor{comment}{! use period\_x = .false. for sealed walls in the x direction}
+00109 \textcolor{comment}{!}
+00110 period\_x = .false.
+00111 period\_y = .false.
+00112 period\_z = .false.
+00113 \textcolor{comment}{!}
+00114 \textcolor{comment}{! allocate memory :}
+00115 \textcolor{comment}{!}
+00116 \textcolor{keyword}{allocate}(values(nx,ny,nz))
+00117 \textcolor{keyword}{allocate}(states(nx,ny,nz))
+00118 \textcolor{comment}{!}
+00119 \textcolor{keyword}{allocate}(values\_cubic(nx,ny,nz))
+00120 \textcolor{keyword}{allocate}(states\_cubic(nx,ny,nz))
+00121 \textcolor{keyword}{allocate}(invasion\_list\_cubic(nx*ny*nz))
+00122 \textcolor{comment}{!}
+00123 \textcolor{keyword}{allocate}(values\_cubic\_simple(nx,ny,nz))
+00124 \textcolor{keyword}{allocate}(states\_cubic\_simple(nx,ny,nz))
+00125 \textcolor{keyword}{allocate}(invasion\_list\_cubic\_simple(nx*ny*nz))
+00126 \textcolor{comment}{!}
+00127 \textcolor{keyword}{allocate}(values\_arbitrary(nx*ny*nz))
+00128 \textcolor{keyword}{allocate}(states\_arbitrary(nx*ny*nz))
+00129 \textcolor{keyword}{allocate}(invasion\_list\_arbitrary(nx*ny*nz))
+00130 \textcolor{comment}{!}
+00131 \textcolor{keyword}{allocate}(values\_arbitrary\_simple(nx*ny*nz))
+00132 \textcolor{keyword}{allocate}(states\_arbitrary\_simple(nx*ny*nz))
+00133 \textcolor{keyword}{allocate}(invasion\_list\_arbitrary\_simple(nx*ny*nz))
+00134 \textcolor{comment}{!}
+00135 \textcolor{keyword}{allocate}(offsets(n\_sites)) 
+00136 \textcolor{keyword}{allocate}(connectivity(n\_sites+n\_sites*6)) 
+00137 \textcolor{comment}{!}
+00138 \textcolor{comment}{! setup arbitrary lattice structure :}
+00139 \textcolor{comment}{!}
+00140 offset = 0
+00141 \textcolor{comment}{!}
+00142 \textcolor{keyword}{do} k\_site = 1,nz
+00143    \textcolor{keyword}{do} j\_site = 1,ny
+00144       \textcolor{keyword}{do} i\_site = 1,nx
+00145          \textcolor{comment}{!}
+00146          offset = offset+1
+00147          \textcolor{comment}{!}
+00148          i\_minus\_one = i\_site - 1
+00149          i\_plus\_one  = i\_site + 1
+00150          j\_minus\_one = j\_site - 1
+00151          j\_plus\_one  = j\_site + 1
+00152          k\_minus\_one = k\_site - 1
+00153          k\_plus\_one  = k\_site + 1
+00154          \textcolor{comment}{!}
+00155          \textcolor{comment}{! Account for periodic boundaries}
+00156          \textcolor{comment}{!}
+00157          \textcolor{keyword}{if}(i\_minus\_one<1.and.period\_x) i\_minus\_one = i\_minus\_one + nx
+00158          \textcolor{keyword}{if}(i\_plus\_one>nx.and.period\_x) i\_plus\_one  = i\_plus\_one  - nx
+00159          \textcolor{keyword}{if}(j\_minus\_one<1.and.period\_y) j\_minus\_one = j\_minus\_one + ny
+00160          \textcolor{keyword}{if}(j\_plus\_one>ny.and.period\_y) j\_plus\_one  = j\_plus\_one  - ny
+00161          \textcolor{keyword}{if}(k\_minus\_one<1.and.period\_z) k\_minus\_one = k\_minus\_one + nz
+00162          \textcolor{keyword}{if}(k\_plus\_one>nz.and.period\_z) k\_plus\_one  = k\_plus\_one  - nz
+00163          \textcolor{comment}{!}
+00164          \textcolor{comment}{! Init number of neighboring sites}
+00165          \textcolor{comment}{!}
+00166          n = 0
+00167          \textcolor{comment}{!}
+00168          \textcolor{keyword}{if}(i\_minus\_one>=1.and.nx/=1)\textcolor{keyword}{then}
+00169             n=n+1
+00170             offset=offset+1
+00171             connectivity(offset) = ijk2ind(nx,ny,i\_minus\_one,j\_site,k\_site)
+00172          \textcolor{keyword}{endif}
+00173          \textcolor{keyword}{if}(i\_plus\_one<=nx.and.nx/=1)\textcolor{keyword}{then}
+00174             n=n+1
+00175             offset=offset+1
+00176             connectivity(offset) = ijk2ind(nx,ny,i\_plus\_one,j\_site,k\_site)
+00177          \textcolor{keyword}{endif}
+00178          \textcolor{keyword}{if}(j\_minus\_one>=1.and.ny/=1)\textcolor{keyword}{then}
+00179             n=n+1
+00180             offset=offset+1
+00181             connectivity(offset) = ijk2ind(nx,ny,i\_site,j\_minus\_one,k\_site)
+00182          \textcolor{keyword}{endif}
+00183          \textcolor{keyword}{if}(j\_plus\_one<=ny.and.ny/=1)\textcolor{keyword}{then}
+00184             n=n+1
+00185             offset=offset+1
+00186             connectivity(offset) = ijk2ind(nx,ny,i\_site,j\_plus\_one,k\_site)
+00187          \textcolor{keyword}{endif}
+00188          \textcolor{keyword}{if}(k\_minus\_one>=1.and.nz/=1)\textcolor{keyword}{then}
+00189             n=n+1
+00190             offset=offset+1
+00191             connectivity(offset) = ijk2ind(nx,ny,i\_site,j\_site,k\_minus\_one)
+00192          \textcolor{keyword}{endif}
+00193          \textcolor{keyword}{if}(k\_plus\_one<=nz.and.nz/=1)\textcolor{keyword}{then}
+00194             n=n+1
+00195             offset=offset+1
+00196             connectivity(offset) = ijk2ind(nx,ny,i\_site,j\_site,k\_plus\_one)
+00197          \textcolor{keyword}{endif}
+00198          \textcolor{comment}{!}
+00199          \textcolor{comment}{! store site's number of neighbors}
+00200          \textcolor{comment}{!}
+00201          connectivity(offset-n) = n
+00202          \textcolor{comment}{!}
+00203          \textcolor{comment}{! store offsets}
+00204          \textcolor{comment}{!}
+00205          offsets(ijk2ind(nx,ny,i\_site,j\_site,k\_site)) = offset-n
+00206          \textcolor{comment}{!}
+00207       \textcolor{keyword}{enddo}
+00208    \textcolor{keyword}{enddo}
+00209 \textcolor{keyword}{enddo}
+00210 \textcolor{comment}{!}
+00211 \textcolor{comment}{! setup sites's percolation potentials}
+00212 \textcolor{comment}{!}
+00213 \textcolor{keyword}{do} k = 1,nz
+00214    \textcolor{keyword}{do} j = 1,ny
+00215       \textcolor{keyword}{do} i = 1,nx
+00216          values(i,j,k) = rand(0)*dx
+00217       \textcolor{keyword}{enddo}
+00218    \textcolor{keyword}{enddo}
+00219 \textcolor{keyword}{enddo}
+00220 \textcolor{comment}{!}
+00221 \textcolor{comment}{! initialize sites's states :}
+00222 \textcolor{comment}{!}
+00223 states(:,:,:) = not\_invaded
+00224 \textcolor{comment}{!}
+00225 \textcolor{comment}{! setup injection region (bottom wall here) :}
+00226 \textcolor{comment}{!}
+00227 states(:,:,1) = neighboring
+00228 \textcolor{comment}{!}
+00229 \textcolor{comment}{! setup exit region (top wall here) :}
+00230 \textcolor{comment}{!}
+00231 states(:,:,nz) = exit\_site
+00232 \textcolor{comment}{!}
+00233 \textcolor{comment}{! setup fluid properties}
+00234 \textcolor{comment}{!}
+00235 sigma = 0.0728
+00236 theta\_c = pi
+00237 delta\_rho  = 0.2
+00238 \textcolor{comment}{!}
+00239 \textcolor{comment}{! setup gravity}
+00240 \textcolor{comment}{!}
+00241 gx = 0.00
+00242 gy = 0.00
+00243 gz =-9.81
+00244 \textcolor{comment}{!}
+00245 gravity = .true.
+00246 \textcolor{comment}{!}
+00247 \textcolor{comment}{! setup trapping}
+00248 \textcolor{comment}{!}
+00249 trapping = .false.
+00250 \textcolor{comment}{!}
+00251 \textcolor{comment}{! same setup for all simulations}
+00252 \textcolor{comment}{!}
+00253 l = 0
+00254 \textcolor{comment}{!}
+00255 \textcolor{keyword}{do} k = 1,nz
+00256    \textcolor{keyword}{do} j = 1,ny
+00257       \textcolor{keyword}{do} i = 1,nx
+00258          \textcolor{comment}{!}
+00259          l = l+1
+00260          \textcolor{comment}{!}
+00261          values\_cubic(i,j,k) = values(i,j,k)
+00262          values\_cubic\_simple(i,j,k) = values(i,j,k)
+00263          values\_arbitrary(l) = values(i,j,k)
+00264          values\_arbitrary\_simple(l) = values(i,j,k)
+00265          \textcolor{comment}{!}
+00266          states\_cubic(i,j,k) = states(i,j,k)
+00267          states\_cubic\_simple(i,j,k) = states(i,j,k)
+00268          states\_arbitrary(l) = states(i,j,k)
+00269          states\_arbitrary\_simple(l) = states(i,j,k)
+00270          \textcolor{comment}{!}
+00271       \textcolor{keyword}{enddo}
+00272    \textcolor{keyword}{enddo}
+00273 \textcolor{keyword}{enddo}
+00274 \textcolor{comment}{!}
+00275 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00276 \textcolor{comment}{!!! Now run the four simulations !!!}
+00277 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00278 \textcolor{comment}{!}
+00279 call invade\_cubic\_lattice\_simple(nx,                          &
+00280                                  ny,                          &
+00281                                  nz,                          &
+00282                                  dx,                          &
+00283                                  dy,                          &
+00284                                  dz,                          &
+00285                                  period\_x,                    &
+00286                                  period\_y,                    &
+00287                                  period\_z,                    &
+00288                                  values\_cubic\_simple,         &
+00289                                  states\_cubic\_simple,         &
+00290                                  n\_sites\_invaded\_cubic\_simple,&
+00291                                  invasion\_list\_cubic\_simple,  &
+00292                                  gravity,                     &
+00293                                  trapping,                    &
+00294                                  sigma,                       &
+00295                                  theta\_c,                     &
+00296                                  delta\_rho,                   &
+00297                                  gx,                          &
+00298                                  gy,                          &
+00299                                  gz                           )
+00300 \textcolor{comment}{!}
+00301 \textcolor{keyword}{write}(*,*)\textcolor{stringliteral}{'simulation 1 finished'}
+00302 \textcolor{comment}{! }
+00303 call invade\_cubic\_lattice\_fast(nx,                    &
+00304                                ny,                    &
+00305                                nz,                    &
+00306                                dx,                    &
+00307                                dy,                    &
+00308                                dz,                    &
+00309                                period\_x,              &
+00310                                period\_y,              &
+00311                                period\_z,              &
+00312                                values\_cubic,          &
+00313                                states\_cubic,          &
+00314                                n\_sites\_invaded\_cubic, &
+00315                                invasion\_list\_cubic,   &
+00316                                gravity,               &
+00317                                trapping,              &
+00318                                sigma,                 &
+00319                                theta\_c,               &
+00320                                delta\_rho,             &
+00321                                gx,                    &
+00322                                gy,                    &
+00323                                gz                     )
+00324 \textcolor{comment}{!}
+00325 \textcolor{keyword}{write}(*,*)\textcolor{stringliteral}{'simulation 2 finished'}
+00326 \textcolor{comment}{!}
+00327 call invade\_arbitrary\_lattice\_simple(n\_sites,                          &
+00328                                      x,                                &
+00329                                      y,                                &
+00330                                      z,                                &
+00331                                      offsets,                          &
+00332                                      connectivity,                     &
+00333                                      values\_arbitrary\_simple,          &
+00334                                      states\_arbitrary\_simple,          &
+00335                                      n\_sites\_invaded\_arbitrary\_simple, &
+00336                                      invasion\_list\_arbitrary\_simple,   &
+00337                                      gravity,                          &
+00338                                      trapping,                         &
+00339                                      sigma,                            &
+00340                                      theta\_c,                          &
+00341                                      delta\_rho,                        &
+00342                                      gx,                               &
+00343                                      gy,                               &
+00344                                      gz                                )
+00345 \textcolor{comment}{!}
+00346 \textcolor{keyword}{write}(*,*)\textcolor{stringliteral}{'simulation 3 finished'}
+00347 \textcolor{comment}{!}
+00348 call invade\_arbitrary\_lattice\_fast(n\_sites,                   &
+00349                                    x,                         &
+00350                                    y,                         &
+00351                                    z,                         &
+00352                                    offsets,                   &
+00353                                    connectivity,              &
+00354                                    values\_arbitrary,          &
+00355                                    states\_arbitrary,          &
+00356                                    n\_sites\_invaded\_arbitrary, &
+00357                                    invasion\_list\_arbitrary,   &
+00358                                    gravity,                   &
+00359                                    trapping,                  &
+00360                                    sigma,                     &
+00361                                    theta\_c,                   &
+00362                                    delta\_rho,                 &
+00363                                    gx,                        &
+00364                                    gy,                        &
+00365                                    gz                         )
+00366 \textcolor{comment}{!}
+00367 \textcolor{keyword}{write}(*,*)\textcolor{stringliteral}{'simulation 4 finished'}
+00368 \textcolor{comment}{!}
+00369 \textcolor{comment}{! make sure all simulation gives the same result}
+00370 \textcolor{comment}{!}
+00371 \textcolor{keyword}{write}(*,*)\textcolor{stringliteral}{'number of sites invaded cubic simple: '},n\_sites\_invaded\_cubic\_simple
+00372 \textcolor{keyword}{write}(*,*)\textcolor{stringliteral}{'number of sites invaded cubic: '},n\_sites\_invaded\_cubic
+00373 \textcolor{keyword}{write}(*,*)\textcolor{stringliteral}{'number of sites invaded arbitrary simple: '},
+      n\_sites\_invaded\_arbitrary\_simple
+00374 \textcolor{keyword}{write}(*,*)\textcolor{stringliteral}{'number of sites invaded arbitrary: '},n\_sites\_invaded\_arbitrary
+00375 stop
+00376 \textcolor{comment}{!}
+00377 \textcolor{comment}{!====================================}
+00378 \textcolor{keyword}{end program test\_invasion\_percolation}
+00379 \textcolor{comment}{!====================================}
+\end{DoxyCode}

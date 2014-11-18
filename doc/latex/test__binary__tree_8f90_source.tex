@@ -1,0 +1,71 @@
+\hypertarget{test__binary__tree_8f90_source}{
+\section{examples/src/test\-\_\-binary\-\_\-tree.f90}
+}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{!==========================}
+00002 \textcolor{comment}{! TEST BINARY TREE MODULE !}
+00003 \textcolor{comment}{!========================== }
+00004 \textcolor{comment}{!}
+\hypertarget{test__binary__tree_8f90_source_l00015}{}\hyperlink{test__binary__tree_8f90_abd024c483ff80c18521afd95f7df736b}{00015} \textcolor{keyword}{program} \hyperlink{test__binary__tree_8f90_abd024c483ff80c18521afd95f7df736b}{test_binary_tree}
+00016 \textcolor{comment}{!=======================}
+00017   \textcolor{comment}{!}
+00018   use \textcolor{keywordflow}{module\_binary\_tree}
+00019   \textcolor{comment}{!}
+00020   \textcolor{keyword}{implicit none} 
+00021   \textcolor{comment}{!}
+00022   \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{parameter} :: nval = 10 \textcolor{comment}{!< number of values to be stored}
+00023   \textcolor{keywordtype}{integer} :: i !> looping index
+00024   \textcolor{keywordtype}{integer} :: initmem !> initial dimension to allocate tree
+00025   \textcolor{keywordtype}{real} :: values(nval) \textcolor{comment}{!< array of random values}
+00026   \textcolor{keywordtype}{real} :: sorted\_values(nval) \textcolor{comment}{!< array of sorted values}
+00027   \textcolor{keywordtype}{logical} :: check\_successful \textcolor{comment}{!< .true. if pass test}
+00028   \textcolor{comment}{!}
+00029   \textcolor{comment}{! generate random values}
+00030   \textcolor{comment}{!}
+00031   \textcolor{keyword}{do} i = 1,nval
+00032      values(i) = rand(0)
+00033   \textcolor{keyword}{enddo}
+00034   \textcolor{comment}{!}
+00035   \textcolor{comment}{! allocate memory for tree (this is optional)}
+00036   \textcolor{comment}{! we use initmem<nval to check that}
+00037   \textcolor{comment}{! dynamic reallocation is working fine}
+00038   \textcolor{comment}{! }
+00039   initmem = 2
+00040   \textcolor{comment}{!}
+00041   call allocate\_binary\_tree(initmem)
+00042   \textcolor{comment}{!}
+00043   \textcolor{comment}{! construct tree: add all values one after another}
+00044   \textcolor{comment}{!}
+00045   \textcolor{keyword}{do} i = 1,nval
+00046      call add\_branch(values,i)
+00047   \textcolor{keyword}{enddo} 
+00048   \textcolor{comment}{!}
+00049   \textcolor{comment}{! Undo tree, i.e. recursively pick the root node}
+00050   \textcolor{comment}{!}
+00051   \textcolor{keyword}{do} i = 1,treedim  \textcolor{comment}{! we should have treedim=nval now}
+00052      sorted\_values(i) = values(tree(1))
+00053      call update\_tree\_root(values)
+00054   \textcolor{keyword}{enddo}
+00055   \textcolor{comment}{!}
+00056   check\_successful = .true.
+00057   \textcolor{comment}{!}
+00058   \textcolor{keyword}{do} i = 1,nval
+00059      print*,i,values(i),sorted\_values(i)
+00060      \textcolor{keyword}{if}(i<nval.and.sorted\_values(i)>sorted\_values(i+1))check\_successful=.false.
+00061   \textcolor{keyword}{enddo}
+00062   \textcolor{comment}{!}
+00063   \textcolor{keyword}{if}(check\_successful)\textcolor{keyword}{then}
+00064      print*,\textcolor{stringliteral}{'binary tree module passed the test successfully !!!'}
+00065   \textcolor{keyword}{else}
+00066      print*,\textcolor{stringliteral}{'binary tree module failed the test :('}
+00067   \textcolor{keyword}{endif}
+00068   \textcolor{comment}{!}
+00069   call deallocate\_binary\_tree()
+00070   \textcolor{comment}{!}
+00071   stop
+00072   \textcolor{comment}{!}
+00073 \textcolor{comment}{!===========================}
+00074 \textcolor{keyword}{end program test\_binary\_tree}
+00075 \textcolor{comment}{!===========================}
+\end{DoxyCode}

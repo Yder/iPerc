@@ -1,0 +1,393 @@
+\hypertarget{classvisualization}{
+\section{visualization \-Module \-Reference}
+\label{classvisualization}\index{visualization@{visualization}}
+}
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{classvisualization_aa798cf4314654eba82cc073840f0b4c4}{write\-\_\-arbitrary\-\_\-lattice\-\_\-to\-\_\-vtk} (n\-\_\-sites, states, values, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, offsets, connectivity, x, y, z, file\-\_\-name, unit\-\_\-vtk)
+\begin{DoxyCompactList}\small\item\em write arbitrary lattice info to \-V\-T\-K file (.vtu) for viewing with e.\-g. \-Paraview \end{DoxyCompactList}\item 
+subroutine \hyperlink{classvisualization_a137aa9c081d33d7e30c522f9359a76d2}{write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-cells} (states, values, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, nx, ny, nz, dx, dy, dz, file\-\_\-name, unit\-\_\-vtk)
+\begin{DoxyCompactList}\small\item\em write cubic lattice info to \-V\-T\-K file (.vti) for viewing with e.\-g. \-Paraview \end{DoxyCompactList}\item 
+subroutine \hyperlink{classvisualization_abd90196d6083b03d8d1d27da099e65d2}{write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-points} (states, values, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, nx, ny, nz, dx, dy, dz, file\-\_\-name, unit\-\_\-vtk)
+\begin{DoxyCompactList}\small\item\em write cubic lattice info to \-V\-T\-K file (.vti) for viewing with e.\-g. \-Paraview \end{DoxyCompactList}\item 
+subroutine \hyperlink{classvisualization_ac68622a48616ee2e973f6105485dd60e}{funny\-\_\-3\-D} (mat, nx, ny, nz, matval)
+\item 
+subroutine \hyperlink{classvisualization_a3f4f9f57c76c569e203fc4b1049f6a54}{write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-csv} (invasion\-\_\-list, n\-\_\-sites\-\_\-invaded, nx, ny, dx, dy, dz, file\-\_\-name)
+\item 
+subroutine \hyperlink{classvisualization_a33aeb736972af50f50ed5ef31d4a2774}{write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-csv} (invasion\-\_\-list, n\-\_\-sites\-\_\-invaded, x, y, z, n\-\_\-sites, file\-\_\-name)
+\item 
+subroutine \hyperlink{classvisualization_abba7b13bbf754fc221acc65930d2ffd7}{write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-vtk} (invasion\-\_\-list, n\-\_\-sites\-\_\-invaded, nx, ny, dx, dy, dz, file\-\_\-name)
+\begin{DoxyCompactList}\small\item\em \-Write the list of invaded sites to a \-V\-T\-K file (i.\-e. a polydata xml file with extension .vtp) for viewing with e.\-g. \-Paraview (for use with cubic lattices). \end{DoxyCompactList}\item 
+subroutine \hyperlink{classvisualization_a1847c533056b6bcd72e5bddc04451b1a}{write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-vtk} (invasion\-\_\-list, n\-\_\-sites\-\_\-invaded, x, y, z, n\-\_\-sites, file\-\_\-name)
+\begin{DoxyCompactList}\small\item\em \-Write the list of invaded sites to a \-V\-T\-K file (i.\-e. a polydata xml file with extension .vtp) for viewing with e.\-g. \-Paraview (for use with arbitrary lattices). \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Member \-Function/\-Subroutine \-Documentation}
+\hypertarget{classvisualization_ac68622a48616ee2e973f6105485dd60e}{
+\index{visualization@{visualization}!funny\-\_\-3\-D@{funny\-\_\-3\-D}}
+\index{funny\-\_\-3\-D@{funny\-\_\-3\-D}!visualization@{visualization}}
+\subsubsection[{funny\-\_\-3\-D}]{\setlength{\rightskip}{0pt plus 5cm}subroutine visualization\-::funny\-\_\-3\-D (
+\begin{DoxyParamCaption}
+\item[{integer, dimension(nx,ny,nz)}]{mat, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{integer}]{matval}
+\end{DoxyParamCaption}
+)}}
+\label{classvisualization_ac68622a48616ee2e973f6105485dd60e}
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 30, 2014  \-Produces a minimalistic 3\-D rendering of \-I\-P clusters inside a terninal
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em nx} & grid dimension in the x direction ({\bfseries \-Input})\\
+\hline
+{\em ny} & grid dimension in the y direction ({\bfseries \-Input})\\
+\hline
+{\em nz} & grid dimension in the z direction ({\bfseries \-Input})\\
+\hline
+{\em mat} & input matrix ({\bfseries \-Input})\\
+\hline
+{\em matval} & \-Value to render, i.\-e. only the cells where {\bfseries mat(i,j,k) = matval} will be showed ({\bfseries \-Input}) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classvisualization_aa798cf4314654eba82cc073840f0b4c4}{
+\index{visualization@{visualization}!write\-\_\-arbitrary\-\_\-lattice\-\_\-to\-\_\-vtk@{write\-\_\-arbitrary\-\_\-lattice\-\_\-to\-\_\-vtk}}
+\index{write\-\_\-arbitrary\-\_\-lattice\-\_\-to\-\_\-vtk@{write\-\_\-arbitrary\-\_\-lattice\-\_\-to\-\_\-vtk}!visualization@{visualization}}
+\subsubsection[{write\-\_\-arbitrary\-\_\-lattice\-\_\-to\-\_\-vtk}]{\setlength{\rightskip}{0pt plus 5cm}subroutine visualization\-::write\-\_\-arbitrary\-\_\-lattice\-\_\-to\-\_\-vtk (
+\begin{DoxyParamCaption}
+\item[{integer}]{n\-\_\-sites, }
+\item[{integer, dimension(\-:)}]{states, }
+\item[{real, dimension(\-:)}]{values, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{integer, dimension(\-:)}]{offsets, }
+\item[{integer, dimension(\-:)}]{connectivity, }
+\item[{real, dimension(\-:)}]{x, }
+\item[{real, dimension(\-:)}]{y, }
+\item[{real, dimension(\-:)}]{z, }
+\item[{character(len=$\ast$)}]{file\-\_\-name, }
+\item[{integer}]{unit\-\_\-vtk}
+\end{DoxyParamCaption}
+)}}
+\label{classvisualization_aa798cf4314654eba82cc073840f0b4c4}
+
+
+write arbitrary lattice info to \-V\-T\-K file (.vtu) for viewing with e.\-g. \-Paraview 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 28, 2014
+\end{DoxyDate}
+\-The states and values data are attached to points (i.\-e. sites), you can view these using a glyph filter for example. \par
+ \-The bonds linking sites can be visualized by plotting the wireframe. 
+\begin{DoxyParams}{\-Parameters}
+{\em n\-\_\-sites} & \-Total number of sites in the lattice ({\bfseries \-Input}) \\
+\hline
+{\em states} & \-Sites's states as defiend in invasion percolation module ({\bfseries \-Input}) \\
+\hline
+{\em values} & \-Sites's values as defiend in invasion percolation module ({\bfseries \-Input}) \\
+\hline
+{\em n\-\_\-sites\-\_\-invaded} & number of sites invaded \\
+\hline
+{\em invasion\-\_\-list} & list of invaded sites \\
+\hline
+{\em offsets} & \-Array containing the offsets of the data stored in the connectivity array ({\bfseries \-Input}) \\
+\hline
+{\em connectivity} & \-Array containing thelattice connectivity ({\bfseries input}) \par
+ \-For a given site {\bfseries i}, with offset {\bfseries j = offsets(i)} \-: \par
+ {\bfseries n=connectivity(j)} is the number of sites neighboring site {\bfseries i}. \par
+ {\bfseries connectivity(j+1, j+2, ... ,j+n)} contains the indices of the sites that are neighboring site {\bfseries i}. \\
+\hline
+{\em x} & \-Array containing the x coordinates of the sites ({\bfseries \-Input}) \\
+\hline
+{\em y} & \-Array containing the y coordinates of the sites ({\bfseries \-Input}) \\
+\hline
+{\em z} & \-Array containing the z coordinates of the sites ({\bfseries \-Input}) \\
+\hline
+{\em file\-\_\-name} & \-Output file name, must have the.\-vtu extension ({\bfseries \-Input}) \\
+\hline
+{\em unit\-\_\-vtk} & logical unit for output file ({\bfseries \-Input}) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classvisualization_a137aa9c081d33d7e30c522f9359a76d2}{
+\index{visualization@{visualization}!write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-cells@{write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-cells}}
+\index{write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-cells@{write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-cells}!visualization@{visualization}}
+\subsubsection[{write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-cells}]{\setlength{\rightskip}{0pt plus 5cm}subroutine visualization\-::write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-cells (
+\begin{DoxyParamCaption}
+\item[{integer, dimension(nx,ny,nz)}]{states, }
+\item[{real, dimension(nx,ny,nz)}]{values, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{real}]{dx, }
+\item[{real}]{dy, }
+\item[{real}]{dz, }
+\item[{character(len=$\ast$)}]{file\-\_\-name, }
+\item[{integer}]{unit\-\_\-vtk}
+\end{DoxyParamCaption}
+)}}
+\label{classvisualization_a137aa9c081d33d7e30c522f9359a76d2}
+
+
+write cubic lattice info to \-V\-T\-K file (.vti) for viewing with e.\-g. \-Paraview 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 30, 2014
+\end{DoxyDate}
+\-The states and values data are attached to cells (i.\-e. cels represent sites) 
+\begin{DoxyParams}{\-Parameters}
+{\em values} & values array as defined in the invasion percolation module ({\bfseries \-Input}) \\
+\hline
+{\em states} & states array as defined in the invasion percolation module ({\bfseries \-Input}) \\
+\hline
+{\em n\-\_\-sites\-\_\-invaded} & number of sites invaded \\
+\hline
+{\em invasion\-\_\-list} & list of invaded sites \\
+\hline
+{\em nx} & grid dimension in the x direction ({\bfseries \-Input}) \\
+\hline
+{\em ny} & grid dimension in the y direction ({\bfseries \-Input}) \\
+\hline
+{\em nz} & grid dimension in the z direction ({\bfseries \-Input}) \\
+\hline
+{\em dx} & grid spacing in the x direction ({\bfseries \-Input}) \\
+\hline
+{\em dy} & grid spacing in the y direction ({\bfseries \-Input}) \\
+\hline
+{\em dz} & grid spacing in the z direction ({\bfseries \-Input}) \\
+\hline
+{\em file\-\_\-name} & \-Output file name, must have the.\-vtu extension ({\bfseries \-Input}) \\
+\hline
+{\em unit\-\_\-vtk} & logical unit for output file ({\bfseries \-Input}) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classvisualization_abd90196d6083b03d8d1d27da099e65d2}{
+\index{visualization@{visualization}!write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-points@{write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-points}}
+\index{write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-points@{write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-points}!visualization@{visualization}}
+\subsubsection[{write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-points}]{\setlength{\rightskip}{0pt plus 5cm}subroutine visualization\-::write\-\_\-cubic\-\_\-lattice\-\_\-to\-\_\-vtk\-\_\-points (
+\begin{DoxyParamCaption}
+\item[{integer, dimension(nx,ny,nz)}]{states, }
+\item[{real, dimension(nx,ny,nz)}]{values, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{real}]{dx, }
+\item[{real}]{dy, }
+\item[{real}]{dz, }
+\item[{character(len=$\ast$)}]{file\-\_\-name, }
+\item[{integer}]{unit\-\_\-vtk}
+\end{DoxyParamCaption}
+)}}
+\label{classvisualization_abd90196d6083b03d8d1d27da099e65d2}
+
+
+write cubic lattice info to \-V\-T\-K file (.vti) for viewing with e.\-g. \-Paraview 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 30, 2014
+\end{DoxyDate}
+\-The states and values data are attached to points (i.\-e. points represent sites) \par
+ \-The bonds linking sites can be plotted by viewing the wireframe in paraview. 
+\begin{DoxyParams}{\-Parameters}
+{\em values} & values array as defined in the invasion percolation module ({\bfseries \-Input}) \\
+\hline
+{\em states} & states array as defined in the invasion percolation module ({\bfseries \-Input}) \\
+\hline
+{\em n\-\_\-sites\-\_\-invaded} & number of sites invaded \\
+\hline
+{\em invasion\-\_\-list} & list of invaded sites \\
+\hline
+{\em nx} & grid dimension in the x direction ({\bfseries \-Input}) \\
+\hline
+{\em ny} & grid dimension in the y direction ({\bfseries \-Input}) \\
+\hline
+{\em nz} & grid dimension in the z direction ({\bfseries \-Input}) \\
+\hline
+{\em dx} & grid spacing in the x direction ({\bfseries \-Input}) \\
+\hline
+{\em dy} & grid spacing in the y direction ({\bfseries \-Input}) \\
+\hline
+{\em dz} & grid spacing in the z direction ({\bfseries \-Input}) \\
+\hline
+{\em file\-\_\-name} & \-Output file name, must have the.\-vtu extension ({\bfseries \-Input}) \\
+\hline
+{\em unit\-\_\-vtk} & logical unit for output file ({\bfseries \-Input}) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classvisualization_a33aeb736972af50f50ed5ef31d4a2774}{
+\index{visualization@{visualization}!write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-csv@{write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-csv}}
+\index{write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-csv@{write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-csv}!visualization@{visualization}}
+\subsubsection[{write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-csv}]{\setlength{\rightskip}{0pt plus 5cm}subroutine visualization\-::write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-csv (
+\begin{DoxyParamCaption}
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{real, dimension(n\-\_\-sites)}]{x, }
+\item[{real, dimension(n\-\_\-sites)}]{y, }
+\item[{real, dimension(n\-\_\-sites)}]{z, }
+\item[{integer}]{n\-\_\-sites, }
+\item[{character (len=$\ast$)}]{file\-\_\-name}
+\end{DoxyParamCaption}
+)}}
+\label{classvisualization_a33aeb736972af50f50ed5ef31d4a2774}
+
+\begin{DoxyParams}{\-Parameters}
+{\em n\-\_\-sites\-\_\-invaded} & number of sites invaded\\
+\hline
+{\em invasion\-\_\-list} & list of invaded sites\\
+\hline
+{\em n\-\_\-sites} & number of sites i the lattice\\
+\hline
+{\em x} & x coordinates array\\
+\hline
+{\em y} & y coordinates array\\
+\hline
+{\em z} & z coordinates array\\
+\hline
+{\em file\-\_\-name} & name of the output file (the extension .csv will be added if not present) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classvisualization_a1847c533056b6bcd72e5bddc04451b1a}{
+\index{visualization@{visualization}!write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-vtk@{write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-vtk}}
+\index{write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-vtk@{write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-vtk}!visualization@{visualization}}
+\subsubsection[{write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-vtk}]{\setlength{\rightskip}{0pt plus 5cm}subroutine visualization\-::write\-\_\-invasion\-\_\-list\-\_\-arbitrary\-\_\-to\-\_\-vtk (
+\begin{DoxyParamCaption}
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{real, dimension(n\-\_\-sites)}]{x, }
+\item[{real, dimension(n\-\_\-sites)}]{y, }
+\item[{real, dimension(n\-\_\-sites)}]{z, }
+\item[{integer}]{n\-\_\-sites, }
+\item[{character (len=$\ast$)}]{file\-\_\-name}
+\end{DoxyParamCaption}
+)}}
+\label{classvisualization_a1847c533056b6bcd72e5bddc04451b1a}
+
+
+\-Write the list of invaded sites to a \-V\-T\-K file (i.\-e. a polydata xml file with extension .vtp) for viewing with e.\-g. \-Paraview (for use with arbitrary lattices). 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-November 5, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em n\-\_\-sites\-\_\-invaded} & number of sites invaded \\
+\hline
+{\em invasion\-\_\-list} & list of invaded sites \\
+\hline
+{\em n\-\_\-sites} & number of sites i the lattice \\
+\hline
+{\em x} & x coordinates array \\
+\hline
+{\em y} & y coordinates array \\
+\hline
+{\em z} & z coordinates array \\
+\hline
+{\em file\-\_\-name} & name of the output file (the extension .vtp will be added if not present) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classvisualization_a3f4f9f57c76c569e203fc4b1049f6a54}{
+\index{visualization@{visualization}!write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-csv@{write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-csv}}
+\index{write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-csv@{write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-csv}!visualization@{visualization}}
+\subsubsection[{write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-csv}]{\setlength{\rightskip}{0pt plus 5cm}subroutine visualization\-::write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-csv (
+\begin{DoxyParamCaption}
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{real}]{dx, }
+\item[{real}]{dy, }
+\item[{real}]{dz, }
+\item[{character (len=$\ast$)}]{file\-\_\-name}
+\end{DoxyParamCaption}
+)}}
+\label{classvisualization_a3f4f9f57c76c569e203fc4b1049f6a54}
+
+\begin{DoxyParams}{\-Parameters}
+{\em n\-\_\-sites\-\_\-invaded} & number of sites invaded\\
+\hline
+{\em invasion\-\_\-list} & list of invaded sites\\
+\hline
+{\em nx} & grid dimension in the x direction\\
+\hline
+{\em ny} & grid dimension in the y direction\\
+\hline
+{\em dx} & grid spacing in the x direction\\
+\hline
+{\em dy} & grid spacing in the y direction\\
+\hline
+{\em dz} & grid spacing in the z direction\\
+\hline
+{\em file\-\_\-name} & name of the output file (the extension .csv will be added if not present) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classvisualization_abba7b13bbf754fc221acc65930d2ffd7}{
+\index{visualization@{visualization}!write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-vtk@{write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-vtk}}
+\index{write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-vtk@{write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-vtk}!visualization@{visualization}}
+\subsubsection[{write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-vtk}]{\setlength{\rightskip}{0pt plus 5cm}subroutine visualization\-::write\-\_\-invasion\-\_\-list\-\_\-cubic\-\_\-to\-\_\-vtk (
+\begin{DoxyParamCaption}
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{real}]{dx, }
+\item[{real}]{dy, }
+\item[{real}]{dz, }
+\item[{character (len=$\ast$)}]{file\-\_\-name}
+\end{DoxyParamCaption}
+)}}
+\label{classvisualization_abba7b13bbf754fc221acc65930d2ffd7}
+
+
+\-Write the list of invaded sites to a \-V\-T\-K file (i.\-e. a polydata xml file with extension .vtp) for viewing with e.\-g. \-Paraview (for use with cubic lattices). 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-November 5, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em n\-\_\-sites\-\_\-invaded} & number of sites invaded \\
+\hline
+{\em invasion\-\_\-list} & list of invaded sites \\
+\hline
+{\em nx} & grid dimension in the x direction \\
+\hline
+{\em ny} & grid dimension in the y direction \\
+\hline
+{\em dx} & grid spacing in the x direction \\
+\hline
+{\em dy} & grid spacing in the y direction \\
+\hline
+{\em dz} & grid spacing in the z direction \\
+\hline
+{\em file\-\_\-name} & name of the output file (the extension .vtp will be added if not present) \\
+\hline
+\end{DoxyParams}
+
+
+\-The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+modules/src/\hyperlink{module__visualization_8f90}{module\-\_\-visualization.\-f90}\end{DoxyCompactItemize}

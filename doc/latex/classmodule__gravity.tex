@@ -1,0 +1,162 @@
+\hypertarget{classmodule__gravity}{
+\section{module\-\_\-gravity \-Module \-Reference}
+\label{classmodule__gravity}\index{module\-\_\-gravity@{module\-\_\-gravity}}
+}
+
+
+\-This module contains the functions to account for gravity.  
+
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{classmodule__gravity_a0ef06b39c155a8de1baa8cd15c38da9d}{add\-\_\-gravity\-\_\-cubic\-\_\-lattice} (values, nx, ny, nz, dx, dy, dz, sigma, theta\-\_\-c, delta\-\_\-rho, gx, gy, gz)
+\begin{DoxyCompactList}\small\item\em \-Setup sites's invasion potential for cubic lattices. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__gravity_aec4d82af2ee63137ace94fec23131058}{add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice} (values, n, x, y, z, sigma, theta\-\_\-c, delta\-\_\-rho, gx, gy, gz)
+\begin{DoxyCompactList}\small\item\em \-Setup sites's invasion potential for arbitrary lattices. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-This module contains the functions to account for gravity. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October, 7 2014
+\end{DoxyDate}
+\-The functions in this module compute the invasion potential $ P_i = \frac{2 \sigma \mbox{cos} \theta_c}{a_i}-\Delta \rho g (L-z_i)$ \begin{DoxyWarning}{\-Warning}
+\-Be careful when using periodic boundaries, gravity gets periodic as well... 
+\end{DoxyWarning}
+
+
+\subsection{\-Member \-Function/\-Subroutine \-Documentation}
+\hypertarget{classmodule__gravity_aec4d82af2ee63137ace94fec23131058}{
+\index{module\-\_\-gravity@{module\-\_\-gravity}!add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice@{add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice}}
+\index{add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice@{add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice}!module_gravity@{module\-\_\-gravity}}
+\subsubsection[{add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-gravity\-::add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice (
+\begin{DoxyParamCaption}
+\item[{real, dimension(\-:)}]{values, }
+\item[{integer}]{n, }
+\item[{real, dimension(\-:)}]{x, }
+\item[{real, dimension(\-:)}]{y, }
+\item[{real, dimension(\-:)}]{z, }
+\item[{real}]{sigma, }
+\item[{real}]{theta\-\_\-c, }
+\item[{real}]{delta\-\_\-rho, }
+\item[{real}]{gx, }
+\item[{real}]{gy, }
+\item[{real}]{gz}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__gravity_aec4d82af2ee63137ace94fec23131058}
+
+
+\-Setup sites's invasion potential for arbitrary lattices. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October, 7 2014
+\end{DoxyDate}
+\-The invasion potential is defined as\-: $ P_i = \frac{2 \sigma \mbox{cos} \theta_c}{a_i}-\Delta \rho g (L-z_i)$ \begin{DoxyWarning}{\-Warning}
+\-Be careful when using periodic boundaries, gravity gets periodic as well... 
+\end{DoxyWarning}
+
+\begin{DoxyParams}{\-Parameters}
+{\em n} & \-Total number of sites in the lattice ({\bfseries input}) \\
+\hline
+{\em x} & \-Array containing the x coordinates od the sites ({\bfseries input}) \\
+\hline
+{\em y} & \-Array containing the y coordinates od the sites ({\bfseries input}) \\
+\hline
+{\em z} & \-Array containing the z coordinates od the sites ({\bfseries input}) \\
+\hline
+{\em values} & \-Output array containig the sites's invasion potentials ({\bfseries input/{\bfseries output})} \par
+ \-At input time, this array contains the pores's sizes $ a_i $ \par
+ \-At output time, this array contains the invasion potential $ P_i = \frac{2 \sigma \mbox{cos} \theta_c}{a_i}-\Delta \rho g (L-z_i)$ \\
+\hline
+{\em sigma} & \-Surface tension $ \sigma $ ({\bfseries input}) \\
+\hline
+{\em theta\-\_\-c} & \-Equilibrium contact angle $ \theta_c $ ({\bfseries input}) \\
+\hline
+{\em delta\-\_\-rho} & \-Fluid density contrast $ \Delta \rho $ ({\bfseries input}) \\
+\hline
+{\em gx} & \-Acceleration of gravity $ g $ in the x direction ({\bfseries input}) \\
+\hline
+{\em gy} & \-Acceleration of gravity $ g $ in the y direction ({\bfseries input}) \\
+\hline
+{\em gz} & \-Acceleration of gravity $ g $ in the z direction ({\bfseries input}) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__gravity_a0ef06b39c155a8de1baa8cd15c38da9d}{
+\index{module\-\_\-gravity@{module\-\_\-gravity}!add\-\_\-gravity\-\_\-cubic\-\_\-lattice@{add\-\_\-gravity\-\_\-cubic\-\_\-lattice}}
+\index{add\-\_\-gravity\-\_\-cubic\-\_\-lattice@{add\-\_\-gravity\-\_\-cubic\-\_\-lattice}!module_gravity@{module\-\_\-gravity}}
+\subsubsection[{add\-\_\-gravity\-\_\-cubic\-\_\-lattice}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-gravity\-::add\-\_\-gravity\-\_\-cubic\-\_\-lattice (
+\begin{DoxyParamCaption}
+\item[{real, dimension(nx,ny,nz)}]{values, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{real}]{dx, }
+\item[{real}]{dy, }
+\item[{real}]{dz, }
+\item[{real}]{sigma, }
+\item[{real}]{theta\-\_\-c, }
+\item[{real}]{delta\-\_\-rho, }
+\item[{real}]{gx, }
+\item[{real}]{gy, }
+\item[{real}]{gz}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__gravity_a0ef06b39c155a8de1baa8cd15c38da9d}
+
+
+\-Setup sites's invasion potential for cubic lattices. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October, 7 2014
+\end{DoxyDate}
+\-The invasion potential is defined as\-: $ P_i = \frac{2 \sigma \mbox{cos} \theta_c}{a_i}-\Delta \rho g (L-z_i)$ \begin{DoxyWarning}{\-Warning}
+\-Be careful when using periodic boundaries, gravity gets periodic as well... 
+\end{DoxyWarning}
+
+\begin{DoxyParams}{\-Parameters}
+{\em nx} & \-Grid dimension in the x direction ({\bfseries input}) \\
+\hline
+{\em ny} & \-Grid dimension in the y direction ({\bfseries input}) \\
+\hline
+{\em nz} & \-Grid dimension in the z direction ({\bfseries input}) \\
+\hline
+{\em dx} & \-Grid spacing in the x direction $ \Delta x$ ({\bfseries input}) \\
+\hline
+{\em dy} & \-Grid spacing in the x direction $ \Delta y$ ({\bfseries input}) \\
+\hline
+{\em dz} & \-Grid spacing in the x direction $ \Delta z$ ({\bfseries input}) \\
+\hline
+{\em values} & \-Output array containig the sites's invasion potentials ({\bfseries input/{\bfseries output})} \par
+ \-At input time, this array contains the pores's sizes $ a_i $ \par
+ \-At output time, this array contains the invasion potential $ P_i = \frac{2 \sigma \mbox{cos} \theta_c}{a_i}-\Delta \rho g (L-z_i)$ \\
+\hline
+{\em sigma} & \-Surface tension $ \sigma $ ({\bfseries input}) \\
+\hline
+{\em theta\-\_\-c} & \-Equilibrium contact angle $ \theta_c $ ({\bfseries input}) \\
+\hline
+{\em delta\-\_\-rho} & \-Fluid density contrast $ \Delta \rho $ ({\bfseries input}) \\
+\hline
+{\em gx} & \-Acceleration of gravity $ g $ in the x direction ({\bfseries input}) \\
+\hline
+{\em gy} & \-Acceleration of gravity $ g $ in the y direction ({\bfseries input}) \\
+\hline
+{\em gz} & \-Acceleration of gravity $ g $ in the z direction ({\bfseries input}) \\
+\hline
+\end{DoxyParams}
+
+
+\-The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+modules/src/\hyperlink{module__gravity_8f90}{module\-\_\-gravity.\-f90}\end{DoxyCompactItemize}

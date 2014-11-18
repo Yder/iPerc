@@ -1,0 +1,158 @@
+\hypertarget{classgravity}{
+\section{gravity \-Module \-Reference}
+\label{classgravity}\index{gravity@{gravity}}
+}
+
+
+setup sites's invasion potential $ P_i = \frac{2 \sigma \mbox{cos} \theta_c}{a_i}-\Delta \rho g (L-z_i)$  
+
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{classgravity_a0300a66abc16606a4c82d5a09fed8e16}{add\-\_\-gravity\-\_\-cubic\-\_\-lattice} (values, nx, ny, nz, dx, dy, dz, sigma, theta\-\_\-c, delta\-\_\-rho, gx, gy, gz)
+\begin{DoxyCompactList}\small\item\em setup sites's invasion potential for cubic lattices only \end{DoxyCompactList}\item 
+subroutine \hyperlink{classgravity_a3644291ef43e04cdcb02d57e0abafa8b}{add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice} (values, n, x, y, z, sigma, theta\-\_\-c, delta\-\_\-rho, gx, gy, gz)
+\begin{DoxyCompactList}\small\item\em setup sites's invasion potential for arbitrary lattices \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+setup sites's invasion potential $ P_i = \frac{2 \sigma \mbox{cos} \theta_c}{a_i}-\Delta \rho g (L-z_i)$ 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October, 7 2014 
+\end{DoxyDate}
+\begin{DoxyWarning}{\-Warning}
+un-\/physical situations may be simulated if periodic boundaries are used or if the exit nodes aren't setup accordingly to the gravity orientation 
+\end{DoxyWarning}
+
+
+\subsection{\-Member \-Function/\-Subroutine \-Documentation}
+\hypertarget{classgravity_a3644291ef43e04cdcb02d57e0abafa8b}{
+\index{gravity@{gravity}!add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice@{add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice}}
+\index{add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice@{add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice}!gravity@{gravity}}
+\subsubsection[{add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice}]{\setlength{\rightskip}{0pt plus 5cm}subroutine gravity\-::add\-\_\-gravity\-\_\-arbitrary\-\_\-lattice (
+\begin{DoxyParamCaption}
+\item[{real, dimension(\-:)}]{values, }
+\item[{integer}]{n, }
+\item[{real, dimension(\-:)}]{x, }
+\item[{real, dimension(\-:)}]{y, }
+\item[{real, dimension(\-:)}]{z, }
+\item[{real}]{sigma, }
+\item[{real}]{theta\-\_\-c, }
+\item[{real}]{delta\-\_\-rho, }
+\item[{real}]{gx, }
+\item[{real}]{gy, }
+\item[{real}]{gz}
+\end{DoxyParamCaption}
+)}}
+\label{classgravity_a3644291ef43e04cdcb02d57e0abafa8b}
+
+
+setup sites's invasion potential for arbitrary lattices 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October, 7 2014 
+\end{DoxyDate}
+\begin{DoxyWarning}{\-Warning}
+un-\/physical situations may be simulated if periodic boundaries or the exit nodes aren't setup accordingly to the gravity orientation 
+\end{DoxyWarning}
+
+\begin{DoxyParams}{\-Parameters}
+{\em n} & \-Number of sites \\
+\hline
+{\em x} & site's coordinate x \\
+\hline
+{\em y} & site's coordinate y \\
+\hline
+{\em z} & site's coordinate z \\
+\hline
+{\em values} & array containig the pores's sizes $ a_i $ \\
+\hline
+{\em sigma} & \-Surface tension $ \sigma $ \\
+\hline
+{\em theta\-\_\-c} & \-Equilibrium contact angle $ \theta_c $ \\
+\hline
+{\em delta\-\_\-rho} & \-Fluid density contrast $ \Delta \rho $ \\
+\hline
+{\em gx} & \-Acceleration of gravity $ g $ in the x direction \\
+\hline
+{\em gy} & \-Acceleration of gravity $ g $ in the y direction \\
+\hline
+{\em gz} & \-Acceleration of gravity $ g $ in the z direction \\
+\hline
+\end{DoxyParams}
+\hypertarget{classgravity_a0300a66abc16606a4c82d5a09fed8e16}{
+\index{gravity@{gravity}!add\-\_\-gravity\-\_\-cubic\-\_\-lattice@{add\-\_\-gravity\-\_\-cubic\-\_\-lattice}}
+\index{add\-\_\-gravity\-\_\-cubic\-\_\-lattice@{add\-\_\-gravity\-\_\-cubic\-\_\-lattice}!gravity@{gravity}}
+\subsubsection[{add\-\_\-gravity\-\_\-cubic\-\_\-lattice}]{\setlength{\rightskip}{0pt plus 5cm}subroutine gravity\-::add\-\_\-gravity\-\_\-cubic\-\_\-lattice (
+\begin{DoxyParamCaption}
+\item[{real, dimension(nx,ny,nz)}]{values, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{real}]{dx, }
+\item[{real}]{dy, }
+\item[{real}]{dz, }
+\item[{real}]{sigma, }
+\item[{real}]{theta\-\_\-c, }
+\item[{real}]{delta\-\_\-rho, }
+\item[{real}]{gx, }
+\item[{real}]{gy, }
+\item[{real}]{gz}
+\end{DoxyParamCaption}
+)}}
+\label{classgravity_a0300a66abc16606a4c82d5a09fed8e16}
+
+
+setup sites's invasion potential for cubic lattices only 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October, 7 2014 
+\end{DoxyDate}
+\begin{DoxyWarning}{\-Warning}
+un-\/physical situations may be simulated if periodic boundaries are used or if the exit nodes aren't setup accordingly to the gravity orientation 
+\end{DoxyWarning}
+
+\begin{DoxyParams}{\-Parameters}
+{\em nx} & \-Number of sites in the x direction \\
+\hline
+{\em ny} & \-Number of sites in the y direction \\
+\hline
+{\em nz} & \-Number of sites in the z direction \\
+\hline
+{\em dx} & spacing between sites in the x direction \\
+\hline
+{\em dy} & spacing between sites in the y direction \\
+\hline
+{\em dz} & spacing between sites in the z direction \\
+\hline
+{\em values} & array containig the pores's sizes $ a_i $ \\
+\hline
+{\em sigma} & \-Surface tension $ \sigma $ \\
+\hline
+{\em theta\-\_\-c} & \-Equilibrium contact angle $ \theta_c $ \\
+\hline
+{\em delta\-\_\-rho} & \-Fluid density contrast $ \Delta \rho $ \\
+\hline
+{\em gx} & \-Acceleration of gravity $ g $ in the x direction \\
+\hline
+{\em gy} & \-Acceleration of gravity $ g $ in the y direction \\
+\hline
+{\em gz} & \-Acceleration of gravity $ g $ in the z direction \\
+\hline
+\end{DoxyParams}
+
+
+\-The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+modules/src/\hyperlink{module__gravity_8f90}{module\-\_\-gravity.\-f90}\end{DoxyCompactItemize}

@@ -1,0 +1,159 @@
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-Masson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 22, 2014 
+\end{DoxyDate}
+\hypertarget{index_intro_sec}{}\section{\-Introduction}\label{index_intro_sec}
+{\bfseries i\-Perc} is a software suite for modeling invasion percolation as introduced by \-Wilkinson and \-Willemsen in 1983 {\itshape (\-W\-I\-L\-K\-I\-N\-S\-O\-N, \-David et \-W\-I\-L\-L\-E\-M\-S\-E\-N, \-Jorge \-F. \-Invasion percolation\-: a new form of percolation theory. \-Journal of \-Physics \-A\-: \-Mathematical and \-General, 1983, vol. 16, no 14, p. 3365.)\/}. \-The code is written in \-Fortran 2003 and implement fast algorithms for simulating invasion percolation on arbitrary lattices. \-Both gravity and trapping can be modeled. \-This software explicitely model site percolation but it can also be used to model bond percolation. \-Some additional tools for generating random media and for visualization are also part of this package.\hypertarget{index_ref_sec}{}\section{\-References}\label{index_ref_sec}
+\-If you use this code for your own research, please cite the following articles written by the developers of the package\-:
+
+\mbox{[}1\mbox{]} {\itshape \-M\-A\-S\-S\-O\-N, \-Yder et \-P\-R\-I\-D\-E, \-Steven \-R. \-A fast algorithm for invasion percolation. \-Transport in porous media, 2014, vol. 102, no 2, p. 301-\/312.\/} \par
+ \par
+ \mbox{[}2\mbox{]} {\itshape \-M\-A\-S\-S\-O\-N, \-Yder et \-P\-R\-I\-D\-E, \-Steven \-R. \-A fast algorithm for invasion percolation \-Part \-I\-I\-: \-Efficient a posteriory treatment of trapping. (\-To be published).\/}\hypertarget{index_licence_sec}{}\section{\-Licence}\label{index_licence_sec}
+i\-Perc is a fortran library for modeling invasion percolation \-Copyright (\-C) 2014 \-Yder \-M\-A\-S\-S\-O\-N
+
+\par
+ i\-Perc is free software\-: you can redistribute it and/or modify it under the terms of the \-G\-N\-U \-General \-Public \-License as published by the \-Free \-Software \-Foundation, either version 3 of the \-License, or (at your option) any later version.
+
+\par
+ \-This program is distributed in the hope that it will be useful, but \-W\-I\-T\-H\-O\-U\-T \-A\-N\-Y \-W\-A\-R\-R\-A\-N\-T\-Y; without even the implied warranty of \-M\-E\-R\-C\-H\-A\-N\-T\-A\-B\-I\-L\-I\-T\-Y or \-F\-I\-T\-N\-E\-S\-S \-F\-O\-R \-A \-P\-A\-R\-T\-I\-C\-U\-L\-A\-R \-P\-U\-R\-P\-O\-S\-E. \-See the \-G\-N\-U \-General \-Public \-License for more details.
+
+\par
+ \-You should have received a copy of the \-G\-N\-U \-General \-Public \-License along with this program. \-If not, see $<$\href{http://www.gnu.org/licenses/}{\tt http\-://www.\-gnu.\-org/licenses/}$>$.\hypertarget{index_getting_started_sec}{}\section{\-Getting started}\label{index_getting_started_sec}
+\hypertarget{index_prerequisites_sec}{}\subsection{\-Prerequisites}\label{index_prerequisites_sec}
+$\ast$ \-You should have received a copy of the source code\-: {\bfseries i\-Perc.\-1.\-0.\-tar.\-gz} \par
+ \par
+ $\ast$ \-You must have the \-G\-N\-U \-Fortran compiler {\bfseries gfortran} installed. \par
+ \par
+ $\ast$ \-For a better visual experience, you may want to install the \-Para\-View visualisation software or any 3\-D plotter using the \-Visual toolkit (e.\-g. \-Check \-Mayavi if you are a \-Python addict). {\bfseries (\-This is optional)} \begin{DoxyNote}{\-Note}
+\-You can of course compile {\bfseries i\-Perc} using another \-Fortran compiler. \-In this case, you have to edit the \-Makefile located in the {\bfseries i\-Perc/} directory. \-Replace {\bfseries gfortran} with your compiler (i.\-e. \-F\-C = your\-\_\-fortran\-\_\-compiler) and make sure to change the compiling options accordingly (i.\-e. \-F\-C\-F\-L\-A\-G= your\-\_\-compiler\-\_\-options, \-F\-C\-F\-L\-A\-G+= your\-\_\-compiler\-\_\-options). 
+\end{DoxyNote}
+\begin{DoxySeeAlso}{\-See also}
+\href{http://www.paraview.org/}{\tt http\-://www.\-paraview.\-org/} 
+
+\href{http://mayavi.sourceforge.net/}{\tt http\-://mayavi.\-sourceforge.\-net/} 
+
+\href{http://en.wikipedia.org/wiki/Gfortran}{\tt http\-://en.\-wikipedia.\-org/wiki/\-Gfortran}
+\end{DoxySeeAlso}
+\hypertarget{index_opening_the_box_sec}{}\subsection{\-Opening the box...}\label{index_opening_the_box_sec}
+\-Unzip the archive\-: 
+\begin{DoxyCode}
+ tar -zxvf iPerc.1.0.tar.gz 
+\end{DoxyCode}
+ \-Move to the main directory\-: 
+\begin{DoxyCode}
+ cd iPerc/ 
+\end{DoxyCode}
+ \-Compile the source code\-: 
+\begin{DoxyCode}
+ make 
+\end{DoxyCode}
+ \-This will compile the i\-Perc library as well as the examples in the {\bfseries i\-Perc/examples/src/} directory and the projects in the {\bfseries i\-Perc/my\-\_\-project/src/}. \-Then, you can try to run the examples in the {\bfseries i\-Perc/examples/bin/} directory$>$, for example, in the i\-Perc directory {\bfseries i\-Perc/}, type\-: 
+\begin{DoxyCode}
+ ./examples/bin/name\_of\_the\_example\_you\_want\_to\_run.exe 
+\end{DoxyCode}
+ \-Once you have successfully run the examples, you can move on to the next section and start building your own project ! \hypertarget{index_project}{}\section{\-Building, compiling and running new projects}\label{index_project}
+\hypertarget{index_new_project}{}\subsection{\-Create your project}\label{index_new_project}
+\-Any new projet should be placed in the {\bfseries i\-Perc/my\-\_\-project/src/} directory and have the {\bfseries .f90} extension (no upper case please, i.\-e., no {\bfseries .\-F90} extension). \-For example, create the \href{file:}{\tt file\-:} 
+\begin{DoxyCode}
+ iPerc/my\_project/src/the\_name\_of\_your\_project.f90
+\end{DoxyCode}
+ or, find one example that does something close to what you want, rename it and place it in the {\bfseries i\-Perc/my\-\_\-project/src} directory. \-In the {\bfseries i\-Perc/} directory type\-: 
+\begin{DoxyCode}
+ cp ./examples/src/the\_example\_you\_like.f90 ./my\_project/src/
+      the\_name\_of\_your\_project.f90
+\end{DoxyCode}
+ \-When your project has been created, you can edit it using your favorite text editor (e.\-g. emacs, vim, etc...). \-Any i\-Perc project should have the following basic structure\-: 
+\begin{DoxyCode}
+ \textcolor{comment}{!========!}
+ \textcolor{comment}{! HEADER !}
+ \textcolor{comment}{!========!}
+
+ \textcolor{comment}{! Lines starting with a exclamation mark are comment lines,}
+ \textcolor{comment}{! these do not need to be present in your code.}
+ \textcolor{comment}{! Your code project starts with program}
+ \textcolor{comment}{! followed by the name of your project: }
+
+ \textcolor{keyword}{program} name\_of\_your\_project
+
+ \textcolor{comment}{! In order to use iPerc, the following statment must be present }
+ \textcolor{comment}{! at the begining of your code project:}
+
+ use \textcolor{keywordflow}{module\_invasion\_percolation}
+
+ \textcolor{comment}{! Please put the following line in any Fortran code your write !}
+ \textcolor{comment}{! This will save you a lot of trouble ;)}
+
+ \textcolor{keyword}{implicit none}
+ 
+ \textcolor{comment}{!===============!}
+ \textcolor{comment}{! DERCLARATIONS !}
+ \textcolor{comment}{!===============!}
+
+ \textcolor{comment}{! Delare your variables here, e.g.:}
+
+ \textcolor{keywordtype}{integer} :: some integers
+ \textcolor{keywordtype}{real} :: a few reals
+ \textcolor{keywordtype}{logical} :: etc
+
+ \textcolor{comment}{!==============!}
+ \textcolor{comment}{! INSTRUCTIONS !}
+ \textcolor{comment}{!==============!}
+
+ \textcolor{comment}{! This is where you write your code}
+ \textcolor{comment}{! See the following sections for more details}
+ 
+ print*, \textcolor{stringliteral}{'This is my frst iPerc project !'}
+
+ \textcolor{comment}{!========!}
+ \textcolor{comment}{! FOOTER !}
+ \textcolor{comment}{!========!}
+
+ \textcolor{comment}{! Your code project ends with end program}
+ \textcolor{comment}{! followed by the name of your project: }
+
+ \textcolor{keyword}{end} \textcolor{keyword}{program} name\_of\_your\_project
+\end{DoxyCode}
+\hypertarget{index_compile_project}{}\subsection{\-Compiling and running your project}\label{index_compile_project}
+\-To compile your projects, move to the {\bfseries i\-Perc/} directory and type\-: 
+\begin{DoxyCode}
+ make my\_project 
+\end{DoxyCode}
+ \-Or, if you want to recompile the whole i\-Perc library, type\-: 
+\begin{DoxyCode}
+ make 
+\end{DoxyCode}
+ \-This will create the files\-: 
+\begin{DoxyCode}
+ iPerc/my\_project/bin/the\_name\_of\_your\_projects.exe 
+\end{DoxyCode}
+ \-To run your project, type\-: 
+\begin{DoxyCode}
+ ./my\_project/bin/the\_name\_of\_your\_project.exe 
+\end{DoxyCode}
+ \-As an exercise, you can create a project containing the code in the previous section and run it. \-The following message will print on sreen\-: 
+\begin{DoxyCode}
+ This is my frst iPerc project ! 
+\end{DoxyCode}
+ \hypertarget{index_modeling_sec}{}\section{\-Modeling invasion percolation}\label{index_modeling_sec}
+
+\begin{DoxyCode}
+ \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:,:)}, \textcolor{keywordtype}{allocatable} i
+ call find\_trapped\_sites\_arbitrary(n\_sites,           &
+                                   states,            &
+                                   offsets,           &
+                                   connectivity,      &
+                                   n\_sites\_invaded,   &
+                                   invasion\_list,     &
+                                   undo\_invasion      )
+\end{DoxyCode}
+ 
+\begin{DoxyCode}
+ \{.f90\}
+  class Python:
+     pass
+\end{DoxyCode}
+
+
+lkjdl jk lkj 

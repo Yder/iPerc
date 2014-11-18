@@ -1,0 +1,61 @@
+\hypertarget{module__cubic__indices_8f90_source}{
+\section{modules/src/module\-\_\-cubic\-\_\-indices.f90}
+}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{!==============================!}
+00002 \textcolor{comment}{!                              !}
+00003 \textcolor{comment}{!                              !}
+00004 \textcolor{comment}{!     MODULE CUBIC INDICES     ! }
+00005 \textcolor{comment}{!                              !}
+00006 \textcolor{comment}{!                              !}
+00007 \textcolor{comment}{!==============================!}
+00008 \textcolor{comment}{!}
+\hypertarget{module__cubic__indices_8f90_source_l00014}{}\hyperlink{classmodule__cubic__indices}{00014} \textcolor{keyword}{module} \hyperlink{classmodule__cubic__indices}{module_cubic_indices}
+00015 \textcolor{comment}{!==========================}
+00016   \textcolor{comment}{!}
+00017 \textcolor{keyword}{contains}
+00018   \textcolor{comment}{!}
+\hypertarget{module__cubic__indices_8f90_source_l00021}{}\hyperlink{classmodule__cubic__indices_ae8cab7f4dee55370ad9af071bdc7e281}{00021}   \textcolor{keyword}{integer }\textcolor{keyword}{function }ijk2ind(nx,ny,i,j,k)
+00022   \textcolor{comment}{!------------------------------------}
+00023     \textcolor{comment}{!}
+00024     \textcolor{keyword}{implicit none}
+00025     \textcolor{comment}{!}
+00026     \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< Grid dimension in the x direction (\(\backslash\)b input)}
+00027     \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< Grid dimension in the y direction (\(\backslash\)b input)}
+00028     \textcolor{keywordtype}{integer} :: i  \textcolor{comment}{!< i index, \(\backslash\)f$ 1<i<\(\backslash\)mbox\{nx\} \(\backslash\)f$ (\(\backslash\)b input)}
+00029     \textcolor{keywordtype}{integer} :: j  \textcolor{comment}{!< j index, \(\backslash\)f$ 1<j<\(\backslash\)mbox\{ny\} \(\backslash\)f$ (\(\backslash\)b input)}
+00030     \textcolor{keywordtype}{integer} :: k  \textcolor{comment}{!< k index, \(\backslash\)f$ 1<k<\(\backslash\)mbox\{nz\} \(\backslash\)f$ (\(\backslash\)b input)}
+00031     \textcolor{comment}{!}
+00032     ijk2ind = (k-1)*nx*ny+(j-1)*nx+i
+00033     \textcolor{comment}{!}
+00034   \textcolor{comment}{!-------------------}
+00035 \textcolor{keyword}{  end function ijk2ind}
+00036   \textcolor{comment}{!-------------------}
+00037   \textcolor{comment}{!}
+\hypertarget{module__cubic__indices_8f90_source_l00040}{}\hyperlink{classmodule__cubic__indices_aa2f083a1f3a62525283b9d9f6b0f3cd2}{00040}   \textcolor{keyword}{subroutine }ind2ijk(nx,ny,ind,i,j,k)
+00041   \textcolor{comment}{!----------------------------------}
+00042     \textcolor{comment}{!}
+00043     \textcolor{keyword}{implicit none}
+00044     \textcolor{comment}{!}
+00045     \textcolor{keywordtype}{integer} :: ind \textcolor{comment}{!< 1D index, \(\backslash\)f$
+       1<\(\backslash\)mbox\{ind\}<\(\backslash\)mbox\{nx\}\(\backslash\)times\(\backslash\)mbox\{ny\}\(\backslash\)times\(\backslash\)mbox\{nz\}\(\backslash\)f$}
+00046     \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< Grid dimension in the x direction (\(\backslash\)b input)}
+00047     \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< Grid dimension in the y direction (\(\backslash\)b input)}
+00048     \textcolor{keywordtype}{integer} :: i  \textcolor{comment}{!< i index, \(\backslash\)f$ 1<\(\backslash\)mbox\{i\}<\(\backslash\)mbox\{nx\} \(\backslash\)f$ (\(\backslash\)b input)}
+00049     \textcolor{keywordtype}{integer} :: j  \textcolor{comment}{!< j index, \(\backslash\)f$ 1<\(\backslash\)mbox\{j\}<\(\backslash\)mbox\{ny\} \(\backslash\)f$ (\(\backslash\)b input)}
+00050     \textcolor{keywordtype}{integer} :: k  \textcolor{comment}{!< k index, \(\backslash\)f$ 1<\(\backslash\)mbox\{k\}<\(\backslash\)mbox\{nz\} \(\backslash\)f$ (\(\backslash\)b input)}
+00051     \textcolor{comment}{!}
+00052     k = (ind-1)/nx/ny+1
+00053     j = (ind-(k-1)*nx*ny-1)/nx+1
+00054     i = ind-(k-1)*nx*ny-(j-1)*nx
+00055     \textcolor{comment}{!}
+00056   \textcolor{comment}{!---------------------}
+00057 \textcolor{keyword}{  end subroutine ind2ijk}
+00058   \textcolor{comment}{!---------------------}
+00059   \textcolor{comment}{!}
+00060 \textcolor{comment}{!==============================}
+00061 \textcolor{keyword}{end module module\_cubic\_indices}
+00062 \textcolor{comment}{!==============================}
+00063 
+\end{DoxyCode}

@@ -1,0 +1,251 @@
+\hypertarget{classmodule__trapping}{
+\section{module\-\_\-trapping \-Module \-Reference}
+\label{classmodule__trapping}\index{module\-\_\-trapping@{module\-\_\-trapping}}
+}
+
+
+\-This module contains functions to identify trapped sites.  
+
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+integer function \hyperlink{classmodule__trapping_acc4be246fb79d0cc00ed4f436feabd21}{get\-\_\-label\-\_\-free\-\_\-clusters} (n\-\_\-sites, states, mat)
+\begin{DoxyCompactList}\small\item\em \-Ths function does the union of the labels of all sites connected to an exit site and return the corresponding label that is the free cluster's label. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__trapping_a15f5caceb776482e66d04fad11d9b5b1}{find\-\_\-trapped\-\_\-sites\-\_\-cubic} (nx, ny, nz, states, period\-\_\-x, period\-\_\-y, period\-\_\-z, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, undo\-\_\-invasion)
+\begin{DoxyCompactList}\small\item\em \-Identify trapped sites on cubic lattices. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__trapping_ae74b46d92d3e8dfd116fa288aa279107}{find\-\_\-trapped\-\_\-sites\-\_\-arbitrary} (n\-\_\-sites, states, offsets, connectivity, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, undo\-\_\-invasion)
+\begin{DoxyCompactList}\small\item\em find trapped sites in arbitrary lattices \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__trapping_ac68c2a85f2c927eff8877a721a977aa8}{get\-\_\-trapping\-\_\-times\-\_\-cubic} (nx, ny, nz, period\-\_\-x, period\-\_\-y, period\-\_\-z, states, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, trapping\-\_\-times)
+\begin{DoxyCompactList}\small\item\em \-This functions returns the times at which the sites got trapped. \-This function is for cubic lattices. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__trapping_acd41f4131aacecfd7ecbfd9846c13a9a}{get\-\_\-trapping\-\_\-times\-\_\-arbitrary} (n\-\_\-sites, states, offsets, connectivity, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, trapping\-\_\-times)
+\begin{DoxyCompactList}\small\item\em \-This functions returns the times at which the sites got trapped. \-This function is for arbitrary lattices. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-This module contains functions to identify trapped sites. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 23, 2014 
+\end{DoxyDate}
+
+
+\subsection{\-Member \-Function/\-Subroutine \-Documentation}
+\hypertarget{classmodule__trapping_ae74b46d92d3e8dfd116fa288aa279107}{
+\index{module\-\_\-trapping@{module\-\_\-trapping}!find\-\_\-trapped\-\_\-sites\-\_\-arbitrary@{find\-\_\-trapped\-\_\-sites\-\_\-arbitrary}}
+\index{find\-\_\-trapped\-\_\-sites\-\_\-arbitrary@{find\-\_\-trapped\-\_\-sites\-\_\-arbitrary}!module_trapping@{module\-\_\-trapping}}
+\subsubsection[{find\-\_\-trapped\-\_\-sites\-\_\-arbitrary}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-trapping\-::find\-\_\-trapped\-\_\-sites\-\_\-arbitrary (
+\begin{DoxyParamCaption}
+\item[{integer}]{n\-\_\-sites, }
+\item[{integer, dimension(\-:)}]{states, }
+\item[{integer, dimension(\-:)}]{offsets, }
+\item[{integer, dimension(\-:)}]{connectivity, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{logical}]{undo\-\_\-invasion}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__trapping_ae74b46d92d3e8dfd116fa288aa279107}
+
+
+find trapped sites in arbitrary lattices 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 23, 2014
+\end{DoxyDate}
+\-It uses the fast a posteriori identification of trapped node if the {\bfseries undo\-\_\-invasion=.true.}. \-If {\bfseries undo\-\_\-invasion=.false.} cluster labeling is performed at each invasion steps. 
+\begin{DoxyParams}{\-Parameters}
+{\em states} & \-Array containing the sites's states ({\bfseries input/{\bfseries output})} \par
+ \-The state of trapped sites is updated to {\bfseries state(i)=trapped} \\
+\hline
+{\em undo\-\_\-invasion} & \-Flag\-: \-If {\bfseries undo\-\_\-invasion==.true.} \-Then use fast a posteriori method for trapping ({\bfseries input}) \\
+\hline
+{\em invasion\-\_\-list} & \-List of invaded sites sorted in chronological order ({\bfseries input}) \\
+\hline
+{\em offsets} & \-Array containing the offsets of the data stored in the connectivity array ({\bfseries \-Input}) \\
+\hline
+{\em connectivity} & \-Array containing thelattice connectivity ({\bfseries input}) \par
+ \-For a given site {\bfseries i}, with offset {\bfseries j = offsets(i)} \-: \par
+ {\bfseries n=connectivity(j)} is the number of sites neighboring site {\bfseries i}. \par
+ {\bfseries connectivity(j+1, j+2, ... ,j+n)} contains the indices of the sites that are neighboring site {\bfseries i}. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__trapping_a15f5caceb776482e66d04fad11d9b5b1}{
+\index{module\-\_\-trapping@{module\-\_\-trapping}!find\-\_\-trapped\-\_\-sites\-\_\-cubic@{find\-\_\-trapped\-\_\-sites\-\_\-cubic}}
+\index{find\-\_\-trapped\-\_\-sites\-\_\-cubic@{find\-\_\-trapped\-\_\-sites\-\_\-cubic}!module_trapping@{module\-\_\-trapping}}
+\subsubsection[{find\-\_\-trapped\-\_\-sites\-\_\-cubic}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-trapping\-::find\-\_\-trapped\-\_\-sites\-\_\-cubic (
+\begin{DoxyParamCaption}
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{integer, dimension(nx,ny,nz)}]{states, }
+\item[{logical}]{period\-\_\-x, }
+\item[{logical}]{period\-\_\-y, }
+\item[{logical}]{period\-\_\-z, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{logical}]{undo\-\_\-invasion}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__trapping_a15f5caceb776482e66d04fad11d9b5b1}
+
+
+\-Identify trapped sites on cubic lattices. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 23, 2014
+\end{DoxyDate}
+\-It uses the fast a posteriori identification of trapped node if the {\bfseries undo\-\_\-invasion=.true.}. \-If {\bfseries undo\-\_\-invasion=.false.} cluster labeling is performed at each invasion steps. 
+\begin{DoxyParams}{\-Parameters}
+{\em nx} & \-Grid dimension in the x direction ({\bfseries input}) \\
+\hline
+{\em ny} & \-Grid dimension in the y direction ({\bfseries input}) \\
+\hline
+{\em nz} & \-Grid dimension in the z direction ({\bfseries input}) \\
+\hline
+{\em states} & \-Array containing the sites's states ({\bfseries input/{\bfseries output})} \par
+ \-The state of trapped sites is updated to {\bfseries state(i,j,k)=trapped} \\
+\hline
+{\em period\-\_\-x} & \-Flag for periodic boundaries in the x direction ({\bfseries input}) \\
+\hline
+{\em period\-\_\-y} & \-Flag for periodic boundaries in the y direction ({\bfseries input}) \\
+\hline
+{\em period\-\_\-z} & \-Flag for periodic boundaries in the z direction ({\bfseries input}) \\
+\hline
+{\em undo\-\_\-invasion} & \-Flag\-: \-If {\bfseries undo\-\_\-invasion==.true.} \-Then use fast a posteriori method for trapping ({\bfseries input}) \\
+\hline
+{\em n\-\_\-sites\-\_\-invaded} & \-Number of invaded sites ({\bfseries input}) \\
+\hline
+{\em invasion\-\_\-list} & \-List of invaded sites sorted in chronological order ({\bfseries input}) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__trapping_acc4be246fb79d0cc00ed4f436feabd21}{
+\index{module\-\_\-trapping@{module\-\_\-trapping}!get\-\_\-label\-\_\-free\-\_\-clusters@{get\-\_\-label\-\_\-free\-\_\-clusters}}
+\index{get\-\_\-label\-\_\-free\-\_\-clusters@{get\-\_\-label\-\_\-free\-\_\-clusters}!module_trapping@{module\-\_\-trapping}}
+\subsubsection[{get\-\_\-label\-\_\-free\-\_\-clusters}]{\setlength{\rightskip}{0pt plus 5cm}integer function module\-\_\-trapping\-::get\-\_\-label\-\_\-free\-\_\-clusters (
+\begin{DoxyParamCaption}
+\item[{}]{n\-\_\-sites, }
+\item[{integer, dimension(n\-\_\-sites)}]{states, }
+\item[{integer, dimension(n\-\_\-sites)}]{mat}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__trapping_acc4be246fb79d0cc00ed4f436feabd21}
+
+
+\-Ths function does the union of the labels of all sites connected to an exit site and return the corresponding label that is the free cluster's label. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 23, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em states} & \-Array containing the sites's states ({\bfseries input}) \\
+\hline
+{\em mat} & \-Array containing the clusters's labels ({\bfseries input}) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__trapping_acd41f4131aacecfd7ecbfd9846c13a9a}{
+\index{module\-\_\-trapping@{module\-\_\-trapping}!get\-\_\-trapping\-\_\-times\-\_\-arbitrary@{get\-\_\-trapping\-\_\-times\-\_\-arbitrary}}
+\index{get\-\_\-trapping\-\_\-times\-\_\-arbitrary@{get\-\_\-trapping\-\_\-times\-\_\-arbitrary}!module_trapping@{module\-\_\-trapping}}
+\subsubsection[{get\-\_\-trapping\-\_\-times\-\_\-arbitrary}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-trapping\-::get\-\_\-trapping\-\_\-times\-\_\-arbitrary (
+\begin{DoxyParamCaption}
+\item[{integer}]{n\-\_\-sites, }
+\item[{integer, dimension(\-:)}]{states, }
+\item[{integer, dimension(\-:)}]{offsets, }
+\item[{integer, dimension(\-:)}]{connectivity, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{integer, dimension(\-:)}]{trapping\-\_\-times}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__trapping_acd41f4131aacecfd7ecbfd9846c13a9a}
+
+
+\-This functions returns the times at which the sites got trapped. \-This function is for arbitrary lattices. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-November 11, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em states} & \-Array containing the sites's states ({\bfseries input/{\bfseries output})} \par
+ \-The state of trapped sites is updated to {\bfseries state(i)=trapped} \\
+\hline
+{\em invasion\-\_\-list} & \-List of invaded sites sorted in chronological order ({\bfseries input}) \\
+\hline
+{\em offsets} & \-Array containing the offsets of the data stored in the connectivity array ({\bfseries \-Input}) \\
+\hline
+{\em connectivity} & \-Array containing thelattice connectivity ({\bfseries input}) \par
+ \-For a given site {\bfseries i}, with offset {\bfseries j = offsets(i)} \-: \par
+ {\bfseries n=connectivity(j)} is the number of sites neighboring site {\bfseries i}. \par
+ {\bfseries connectivity(j+1, j+2, ... ,j+n)} contains the indices of the sites that are neighboring site {\bfseries i}. \\
+\hline
+{\em trapping\-\_\-times} & \-Array containing the times at which the sites got trapped. ({\bfseries \-Output}) \par
+ {\bfseries trapping\-\_\-times(i) = -\/1} at sites that have not been trapped \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__trapping_ac68c2a85f2c927eff8877a721a977aa8}{
+\index{module\-\_\-trapping@{module\-\_\-trapping}!get\-\_\-trapping\-\_\-times\-\_\-cubic@{get\-\_\-trapping\-\_\-times\-\_\-cubic}}
+\index{get\-\_\-trapping\-\_\-times\-\_\-cubic@{get\-\_\-trapping\-\_\-times\-\_\-cubic}!module_trapping@{module\-\_\-trapping}}
+\subsubsection[{get\-\_\-trapping\-\_\-times\-\_\-cubic}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-trapping\-::get\-\_\-trapping\-\_\-times\-\_\-cubic (
+\begin{DoxyParamCaption}
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{logical}]{period\-\_\-x, }
+\item[{logical}]{period\-\_\-y, }
+\item[{logical}]{period\-\_\-z, }
+\item[{integer, dimension(nx,ny,nz)}]{states, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{integer, dimension(nx,ny,nz)}]{trapping\-\_\-times}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__trapping_ac68c2a85f2c927eff8877a721a977aa8}
+
+
+\-This functions returns the times at which the sites got trapped. \-This function is for cubic lattices. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-November 14, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em period\-\_\-x} & logical flag for periodic boundaries in the x direction \\
+\hline
+{\em period\-\_\-y} & logical flag for periodic boundaries in the y direction \\
+\hline
+{\em period\-\_\-z} & logical flag for periodic boundaries in the z direction \\
+\hline
+{\em states} & \-Array containing the sites's states ({\bfseries input/{\bfseries output})} \par
+ \-The state of trapped sites is updated to {\bfseries state(i)=trapped} \\
+\hline
+{\em invasion\-\_\-list} & \-List of invaded sites sorted in chronological order ({\bfseries input}) \\
+\hline
+{\em trapping\-\_\-times} & \-Array containing the times at which the sites got trapped. ({\bfseries \-Output}) \par
+ {\bfseries trapping\-\_\-times(i) = -\/1} at sites that have not been trapped \\
+\hline
+\end{DoxyParams}
+
+
+\-The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+modules/src/\hyperlink{module__trapping_8f90}{module\-\_\-trapping.\-f90}\end{DoxyCompactItemize}

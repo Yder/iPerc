@@ -1,0 +1,1281 @@
+\hypertarget{module__write__output__files_8f90_source}{
+\section{modules/src/module\-\_\-write\-\_\-output\-\_\-files.f90}
+}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{!===================================!}
+00002 \textcolor{comment}{!                                   !}
+00003 \textcolor{comment}{!                                   !}
+00004 \textcolor{comment}{!     MODULE WRITE OUTPUT FILES     !}
+00005 \textcolor{comment}{!                                   !}
+00006 \textcolor{comment}{!                                   !}
+00007 \textcolor{comment}{!===================================!}
+00008 \textcolor{comment}{!}
+\hypertarget{module__write__output__files_8f90_source_l00017}{}\hyperlink{classmodule__write__output__files}{00017} \textcolor{keyword}{module} \hyperlink{classmodule__write__output__files}{module_write_output_files}
+00018 \textcolor{comment}{!===============================}
+00019 \textcolor{comment}{!}
+00020 use \textcolor{keywordflow}{module\_cubic\_indices}
+00021 \textcolor{comment}{!}
+00022 \textcolor{keyword}{contains}
+00023 \textcolor{comment}{!}
+\hypertarget{module__write__output__files_8f90_source_l00032}{}\hyperlink{classmodule__write__output__files_a390b751aaed5db2d8f1fe646fc9a0feb}{00032} \textcolor{keyword}{subroutine }write\_arbitrary\_lattice\_to\_vtk(n\_sites,         &
+00033                                           states,          &
+00034                                           values,          &
+00035                                           n\_sites\_invaded, &
+00036                                           invasion\_list,   &
+00037                                           offsets,         &
+00038                                           connectivity,    &
+00039                                           x,y,z,           &
+00040                                           file\_name,       &
+00041                                           unit\_vtk         )  
+00042 \textcolor{comment}{!-----------------------------------------------------------}
+00043 \textcolor{comment}{!}
+00044 \textcolor{keyword}{implicit none}
+00045 \textcolor{comment}{!}
+00046 \textcolor{keywordtype}{integer} :: n\_sites \textcolor{comment}{!< Total number of sites in the lattice (\(\backslash\)b Input)}
+00047 
+00048 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)} :: states
+00049 
+00050 \textcolor{keywordtype}{real},    \textcolor{keywordtype}{dimension(:)} :: values 
+00051 \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{!< number of sites invaded}
+00052 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)} :: invasion\_list \textcolor{comment}{!< list of invaded sites}
+00053 
+00055 \textcolor{keywordtype}{integer} :: offsets(:)
+00056 
+00061 \textcolor{keywordtype}{integer} :: connectivity(:)
+00062 \textcolor{comment}{!}
+00063 \textcolor{keywordtype}{real},\textcolor{keywordtype}{dimension(:)} :: x \textcolor{comment}{!< Array containing the x coordinates of the sites (\(\backslash\)b
+       Input)}
+00064 \textcolor{keywordtype}{real},\textcolor{keywordtype}{dimension(:)} :: y \textcolor{comment}{!< Array containing the y coordinates of the sites (\(\backslash\)b
+       Input)}
+00065 \textcolor{keywordtype}{real},\textcolor{keywordtype}{dimension(:)} :: z \textcolor{comment}{!< Array containing the z coordinates of the sites (\(\backslash\)b
+       Input)}
+00066 \textcolor{comment}{!}
+00067 \textcolor{keywordtype}{character(len=*)} :: file\_name \textcolor{comment}{!< Output file name, must have the.vtu extension
+       (\(\backslash\)b Input)}
+00068 \textcolor{keywordtype}{integer} :: unit\_vtk \textcolor{comment}{!< logical unit for output file (\(\backslash\)b Input)}
+00069 \textcolor{comment}{!}
+00070 \textcolor{comment}{! internal variables}
+00071 \textcolor{comment}{!}
+00072 \textcolor{keywordtype}{integer} :: e\_io
+00073 \textcolor{keywordtype}{integer} :: i, j, k, l, n, n\_cells
+00074 \textcolor{keywordtype}{integer} :: dim\_arrays, offset
+00075 \textcolor{keywordtype}{character(1)}, \textcolor{keywordtype}{parameter}:: end\_rec = char(10)
+00076 \textcolor{keywordtype}{character*20} :: cnc, cnp, coffset
+00077 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:,:)}, \textcolor{keywordtype}{allocatable} :: connectivity\_vtk
+00078 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)}, \textcolor{keywordtype}{allocatable} :: invasion\_times
+00079 \textcolor{keywordtype}{character(len=100)} :: file\_name\_vtk
+00080 \textcolor{comment}{!}
+00081 \textcolor{comment}{! find number of bonds (cells)}
+00082 \textcolor{comment}{!}
+00083 n\_cells = 0
+00084 \textcolor{comment}{!}
+00085 \textcolor{keyword}{do} i = 1,n\_sites
+00086    j = offsets(i)
+00087    n\_cells = n\_cells+connectivity(j)
+00088 \textcolor{keyword}{enddo}
+00089 \textcolor{comment}{!}
+00090 n\_cells = n\_cells/2
+00091 \textcolor{comment}{!}
+00092 \textcolor{comment}{! store connectivity info}
+00093 \textcolor{comment}{!}
+00094 \textcolor{comment}{! ... allocate memory}
+00095 \textcolor{comment}{!}
+00096 \textcolor{keyword}{allocate}(connectivity\_vtk(n\_cells,2))
+00097 \textcolor{keyword}{allocate}(invasion\_times(n\_sites))
+00098 \textcolor{comment}{!}
+00099 n\_cells = 0
+00100 \textcolor{comment}{!}
+00101 \textcolor{keyword}{do} i = 1,n\_sites
+00102    k = offsets(i)
+00103    n = connectivity(k)
+00104    \textcolor{keyword}{do} j = k+1,k+n
+00105       \textcolor{keyword}{if}(i<connectivity(j))\textcolor{keyword}{then}
+00106          n\_cells = n\_cells+1
+00107          connectivity\_vtk(n\_cells,1) = i
+00108          \textcolor{comment}{!connectivity\_vtk(n\_cells,2) = connectivity(j)}
+00109       \textcolor{keyword}{endif}
+00110    \textcolor{keyword}{enddo}
+00111 \textcolor{keyword}{enddo}
+00112 \textcolor{comment}{!}
+00113 \textcolor{comment}{! convert integer values to strings}
+00114 \textcolor{comment}{!}
+00115 \textcolor{keyword}{write}(cnc,*)n\_cells
+00116 \textcolor{keyword}{write}(cnp,*)n\_sites
+00117 \textcolor{comment}{!}
+00118 \textcolor{comment}{! fill invasion times array}
+00119 \textcolor{comment}{!}
+00120 invasion\_times(:) = -1 \textcolor{comment}{! set negative time to undinvaded sites}
+00121 \textcolor{keyword}{do} i = 1,n\_sites\_invaded
+00122    invasion\_times(invasion\_list(i)) = i
+00123 \textcolor{keyword}{enddo}
+00124 \textcolor{comment}{!}
+00125 \textcolor{comment}{! open output file (add extension if not present)}
+00126 \textcolor{comment}{!}
+00127 file\_name\_vtk = trim(adjustl(file\_name))
+00128 l = len\_trim(file\_name\_vtk)
+00129 \textcolor{keyword}{if}(file\_name\_vtk(l-3:l) /= \textcolor{stringliteral}{'.vtu'})\textcolor{keyword}{then}
+00130    file\_name\_vtk(l+1:l+4) = \textcolor{stringliteral}{'.vtu'}
+00131 \textcolor{keyword}{endif}
+00132 \textcolor{comment}{!}
+00133 \textcolor{keyword}{open}(unit       = unit\_vtk,            &
+00134      file       = trim(file\_name\_vtk), &
+00135      form       = \textcolor{stringliteral}{'unformatted'},       &
+00136      access     = \textcolor{stringliteral}{'stream'},            &
+00137      action     = \textcolor{stringliteral}{'write'},             &
+00138      status     = \textcolor{stringliteral}{'replace'},           &
+00139      convert    = \textcolor{stringliteral}{'little\_endian'},     &
+00140      iostat     = e\_io                 )
+00141 \textcolor{comment}{!}
+00142 \textcolor{comment}{! init offset for appended data}
+00143 \textcolor{comment}{!}
+00144 offset = 0
+00145 \textcolor{comment}{!}
+00146 \textcolor{comment}{! write header}
+00147 \textcolor{comment}{!}
+00148 \textcolor{keyword}{write}(unit=Unit\_VTK,iostat=E\_IO)\textcolor{stringliteral}{'<?xml version = "1.0"?>'}//end\_rec
+00149 \textcolor{keyword}{write}(unit=Unit\_VTK,iostat=E\_IO)  \textcolor{stringliteral}{'<VTKFile'}                  &
+00150                                 //\textcolor{stringliteral}{' type = "UnstructuredGrid"'}&
+00151                                 //\textcolor{stringliteral}{' version="0.1"'}            &
+00152                                 //\textcolor{stringliteral}{' byte\_order="LittleEndian"'}&
+00153                                 //\textcolor{stringliteral}{'>'}//end\_rec
+00154 \textcolor{comment}{!}
+00155 \textcolor{comment}{! start unstructured grid infos}
+00156 \textcolor{comment}{!}
+00157 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<UnstructuredGrid>'}//end\_rec
+00158 \textcolor{comment}{!}
+00159 \textcolor{comment}{! start piece infos}
+00160 \textcolor{comment}{!}
+00161 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)  \textcolor{stringliteral}{'<Piece'}                    &
+00162                                 //\textcolor{stringliteral}{' NumberOfPoints='}          &
+00163                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(cnp))//\textcolor{stringliteral}{'"'}&
+00164                                 //\textcolor{stringliteral}{' NumberOfCells='}           &
+00165                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(cnc))//\textcolor{stringliteral}{'"'}&
+00166                                 //\textcolor{stringliteral}{'>'}//end\_rec
+00167 \textcolor{comment}{!}
+00168 \textcolor{comment}{! start point data infos }
+00169 \textcolor{comment}{!}
+00170 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<PointData>'}//end\_rec
+00171 \textcolor{comment}{!}
+00172 \textcolor{comment}{! ... states data infos}
+00173 \textcolor{comment}{!}
+00174 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00175 \textcolor{comment}{!}
+00176 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray'}                      &
+00177                                 //\textcolor{stringliteral}{' type="Int32" '}                &
+00178                                 //\textcolor{stringliteral}{' NumberOfComponents="1"'}       &
+00179                                 //\textcolor{stringliteral}{' Name="states"'}                &
+00180                                 //\textcolor{stringliteral}{' format="appended"'}            &
+00181                                 //\textcolor{stringliteral}{' offset='}                      &
+00182                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'"'}&
+00183                                 //\textcolor{stringliteral}{'/>'}//end\_rec
+00184 \textcolor{comment}{!}
+00185 offset = offset+int(sizeof(states(1:n\_sites))+sizeof(i))
+00186 \textcolor{comment}{!}
+00187 \textcolor{comment}{! ... values data infos}
+00188 \textcolor{comment}{!}
+00189 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00190 \textcolor{comment}{!}
+00191 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray'}                      &
+00192                                 //\textcolor{stringliteral}{' type="Float32" '}              &
+00193                                 //\textcolor{stringliteral}{' NumberOfComponents="1"'}       &
+00194                                 //\textcolor{stringliteral}{' Name="values"'}                &
+00195                                 //\textcolor{stringliteral}{' format="appended"'}            &
+00196                                 //\textcolor{stringliteral}{' offset='}                      &
+00197                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'"'}&
+00198                                 //\textcolor{stringliteral}{'/>'}//end\_rec
+00199 \textcolor{comment}{!}
+00200 offset = offset+int(sizeof(values(1:n\_sites))+sizeof(i))
+00201 
+00202 \textcolor{comment}{!}
+00203 \textcolor{comment}{! ... invasion time data infos}
+00204 \textcolor{comment}{!}
+00205 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00206 \textcolor{comment}{!}
+00207 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray'}                      &
+00208                                 //\textcolor{stringliteral}{' type="Int32" '}              &
+00209                                 //\textcolor{stringliteral}{' NumberOfComponents="1"'}       &
+00210                                 //\textcolor{stringliteral}{' Name="invasion times"'}                &
+00211                                 //\textcolor{stringliteral}{' format="appended"'}            &
+00212                                 //\textcolor{stringliteral}{' offset='}                      &
+00213                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'"'}&
+00214                                 //\textcolor{stringliteral}{'/>'}//end\_rec
+00215 \textcolor{comment}{!}
+00216 offset = offset+int(sizeof(invasion\_times(1:n\_sites))+sizeof(i))
+00217 \textcolor{comment}{!}
+00218 \textcolor{comment}{! end point data infos}
+00219 \textcolor{comment}{!}
+00220 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</PointData>'}//end\_rec
+00221 \textcolor{comment}{!}
+00222 \textcolor{comment}{! start points infos}
+00223 \textcolor{comment}{!}
+00224 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<Points>'}//end\_rec
+00225 \textcolor{comment}{!}
+00226 \textcolor{comment}{! ... points coordinates infos}
+00227 \textcolor{comment}{!}
+00228 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00229 \textcolor{comment}{!}
+00230 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray'}                      &
+00231                                 //\textcolor{stringliteral}{' type="Float32" '}              &
+00232                                 //\textcolor{stringliteral}{' NumberOfComponents="3"'}       &
+00233                                 //\textcolor{stringliteral}{' Name="Points"'}                &
+00234                                 //\textcolor{stringliteral}{' format="appended"'}            &
+00235                                 //\textcolor{stringliteral}{' offset='}                      &
+00236                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'"'}&
+00237                                 //\textcolor{stringliteral}{'/>'}//end\_rec
+00238 \textcolor{comment}{!}
+00239 offset = offset+int(sizeof(x(1:n\_sites))&
+00240                +    sizeof(y(1:n\_sites))&
+00241                +    sizeof(z(1:n\_sites))&
+00242                +    sizeof(i))
+00243 \textcolor{comment}{!}
+00244 \textcolor{comment}{! end points info}
+00245 \textcolor{comment}{!}
+00246 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</Points>'}//end\_rec
+00247 \textcolor{comment}{!}
+00248 \textcolor{comment}{! start cells infos}
+00249 \textcolor{comment}{!}
+00250 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<Cells>'}//end\_rec
+00251 \textcolor{comment}{!}
+00252 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00253 \textcolor{comment}{!}
+00254 \textcolor{comment}{! ... cells connectivity}
+00255 \textcolor{comment}{!}
+00256 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray'}                      &
+00257                                 //\textcolor{stringliteral}{' type="Int32" '}                &
+00258                                 //\textcolor{stringliteral}{' Name="connectivity"'}          &
+00259                                 //\textcolor{stringliteral}{' format="appended"'}            &
+00260                                 //\textcolor{stringliteral}{' offset='}                      &
+00261                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'"'}&
+00262                                 //\textcolor{stringliteral}{'/>'}//end\_rec
+00263 \textcolor{comment}{!}
+00264 offset = offset+int(sizeof(connectivity\_vtk(:,1))+sizeof(i))
+00265 \textcolor{comment}{!}
+00266 \textcolor{comment}{! ... cells offsets}
+00267 \textcolor{comment}{!}
+00268 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00269 \textcolor{comment}{!}
+00270 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray'}                      &
+00271                                 //\textcolor{stringliteral}{' type="Int32" '}                &
+00272                                 //\textcolor{stringliteral}{' Name="offsets"'}               &
+00273                                 //\textcolor{stringliteral}{' format="appended"'}            &
+00274                                 //\textcolor{stringliteral}{' offset='}                      &
+00275                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'"'}&
+00276                                 //\textcolor{stringliteral}{'/>'}//end\_rec
+00277 \textcolor{comment}{!}
+00278 offset = offset+int(sizeof(connectivity\_vtk(:,1))+sizeof(i))
+00279 \textcolor{comment}{!}
+00280 \textcolor{comment}{! ... cells types}
+00281 \textcolor{comment}{!}
+00282 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00283 \textcolor{comment}{!}
+00284 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray'}                      &
+00285                                 //\textcolor{stringliteral}{' type="Int32" '}                &
+00286                                 //\textcolor{stringliteral}{' Name="types"'}                 &
+00287                                 //\textcolor{stringliteral}{' format="appended"'}            &
+00288                                 //\textcolor{stringliteral}{' offset='}                      &
+00289                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'"'}&
+00290                                 //\textcolor{stringliteral}{'/>'}//end\_rec
+00291 \textcolor{comment}{!}
+00292 offset = offset+int(sizeof(connectivity\_vtk(:,1))+sizeof(i))
+00293 \textcolor{comment}{!}
+00294 \textcolor{comment}{! end cells infos}
+00295 \textcolor{comment}{!}
+00296 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</Cells>'}//end\_rec
+00297 \textcolor{comment}{!}
+00298 \textcolor{comment}{! start piece infos}
+00299 \textcolor{comment}{!}
+00300 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</Piece>'}//end\_rec
+00301 \textcolor{comment}{!}
+00302 \textcolor{comment}{! start unstructured grid infos}
+00303 \textcolor{comment}{!}
+00304 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</UnstructuredGrid>'}//end\_rec
+00305 \textcolor{comment}{!}
+00306 \textcolor{comment}{! appended data infos}
+00307 \textcolor{comment}{!}
+00308 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<AppendedData encoding="raw">'}//end\_rec
+00309 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'\_'}
+00310 \textcolor{comment}{!}
+00311 \textcolor{comment}{! append data }
+00312 \textcolor{comment}{!}
+00313 \textcolor{comment}{! ... sites's states}
+00314 \textcolor{comment}{!}
+00315 dim\_arrays = int(sizeof(states(1:n\_sites)))
+00316 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00317 \textcolor{keyword}{do} i = 1,n\_sites
+00318    \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)states(i)
+00319 \textcolor{keyword}{enddo}
+00320 \textcolor{comment}{!}
+00321 \textcolor{comment}{! ... sites's values}
+00322 \textcolor{comment}{!}
+00323 dim\_arrays = int(sizeof(values(1:n\_sites)))
+00324 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00325 \textcolor{keyword}{do} i = 1,n\_sites
+00326    \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)values(i)
+00327 \textcolor{keyword}{enddo}
+00328 \textcolor{comment}{!}
+00329 \textcolor{comment}{! ... sites's values}
+00330 \textcolor{comment}{!}
+00331 dim\_arrays = int(sizeof(invasion\_times(1:n\_sites)))
+00332 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00333 \textcolor{keyword}{do} i = 1,n\_sites
+00334    \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)invasion\_times(i)
+00335 \textcolor{keyword}{enddo}
+00336 \textcolor{comment}{!}
+00337 \textcolor{comment}{! ... sites's coordinates}
+00338 \textcolor{comment}{!}
+00339 dim\_arrays =  int( sizeof(x(1:n\_sites)) &
+00340                  + sizeof(y(1:n\_sites)) &
+00341                  + sizeof(z(1:n\_sites)))
+00342 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00343 \textcolor{keyword}{do} i = 1,n\_sites
+00344    \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)x(i),y(i),z(i)
+00345 \textcolor{keyword}{enddo}
+00346 \textcolor{comment}{!}
+00347 \textcolor{comment}{! ... cells's connectivity}
+00348 \textcolor{comment}{!}
+00349 dim\_arrays = int(sizeof(connectivity\_vtk(:,:)))
+00350 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00351 \textcolor{keyword}{do} i = 1,n\_cells
+00352    \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)connectivity\_vtk(i,1)-1
+00353    \textcolor{comment}{!write(unit=unit\_vtk,iostat=e\_io)connectivity\_vtk(i,2)-1}
+00354 \textcolor{keyword}{enddo}
+00355 \textcolor{comment}{!}
+00356 \textcolor{comment}{! ... cells's offsets}
+00357 \textcolor{comment}{!}
+00358 dim\_arrays = int(sizeof(connectivity\_vtk(:,1)))
+00359 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00360 \textcolor{keyword}{do} i = 1,n\_cells
+00361    \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)i
+00362 \textcolor{keyword}{enddo}
+00363 \textcolor{comment}{!}
+00364 \textcolor{comment}{! ... cells's types}
+00365 \textcolor{comment}{!}
+00366 dim\_arrays = int(sizeof(connectivity\_vtk(:,1)))
+00367 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00368 \textcolor{keyword}{do} i = 1,n\_cells
+00369    \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)1
+00370 \textcolor{keyword}{enddo}
+00371 \textcolor{comment}{!}
+00372 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)end\_rec
+00373 \textcolor{comment}{!}
+00374 \textcolor{comment}{! end appended data infos}
+00375 \textcolor{comment}{!}
+00376 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</AppendedData>'}//end\_rec
+00377 \textcolor{comment}{!}
+00378 \textcolor{comment}{! write footer}
+00379 \textcolor{comment}{!}
+00380 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</VTKFile>'}//end\_rec
+00381 \textcolor{comment}{!}
+00382 \textcolor{comment}{! close file}
+00383 \textcolor{comment}{!}
+00384 \textcolor{keyword}{close}(unit=unit\_vtk)
+00385 \textcolor{comment}{!}
+00386 \textcolor{keyword}{deallocate}(invasion\_times,connectivity\_vtk)
+00387 \textcolor{comment}{!}
+00388 return
+00389 \textcolor{comment}{!}
+00390 \textcolor{comment}{!--------------------------------------------}
+00391 \textcolor{keyword}{end subroutine write\_arbitrary\_lattice\_to\_vtk}
+00392 \textcolor{comment}{!--------------------------------------------}
+00393 \textcolor{comment}{!}
+\hypertarget{module__write__output__files_8f90_source_l00400}{}\hyperlink{classmodule__write__output__files_aaae23a8830c6c214bab18a1f35d4fc04}{00400} \textcolor{keyword}{subroutine }write\_cubic\_lattice\_to\_vtk\_cells(states,          &
+00401                                             values,          &
+00402                                             n\_sites\_invaded, &
+00403                                             invasion\_list,   &
+00404                                             nx,ny,nz,        &
+00405                                             dx,dy,dz,        &
+00406                                             file\_name,       &
+00407                                             unit\_vtk         )
+00408 \textcolor{comment}{!-------------------------------------------------------------}
+00409 \textcolor{comment}{!}
+00410 \textcolor{keyword}{implicit none}
+00411 \textcolor{comment}{!}
+00413 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(nx,ny,nz)} :: values
+00414 
+00415 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(nx,ny,nz)} :: states
+00416 \textcolor{comment}{!}
+00417 \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{!< number of sites invaded}
+00418 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)} :: invasion\_list \textcolor{comment}{!< list of invaded sites}
+00419 \textcolor{comment}{!}
+00420 \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< grid dimension in the x direction (\(\backslash\)b Input)}
+00421 \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< grid dimension in the y direction (\(\backslash\)b Input)}
+00422 \textcolor{keywordtype}{integer} :: nz \textcolor{comment}{!< grid dimension in the z direction (\(\backslash\)b Input)}
+00423 \textcolor{comment}{!}
+00424 \textcolor{keywordtype}{real} :: dx \textcolor{comment}{!< grid spacing in the x direction (\(\backslash\)b Input)}
+00425 \textcolor{keywordtype}{real} :: dy \textcolor{comment}{!< grid spacing in the y direction (\(\backslash\)b Input)}
+00426 \textcolor{keywordtype}{real} :: dz \textcolor{comment}{!< grid spacing in the z direction (\(\backslash\)b Input)}
+00427 \textcolor{comment}{!}
+00428 \textcolor{keywordtype}{character(len=*)} :: file\_name \textcolor{comment}{!< Output file name, must have the.vtu extension
+       (\(\backslash\)b Input)}
+00429 \textcolor{keywordtype}{integer} :: unit\_vtk \textcolor{comment}{!< logical unit for output file (\(\backslash\)b Input)}
+00430 \textcolor{comment}{!}
+00431 \textcolor{comment}{! internal variables}
+00432 \textcolor{comment}{!}
+00433 \textcolor{keywordtype}{integer} :: e\_io
+00434 \textcolor{keywordtype}{integer} :: i, j, k, l, n
+00435 \textcolor{keywordtype}{integer} :: x1, x2, y1, y2, z1, z2
+00436 \textcolor{keywordtype}{integer} :: dim\_arrays, offset
+00437 \textcolor{keywordtype}{character(1)}, \textcolor{keywordtype}{parameter}:: end\_rec = char(10)
+00438 \textcolor{keywordtype}{character*20} :: cx1, cx2, cy1, cy2, cz1, cz2, cdx, cdy, cdz, coffset
+00439 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(nx,ny,nz)} :: invasion\_times
+00440 \textcolor{keywordtype}{character(len=100)} :: file\_name\_vtk
+00441 \textcolor{comment}{!}
+00442 \textcolor{comment}{! fill invasion times array}
+00443 \textcolor{comment}{!}
+00444 invasion\_times(:,:,:) = -1 \textcolor{comment}{! set negative time to undinvaded sites}
+00445 \textcolor{keyword}{do} n = 1,n\_sites\_invaded
+00446    call ind2ijk(nx,ny,invasion\_list(n),i,j,k)
+00447    invasion\_times(i,j,k) = n
+00448 \textcolor{keyword}{enddo}
+00449 \textcolor{comment}{!}
+00450 x1 = 1
+00451 x2 = nx
+00452 y1 = 1
+00453 y2 = ny
+00454 z1 = 1
+00455 z2 = nz
+00456 \textcolor{comment}{!}
+00457 \textcolor{comment}{! convert integers to strings}
+00458 \textcolor{comment}{!}
+00459 \textcolor{keyword}{write}(cx1,\textcolor{stringliteral}{'(i10)'})x1
+00460 \textcolor{keyword}{write}(cx2,\textcolor{stringliteral}{'(i10)'})x2+1
+00461 \textcolor{keyword}{write}(cy1,\textcolor{stringliteral}{'(i10)'})y1
+00462 \textcolor{keyword}{write}(cy2,\textcolor{stringliteral}{'(i10)'})y2+1
+00463 \textcolor{keyword}{write}(cz1,\textcolor{stringliteral}{'(i10)'})z1
+00464 \textcolor{keyword}{write}(cz2,\textcolor{stringliteral}{'(i10)'})z2+1
+00465 \textcolor{comment}{!}
+00466 \textcolor{keyword}{write}(cdx,*)dx
+00467 \textcolor{keyword}{write}(cdy,*)dy
+00468 \textcolor{keyword}{write}(cdz,*)dz
+00469 \textcolor{comment}{!}
+00470 \textcolor{comment}{! open output file (add extension if not present)}
+00471 \textcolor{comment}{!}
+00472 file\_name\_vtk = trim(adjustl(file\_name))
+00473 l = len\_trim(file\_name\_vtk)
+00474 \textcolor{keyword}{if}(file\_name\_vtk(l-3:l) /= \textcolor{stringliteral}{'.vti'})\textcolor{keyword}{then}
+00475    file\_name\_vtk(l+1:l+4) = \textcolor{stringliteral}{'.vti'}
+00476 \textcolor{keyword}{endif}
+00477 \textcolor{comment}{!}
+00478 \textcolor{keyword}{open}(unit       = unit\_vtk,            &
+00479      file       = trim(file\_name\_vtk), &
+00480      form       = \textcolor{stringliteral}{'unformatted'},       &
+00481      access     = \textcolor{stringliteral}{'stream'},            &
+00482      action     = \textcolor{stringliteral}{'write'},             &
+00483      status     = \textcolor{stringliteral}{'replace'},           &
+00484      convert    = \textcolor{stringliteral}{'little\_endian'},     &
+00485      iostat     = e\_io)
+00486 \textcolor{comment}{!}
+00487 offset = 0
+00488 \textcolor{comment}{!}
+00489 \textcolor{comment}{! write header}
+00490 \textcolor{comment}{!}
+00491 \textcolor{keyword}{write}(unit=Unit\_VTK,iostat=E\_IO)\textcolor{stringliteral}{'<?xml version = "1.0"?>'}//end\_rec
+00492 \textcolor{keyword}{write}(unit=Unit\_VTK,iostat=E\_IO)  \textcolor{stringliteral}{'<VTKFile'}                  &
+00493                                 //\textcolor{stringliteral}{' type = "ImageData"'}&
+00494                                 //\textcolor{stringliteral}{' version="0.1"'}            &
+00495                                 //\textcolor{stringliteral}{' byte\_order="LittleEndian"'}&
+00496                                 //\textcolor{stringliteral}{'>'}//end\_rec
+00497 \textcolor{comment}{!}
+00498 \textcolor{comment}{! ... grid info}
+00499 \textcolor{comment}{!}
+00500 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<ImageData WholeExtent="'}  &
+00501                                    //trim(adjustl(cx1))//\textcolor{stringliteral}{' '}&
+00502                                    //trim(adjustl(cx2))//\textcolor{stringliteral}{' '}&
+00503                                    //trim(adjustl(cy1))//\textcolor{stringliteral}{' '}&
+00504                                    //trim(adjustl(cy2))//\textcolor{stringliteral}{' '}&
+00505                                    //trim(adjustl(cz1))//\textcolor{stringliteral}{' '}&
+00506                                    //trim(adjustl(cz2))//   &
+00507                                    \textcolor{stringliteral}{'" Origin="0 0 0"'}//     &
+00508                                    \textcolor{stringliteral}{' Spacing="'}             &
+00509                                    //trim(adjustl(cdx))//\textcolor{stringliteral}{' '}&
+00510                                    //trim(adjustl(cdy))//\textcolor{stringliteral}{' '}&
+00511                                    //trim(adjustl(cdz))//   &
+00512                                    \textcolor{stringliteral}{'">'}//end\_rec
+00513 \textcolor{comment}{!}
+00514 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<Piece Extent="'}           &
+00515                                    //trim(adjustl(cx1))//\textcolor{stringliteral}{' '}&
+00516                                    //trim(adjustl(cx2))//\textcolor{stringliteral}{' '}&
+00517                                    //trim(adjustl(cy1))//\textcolor{stringliteral}{' '}&
+00518                                    //trim(adjustl(cy2))//\textcolor{stringliteral}{' '}&
+00519                                    //trim(adjustl(cz1))//\textcolor{stringliteral}{' '}&
+00520                                    //trim(adjustl(cz2))//\textcolor{stringliteral}{'">'}//end\_rec
+00521 \textcolor{comment}{!}
+00522 \textcolor{comment}{! ... cells states infos}
+00523 \textcolor{comment}{!}
+00524 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<CellData>'}//end\_rec
+00525 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00526 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray type="Int32" Name="states"'}&
+00527 &,\textcolor{stringliteral}{' format="appended" offset="'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'" />'}//end\_rec
+00528 offset = offset+int(sizeof(states)+sizeof(i))
+00529 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00530 \textcolor{comment}{!}
+00531 \textcolor{comment}{! ... cells values infos}
+00532 \textcolor{comment}{!}
+00533 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray type="Float32" Name="values"'}&
+00534 &,\textcolor{stringliteral}{' format="appended" offset="'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'" />'}//end\_rec
+00535 offset = offset+int(sizeof(values)+sizeof(i))
+00536 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00537 \textcolor{comment}{!}
+00538 \textcolor{comment}{! ... cells invasion times infos}
+00539 \textcolor{comment}{!}
+00540 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray type="Int32" Name="invasion times"'}
+      &
+00541 &,\textcolor{stringliteral}{' format="appended" offset="'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'" />'}//end\_rec
+00542 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</CellData>'}//end\_rec
+00543 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</Piece>'}//end\_rec
+00544 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</ImageData>'}//end\_rec
+00545 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<AppendedData encoding="raw">'}//end\_rec
+00546 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'\_'}
+00547 \textcolor{comment}{!}
+00548 \textcolor{comment}{! write data }
+00549 \textcolor{comment}{!}
+00550 \textcolor{comment}{! ... states}
+00551 \textcolor{comment}{!}
+00552 dim\_arrays = int(sizeof(states))
+00553 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00554 \textcolor{keyword}{do} k = z1,z2
+00555    \textcolor{keyword}{do} j = y1,y2
+00556       \textcolor{keyword}{do} i = x1,x2
+00557          \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)states(i,j,k)
+00558       \textcolor{keyword}{enddo}
+00559    \textcolor{keyword}{enddo}
+00560 \textcolor{keyword}{enddo}
+00561 \textcolor{comment}{!}
+00562 \textcolor{comment}{! ... values}
+00563 \textcolor{comment}{!}
+00564 dim\_arrays = int(sizeof(values))
+00565 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00566 \textcolor{keyword}{do} k = z1,z2
+00567    \textcolor{keyword}{do} j = y1,y2
+00568       \textcolor{keyword}{do} i = x1,x2
+00569          \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)values(i,j,k)
+00570       \textcolor{keyword}{enddo}
+00571    \textcolor{keyword}{enddo}
+00572 \textcolor{keyword}{enddo}
+00573 \textcolor{comment}{!}
+00574 \textcolor{comment}{! ... invasion times}
+00575 \textcolor{comment}{!}
+00576 dim\_arrays = int(sizeof(invasion\_times))
+00577 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00578 \textcolor{keyword}{do} k = z1,z2
+00579    \textcolor{keyword}{do} j = y1,y2
+00580       \textcolor{keyword}{do} i = x1,x2
+00581          \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)invasion\_times(i,j,k)
+00582       \textcolor{keyword}{enddo}
+00583    \textcolor{keyword}{enddo}
+00584 \textcolor{keyword}{enddo}
+00585 \textcolor{comment}{!}
+00586 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)end\_rec
+00587 \textcolor{comment}{!}
+00588 \textcolor{comment}{! write footer}
+00589 \textcolor{comment}{!}
+00590 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</AppendedData>'}//end\_rec
+00591 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</VTKFile>'}//end\_rec
+00592 \textcolor{comment}{!}
+00593 \textcolor{comment}{! close file}
+00594 \textcolor{comment}{!}
+00595 \textcolor{keyword}{close}(unit=unit\_vtk)
+00596 \textcolor{comment}{!}
+00597 return
+00598 \textcolor{comment}{!}
+00599 \textcolor{comment}{!----------------------------------------------}
+00600 \textcolor{keyword}{end subroutine write\_cubic\_lattice\_to\_vtk\_cells}
+00601 \textcolor{comment}{!----------------------------------------------}
+00602 \textcolor{comment}{!}
+\hypertarget{module__write__output__files_8f90_source_l00610}{}\hyperlink{classmodule__write__output__files_a552d5ba3b776310f45eabf5f2df4f9c2}{00610} \textcolor{keyword}{subroutine }write\_cubic\_lattice\_to\_vtk\_points(states,          &
+00611                                              values,          &
+00612                                              n\_sites\_invaded, &
+00613                                              invasion\_list,   &
+00614                                              nx,ny,nz,        &
+00615                                              dx,dy,dz,        &
+00616                                              file\_name,       &
+00617                                              unit\_vtk         )
+00618 \textcolor{comment}{!--------------------------------------------------------------}
+00619 \textcolor{comment}{!}
+00620 \textcolor{keyword}{implicit none}
+00621 \textcolor{comment}{!}
+00623 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(nx,ny,nz)} :: values 
+00624 
+00625 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(nx,ny,nz)} :: states
+00626 \textcolor{comment}{!}
+00627 \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{!< number of sites invaded}
+00628 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)} :: invasion\_list \textcolor{comment}{!< list of invaded sites}
+00629 \textcolor{comment}{!}
+00630 \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< grid dimension in the x direction (\(\backslash\)b Input)}
+00631 \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< grid dimension in the y direction (\(\backslash\)b Input)}
+00632 \textcolor{keywordtype}{integer} :: nz \textcolor{comment}{!< grid dimension in the z direction (\(\backslash\)b Input)}
+00633 \textcolor{comment}{!}
+00634 \textcolor{keywordtype}{real} :: dx \textcolor{comment}{!< grid spacing in the x direction (\(\backslash\)b Input)}
+00635 \textcolor{keywordtype}{real} :: dy \textcolor{comment}{!< grid spacing in the y direction (\(\backslash\)b Input)}
+00636 \textcolor{keywordtype}{real} :: dz \textcolor{comment}{!< grid spacing in the z direction (\(\backslash\)b Input)}
+00637 \textcolor{comment}{!}
+00638 \textcolor{keywordtype}{character(len=*)} :: file\_name \textcolor{comment}{!< Output file name, must have the.vtu extension
+       (\(\backslash\)b Input)}
+00639 \textcolor{keywordtype}{integer} :: unit\_vtk \textcolor{comment}{!< logical unit for output file (\(\backslash\)b Input)}
+00640 \textcolor{comment}{!}
+00641 \textcolor{comment}{! internal variables}
+00642 \textcolor{comment}{!}
+00643 \textcolor{keywordtype}{integer} :: e\_io
+00644 \textcolor{keywordtype}{integer} :: i, j, k, l, n
+00645 \textcolor{keywordtype}{integer} :: x1, x2, y1, y2, z1, z2
+00646 \textcolor{keywordtype}{integer} :: dim\_arrays, offset
+00647 \textcolor{keywordtype}{character(1)}, \textcolor{keywordtype}{parameter}:: end\_rec = char(10)
+00648 \textcolor{keywordtype}{character*20} :: cx1, cx2, cy1, cy2, cz1, cz2, cdx, cdy, cdz, coffset
+00649 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(nx,ny,nz)} :: invasion\_times
+00650 \textcolor{keywordtype}{character(len=100)} :: file\_name\_vtk
+00651 \textcolor{comment}{!}
+00652 \textcolor{comment}{! fill invasion times array}
+00653 \textcolor{comment}{!}
+00654 invasion\_times(:,:,:) = -1 \textcolor{comment}{! set negative time to undinvaded sites}
+00655 \textcolor{keyword}{do} n = 1,n\_sites\_invaded
+00656    call ind2ijk(nx,ny,invasion\_list(n),i,j,k)
+00657    invasion\_times(i,j,k) = n
+00658 \textcolor{keyword}{enddo}
+00659 \textcolor{comment}{!}
+00660 x1 = 1
+00661 x2 = nx
+00662 y1 = 1
+00663 y2 = ny
+00664 z1 = 1
+00665 z2 = nz
+00666 \textcolor{comment}{!}
+00667 \textcolor{comment}{! convert integers to strings}
+00668 \textcolor{comment}{!}
+00669 \textcolor{keyword}{write}(cx1,\textcolor{stringliteral}{'(i10)'})x1
+00670 \textcolor{keyword}{write}(cx2,\textcolor{stringliteral}{'(i10)'})x2
+00671 \textcolor{keyword}{write}(cy1,\textcolor{stringliteral}{'(i10)'})y1
+00672 \textcolor{keyword}{write}(cy2,\textcolor{stringliteral}{'(i10)'})y2
+00673 \textcolor{keyword}{write}(cz1,\textcolor{stringliteral}{'(i10)'})z1
+00674 \textcolor{keyword}{write}(cz2,\textcolor{stringliteral}{'(i10)'})z2
+00675 \textcolor{comment}{!}
+00676 \textcolor{keyword}{write}(cdx,*)dx
+00677 \textcolor{keyword}{write}(cdy,*)dy
+00678 \textcolor{keyword}{write}(cdz,*)dz
+00679 \textcolor{comment}{!}
+00680 \textcolor{comment}{! open output file (add extension if not present)}
+00681 \textcolor{comment}{!}
+00682 file\_name\_vtk = trim(adjustl(file\_name))
+00683 l = len\_trim(file\_name\_vtk)
+00684 \textcolor{keyword}{if}(file\_name\_vtk(l-3:l) /= \textcolor{stringliteral}{'.vti'})\textcolor{keyword}{then}
+00685    file\_name\_vtk(l+1:l+4) = \textcolor{stringliteral}{'.vti'}
+00686 \textcolor{keyword}{endif}
+00687 \textcolor{comment}{!}
+00688 \textcolor{keyword}{open}(unit       = unit\_vtk,            &
+00689      file       = trim(file\_name\_vtk), &
+00690      form       = \textcolor{stringliteral}{'unformatted'},       &
+00691      access     = \textcolor{stringliteral}{'stream'},            &
+00692      action     = \textcolor{stringliteral}{'write'},             &
+00693      status     = \textcolor{stringliteral}{'replace'},           &
+00694      convert    = \textcolor{stringliteral}{'little\_endian'},     &
+00695      iostat     = e\_io)
+00696 \textcolor{comment}{!}
+00697 offset = 0
+00698 \textcolor{comment}{!}
+00699 \textcolor{comment}{! write header}
+00700 \textcolor{comment}{!}
+00701 \textcolor{keyword}{write}(unit=Unit\_VTK,iostat=E\_IO)\textcolor{stringliteral}{'<?xml version = "1.0"?>'}//end\_rec
+00702 \textcolor{keyword}{write}(unit=Unit\_VTK,iostat=E\_IO)  \textcolor{stringliteral}{'<VTKFile'}                  &
+00703                                 //\textcolor{stringliteral}{' type = "ImageData"'}&
+00704                                 //\textcolor{stringliteral}{' version="0.1"'}            &
+00705                                 //\textcolor{stringliteral}{' byte\_order="LittleEndian"'}&
+00706                                 //\textcolor{stringliteral}{'>'}//end\_rec
+00707 \textcolor{comment}{!}
+00708 \textcolor{comment}{! ... grid info}
+00709 \textcolor{comment}{!}
+00710 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<ImageData WholeExtent="'}  &
+00711                                         //trim(adjustl(cx1))//\textcolor{stringliteral}{' '}&
+00712                                         //trim(adjustl(cx2))//\textcolor{stringliteral}{' '}&
+00713                                         //trim(adjustl(cy1))//\textcolor{stringliteral}{' '}&
+00714                                         //trim(adjustl(cy2))//\textcolor{stringliteral}{' '}&
+00715                                         //trim(adjustl(cz1))//\textcolor{stringliteral}{' '}&
+00716                                         //trim(adjustl(cz2))//   &
+00717                                         \textcolor{stringliteral}{'" Origin="0 0 0"'}//     &
+00718                                         \textcolor{stringliteral}{' Spacing="'}             &
+00719                                         //trim(adjustl(cdx))//\textcolor{stringliteral}{' '}&
+00720                                         //trim(adjustl(cdy))//\textcolor{stringliteral}{' '}&
+00721                                         //trim(adjustl(cdz))//   &
+00722                                         \textcolor{stringliteral}{'">'}//end\_rec
+00723 \textcolor{comment}{!}
+00724 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<Piece Extent="'}           &
+00725                                    //trim(adjustl(cx1))//\textcolor{stringliteral}{' '}&
+00726                                    //trim(adjustl(cx2))//\textcolor{stringliteral}{' '}&
+00727                                    //trim(adjustl(cy1))//\textcolor{stringliteral}{' '}&
+00728                                    //trim(adjustl(cy2))//\textcolor{stringliteral}{' '}&
+00729                                    //trim(adjustl(cz1))//\textcolor{stringliteral}{' '}&
+00730                                    //trim(adjustl(cz2))//\textcolor{stringliteral}{'">'}//end\_rec
+00731 \textcolor{comment}{!}
+00732 \textcolor{comment}{! ... cells states infos}
+00733 \textcolor{comment}{!}
+00734 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<PointData>'}//end\_rec
+00735 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00736 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray type="Int32" Name="states"'}&
+00737 &,\textcolor{stringliteral}{' format="appended" offset="'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'" />'}//end\_rec
+00738 offset = offset+int(sizeof(states)+sizeof(i))
+00739 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00740 \textcolor{comment}{!}
+00741 \textcolor{comment}{! ... cells value infos}
+00742 \textcolor{comment}{!}
+00743 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray type="Float32" Name="values"'}&
+00744 &,\textcolor{stringliteral}{' format="appended" offset="'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'" />'}//end\_rec
+00745 offset = offset+int(sizeof(values)+sizeof(i))
+00746 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+00747 \textcolor{comment}{!}
+00748 \textcolor{comment}{! ... cells values infos}
+00749 \textcolor{comment}{!}
+00750 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray type="Int32" Name="invasion times"'}
+      &
+00751 &,\textcolor{stringliteral}{' format="appended" offset="'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'" />'}//end\_rec
+00752 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</PointData>'}//end\_rec
+00753 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</Piece>'}//end\_rec
+00754 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</ImageData>'}//end\_rec
+00755 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<AppendedData encoding="raw">'}//end\_rec
+00756 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'\_'}
+00757 \textcolor{comment}{!}
+00758 \textcolor{comment}{! write data }
+00759 \textcolor{comment}{!}
+00760 \textcolor{comment}{! ... states}
+00761 \textcolor{comment}{!}
+00762 dim\_arrays = int(sizeof(states))
+00763 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00764 \textcolor{keyword}{do} k = z1,z2
+00765    \textcolor{keyword}{do} j = y1,y2
+00766       \textcolor{keyword}{do} i = x1,x2
+00767          \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)states(i,j,k)
+00768       \textcolor{keyword}{enddo}
+00769    \textcolor{keyword}{enddo}
+00770 \textcolor{keyword}{enddo}
+00771 \textcolor{comment}{!}
+00772 \textcolor{comment}{! ... values}
+00773 \textcolor{comment}{!}
+00774 dim\_arrays = int(sizeof(values))
+00775 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00776 \textcolor{keyword}{do} k = z1,z2
+00777    \textcolor{keyword}{do} j = y1,y2
+00778       \textcolor{keyword}{do} i = x1,x2
+00779          \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)values(i,j,k)
+00780       \textcolor{keyword}{enddo}
+00781    \textcolor{keyword}{enddo}
+00782 \textcolor{keyword}{enddo}
+00783 \textcolor{comment}{!}
+00784 \textcolor{comment}{! ... invasion times}
+00785 \textcolor{comment}{!}
+00786 dim\_arrays = int(sizeof(invasion\_times))
+00787 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+00788 \textcolor{keyword}{do} k = z1,z2
+00789    \textcolor{keyword}{do} j = y1,y2
+00790       \textcolor{keyword}{do} i = x1,x2
+00791          \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)invasion\_times(i,j,k)
+00792       \textcolor{keyword}{enddo}
+00793    \textcolor{keyword}{enddo}
+00794 \textcolor{keyword}{enddo}
+00795 \textcolor{comment}{!}
+00796 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)end\_rec
+00797 \textcolor{comment}{!}
+00798 \textcolor{comment}{! write footer}
+00799 \textcolor{comment}{!}
+00800 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</AppendedData>'}//end\_rec
+00801 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</VTKFile>'}//end\_rec
+00802 \textcolor{comment}{!}
+00803 \textcolor{comment}{! close file}
+00804 \textcolor{comment}{!}
+00805 \textcolor{keyword}{close}(unit=unit\_vtk)
+00806 \textcolor{comment}{!}
+00807 return
+00808 \textcolor{comment}{!}
+00809 \textcolor{comment}{!-----------------------------------------------}
+00810 \textcolor{keyword}{end subroutine write\_cubic\_lattice\_to\_vtk\_points}
+00811 \textcolor{comment}{!-----------------------------------------------}
+00812 \textcolor{comment}{!}
+\hypertarget{module__write__output__files_8f90_source_l00817}{}\hyperlink{classmodule__write__output__files_a142e1aedf3a8689d5a8741677c83140d}{00817} \textcolor{keyword}{subroutine }funny\_3D(mat,nx,ny,nz,matval)
+00818 \textcolor{comment}{!---------------------------------------}
+00819 \textcolor{comment}{!}
+00820 \textcolor{keyword}{implicit none}
+00821 \textcolor{comment}{!}
+00822 \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< grid dimension in the x direction (\(\backslash\)b Input)}
+00823 \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< grid dimension in the y direction (\(\backslash\)b Input)}
+00824 \textcolor{keywordtype}{integer} :: nz \textcolor{comment}{!< grid dimension in the z direction (\(\backslash\)b Input)}
+00825 \textcolor{keywordtype}{integer} :: mat(nx,ny,nz) \textcolor{comment}{!< input matrix (\(\backslash\)b Input)}
+00826 
+00828 \textcolor{keywordtype}{integer} :: matval 
+00829 \textcolor{comment}{!}
+00830 \textcolor{comment}{! internal variables}
+00831 \textcolor{comment}{!}
+00832 \textcolor{keywordtype}{integer} :: i,j,k,dx,dy,dz
+00833 \textcolor{keywordtype}{character(len=1)}, \textcolor{keywordtype}{dimension(:,:)}, \textcolor{keywordtype}{allocatable} :: cmat
+00834 \textcolor{comment}{!}
+00835 dx = nx-1
+00836 dy = ny-1
+00837 dz = nz-1
+00838 \textcolor{comment}{!}
+00839 \textcolor{keyword}{if}(nx==1)dx=nx
+00840 \textcolor{keyword}{if}(ny==1)dy=ny
+00841 \textcolor{keyword}{if}(nz==1)dz=nz
+00842 \textcolor{comment}{!}
+00843 \textcolor{keyword}{allocate}(cmat(2*nx+ny,nz+ny))
+00844 \textcolor{comment}{!}
+00845 cmat(:,:) = \textcolor{stringliteral}{' '}
+00846 \textcolor{comment}{!}
+00847 \textcolor{keyword}{do} k = 1,nz
+00848    \textcolor{keyword}{do} j = 1,ny
+00849       \textcolor{keyword}{do} i = 1,nx
+00850          \textcolor{keyword}{if}(mat(i,j,k)==matval)\textcolor{keyword}{then}
+00851             cmat(2*i+j,k+j) = \textcolor{stringliteral}{'*'}
+00852          \textcolor{keyword}{endif}
+00853       \textcolor{keyword}{enddo}
+00854    \textcolor{keyword}{enddo}
+00855 \textcolor{keyword}{enddo}
+00856 \textcolor{comment}{!}
+00857 \textcolor{keyword}{do} k = 2,nz-1
+00858    \textcolor{keyword}{do} j = 1,ny,dy
+00859       \textcolor{keyword}{do} i = 1,nx,dx    
+00860          cmat(2*i+j,k+j) = \textcolor{stringliteral}{'|'}
+00861       \textcolor{keyword}{enddo}
+00862    \textcolor{keyword}{enddo}
+00863 \textcolor{keyword}{enddo}
+00864 \textcolor{comment}{!}
+00865 \textcolor{keyword}{do} k = 1,nz,dz
+00866    \textcolor{keyword}{do} j = 2,ny-1
+00867       \textcolor{keyword}{do} i = 1,nx,dx    
+00868          cmat(2*i+j,k+j) = \textcolor{stringliteral}{'/'}
+00869       \textcolor{keyword}{enddo}
+00870    \textcolor{keyword}{enddo}
+00871 \textcolor{keyword}{enddo}
+00872 \textcolor{comment}{!}
+00873 \textcolor{keyword}{do} k = 1,nz,dz
+00874    \textcolor{keyword}{do} j = 1,ny,dy
+00875       \textcolor{keyword}{do} i = 2,nx-1    
+00876          cmat(2*i+j,k+j) = \textcolor{stringliteral}{'-'}
+00877       \textcolor{keyword}{enddo}
+00878    \textcolor{keyword}{enddo}
+00879 \textcolor{keyword}{enddo}
+00880 \textcolor{comment}{!}
+00881 \textcolor{keyword}{do} k = 1,nz,dz
+00882    \textcolor{keyword}{do} j = 1,ny,dy
+00883       \textcolor{keyword}{do} i = 1,nx,dx    
+00884          cmat(2*i+j,k+j) = \textcolor{stringliteral}{'.'}
+00885       \textcolor{keyword}{enddo}
+00886    \textcolor{keyword}{enddo}
+00887 \textcolor{keyword}{enddo}
+00888 \textcolor{comment}{!}
+00889 print*,
+00890 \textcolor{keyword}{do} j = nz+ny+3,1,-1
+00891    print*,(cmat(i,j),i=1,2*nx+ny)
+00892 \textcolor{keyword}{enddo}
+00893 print*,
+00894 \textcolor{comment}{!}
+00895 \textcolor{keyword}{deallocate}(cmat)
+00896 \textcolor{comment}{!}
+00897 return
+00898 \textcolor{comment}{!}
+00899 \textcolor{comment}{!----------------------}
+00900 \textcolor{keyword}{end subroutine funny\_3D}
+00901 \textcolor{comment}{!----------------------}
+00902 
+00903 \textcolor{comment}{!-------------------------------------------------------------}
+\hypertarget{module__write__output__files_8f90_source_l00904}{}\hyperlink{classmodule__write__output__files_abeb97fce277eb8861dd4991d980a3de4}{00904} \textcolor{keyword}{subroutine }write\_invasion\_list\_cubic\_to\_csv(invasion\_list,   &
+00905                                             n\_sites\_invaded, &
+00906                                             nx,ny,           &
+00907                                             dx,dy,dz,        &
+00908                                             file\_name        )        
+00909 \textcolor{comment}{!-------------------------------------------------------------}
+00910 \textcolor{comment}{!}
+00911 \textcolor{keyword}{implicit none}
+00912 \textcolor{comment}{!}
+00913 \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{!< number of sites invaded}
+00914 \textcolor{comment}{!}
+00915 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)} :: invasion\_list \textcolor{comment}{!< list of invaded sites}
+00916 \textcolor{comment}{!}
+00917 \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< grid dimension in the x direction}
+00918 \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< grid dimension in the y direction }
+00919 \textcolor{comment}{!}
+00920 \textcolor{keywordtype}{real} :: dx \textcolor{comment}{!< grid spacing in the x direction}
+00921 \textcolor{keywordtype}{real} :: dy \textcolor{comment}{!< grid spacing in the y direction}
+00922 \textcolor{keywordtype}{real} :: dz \textcolor{comment}{!< grid spacing in the z direction}
+00923 \textcolor{comment}{!}
+00925 \textcolor{keywordtype}{character (len=*)} :: file\_name 
+00926 \textcolor{comment}{!}
+00927 \textcolor{comment}{! internal variables}
+00928 \textcolor{comment}{!}
+00929 \textcolor{keywordtype}{character(len=100)} :: file\_name\_cvs
+00930 \textcolor{keywordtype}{integer} :: i, j, k, l, n
+00931 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{parameter} :: lunit=20
+00932 \textcolor{comment}{!}
+00933 \textcolor{comment}{! open output file (add extension if not present)}
+00934 \textcolor{comment}{!}
+00935 file\_name\_cvs = trim(adjustl(file\_name))
+00936 l = len\_trim(file\_name\_cvs)
+00937 \textcolor{keyword}{if}(file\_name\_cvs(l-3:l) /= \textcolor{stringliteral}{'.csv'})\textcolor{keyword}{then}
+00938    file\_name\_cvs(l+1:l+4) = \textcolor{stringliteral}{'.csv'}
+00939 \textcolor{keyword}{endif}
+00940 \textcolor{comment}{!}
+00941 \textcolor{keyword}{open}(lunit,file=trim(file\_name\_cvs),status=\textcolor{stringliteral}{'unknown'})
+00942 \textcolor{comment}{!}
+00943 \textcolor{keyword}{write}(lunit,*)\textcolor{stringliteral}{'x coord, y coord, z coord'}
+00944 \textcolor{keyword}{do} n = 1,n\_sites\_invaded
+00945    call ind2ijk(nx,ny,invasion\_list(n),i,j,k)
+00946    \textcolor{keyword}{write}(lunit,*)\textcolor{keywordtype}{real}(i-1)*dx,\textcolor{stringliteral}{','},\textcolor{keywordtype}{real}(j-1)*dy,\textcolor{stringliteral}{','},\textcolor{keywordtype}{real}(k-1)*dz
+00947 \textcolor{keyword}{enddo}
+00948 \textcolor{comment}{!}
+00949 \textcolor{comment}{! close output file}
+00950 \textcolor{comment}{!}
+00951 \textcolor{keyword}{close}(lunit)
+00952 
+00953 return
+00954 \textcolor{comment}{!}
+00955 \textcolor{comment}{!----------------------------------------------}
+00956 \textcolor{keyword}{end subroutine write\_invasion\_list\_cubic\_to\_csv}
+00957 \textcolor{comment}{!----------------------------------------------}
+00958 \textcolor{comment}{!}
+00959 \textcolor{comment}{!-----------------------------------------------------------------}
+\hypertarget{module__write__output__files_8f90_source_l00960}{}\hyperlink{classmodule__write__output__files_a75c194ae97636d9f9de1280ee60cb3f4}{00960} \textcolor{keyword}{subroutine }write\_invasion\_list\_arbitrary\_to\_csv(invasion\_list,   &
+00961                                                 n\_sites\_invaded, &
+00962                                                 x,y,z,           &
+00963                                                 n\_sites,         &
+00964                                                 file\_name        )        
+00965 \textcolor{comment}{!-----------------------------------------------------------------}
+00966 \textcolor{comment}{!}
+00967 \textcolor{keyword}{implicit none}
+00968 \textcolor{comment}{!}
+00969 \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{!< number of sites invaded}
+00970 \textcolor{comment}{!}
+00971 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)} :: invasion\_list \textcolor{comment}{!< list of invaded sites}
+00972 \textcolor{comment}{!}
+00973 \textcolor{keywordtype}{integer} :: n\_sites \textcolor{comment}{!< number of sites i the lattice}
+00974 \textcolor{comment}{!}
+00975 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(n\_sites)} :: x \textcolor{comment}{!< x coordinates array}
+00976 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(n\_sites)} :: y \textcolor{comment}{!< y coordinates array}
+00977 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(n\_sites)} :: z \textcolor{comment}{!< z coordinates array}
+00978 \textcolor{comment}{!}
+00980 \textcolor{keywordtype}{character (len=*)} :: file\_name 
+00981 \textcolor{comment}{!}
+00982 \textcolor{comment}{! internal variables}
+00983 \textcolor{comment}{!}
+00984 \textcolor{keywordtype}{integer} :: n, l, i
+00985 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{parameter} :: lunit=20
+00986 \textcolor{keywordtype}{character(len=100)} :: file\_name\_cvs
+00987 \textcolor{comment}{!}
+00988 \textcolor{comment}{! open output file (add extension if not present)}
+00989 \textcolor{comment}{!}
+00990 file\_name\_cvs = trim(adjustl(file\_name))
+00991 l = len\_trim(file\_name\_cvs)
+00992 \textcolor{keyword}{if}(file\_name\_cvs(l-3:l) /= \textcolor{stringliteral}{'.csv'})\textcolor{keyword}{then}
+00993    file\_name\_cvs(l+1:l+4) = \textcolor{stringliteral}{'.csv'}
+00994 \textcolor{keyword}{endif}
+00995 \textcolor{comment}{!}
+00996 \textcolor{keyword}{open}(lunit,file=trim(file\_name\_cvs),status=\textcolor{stringliteral}{'unknown'})
+00997 \textcolor{comment}{!}
+00998 \textcolor{keyword}{do} n = 1,n\_sites\_invaded
+00999    i = invasion\_list(n)
+01000    \textcolor{keyword}{write}(lunit,*)x(i), y(i), z(i)
+01001 \textcolor{keyword}{enddo}
+01002 \textcolor{comment}{!}
+01003 \textcolor{comment}{! close output file}
+01004 \textcolor{comment}{!}
+01005 \textcolor{keyword}{close}(lunit)
+01006 
+01007 return
+01008 \textcolor{comment}{!}
+01009 \textcolor{comment}{!--------------------------------------------------}
+01010 \textcolor{keyword}{end subroutine write\_invasion\_list\_arbitrary\_to\_csv}
+01011 \textcolor{comment}{!--------------------------------------------------}
+01012 \textcolor{comment}{!}
+\hypertarget{module__write__output__files_8f90_source_l01020}{}\hyperlink{classmodule__write__output__files_abb1500b4855d9613b65549901c2b3a75}{01020} \textcolor{keyword}{subroutine }write\_invasion\_list\_cubic\_to\_vtk(invasion\_list,   &
+01021                                             n\_sites\_invaded, &
+01022                                             nx,ny,           &
+01023                                             dx,dy,dz,        &
+01024                                             file\_name        )        
+01025 \textcolor{comment}{!-------------------------------------------------------------}
+01026 \textcolor{comment}{!}
+01027 \textcolor{keyword}{implicit none}
+01028 \textcolor{comment}{!}
+01029 \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{!< number of sites invaded}
+01030 \textcolor{comment}{!}
+01031 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)} :: invasion\_list \textcolor{comment}{!< list of invaded sites}
+01032 \textcolor{comment}{!}
+01033 \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< grid dimension in the x direction}
+01034 \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< grid dimension in the y direction }
+01035 \textcolor{comment}{!}
+01036 \textcolor{keywordtype}{real} :: dx \textcolor{comment}{!< grid spacing in the x direction}
+01037 \textcolor{keywordtype}{real} :: dy \textcolor{comment}{!< grid spacing in the y direction }
+01038 \textcolor{keywordtype}{real} :: dz \textcolor{comment}{!< grid spacing in the z direction}
+01039 \textcolor{comment}{!}
+01041 \textcolor{keywordtype}{character (len=*)} :: file\_name 
+01042 \textcolor{comment}{!}
+01043 \textcolor{comment}{! internal variables}
+01044 \textcolor{comment}{!}
+01045 \textcolor{keywordtype}{integer} :: e\_io
+01046 \textcolor{keywordtype}{integer} :: i, j, k, l, n, n\_cells
+01047 \textcolor{keywordtype}{integer} :: dim\_arrays, offset
+01048 \textcolor{keywordtype}{character(1)}, \textcolor{keywordtype}{parameter}:: end\_rec = char(10)
+01049 \textcolor{keywordtype}{character*20} :: cnc, cnp, coffset
+01050 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{parameter} :: unit\_vtk = 33
+01051 \textcolor{keywordtype}{character(len=100)} :: file\_name\_vtk
+01052 \textcolor{comment}{!}
+01053 \textcolor{comment}{! convert integer values to strings}
+01054 \textcolor{comment}{!}
+01055 n\_cells = 0
+01056 \textcolor{keyword}{write}(cnc,*)n\_cells
+01057 \textcolor{keyword}{write}(cnp,*)n\_sites\_invaded
+01058 \textcolor{comment}{!}
+01059 \textcolor{comment}{! open output file (add extension if not present)}
+01060 \textcolor{comment}{!}
+01061 file\_name\_vtk = trim(adjustl(file\_name))
+01062 l = len\_trim(file\_name\_vtk)
+01063 \textcolor{keyword}{if}(file\_name\_vtk(l-3:l) /= \textcolor{stringliteral}{'.vtp'})\textcolor{keyword}{then}
+01064    file\_name\_vtk(l+1:l+4) = \textcolor{stringliteral}{'.vtp'}
+01065 \textcolor{keyword}{endif}
+01066 \textcolor{comment}{!}
+01067 \textcolor{comment}{! open file}
+01068 \textcolor{comment}{!}
+01069 \textcolor{keyword}{open}(unit       = unit\_vtk,                     &
+01070      file       = trim(adjustl(file\_name\_vtk)), &
+01071      form       = \textcolor{stringliteral}{'unformatted'},                &
+01072      access     = \textcolor{stringliteral}{'stream'},                     &
+01073      action     = \textcolor{stringliteral}{'write'},                      &
+01074      status     = \textcolor{stringliteral}{'replace'},                    &
+01075      convert    = \textcolor{stringliteral}{'little\_endian'},              &
+01076      iostat     = e\_io                          )
+01077 \textcolor{comment}{!}
+01078 \textcolor{comment}{! init offset for appended data}
+01079 \textcolor{comment}{!}
+01080 offset = 0
+01081 \textcolor{comment}{!}
+01082 \textcolor{comment}{! write header}
+01083 \textcolor{comment}{!}
+01084 \textcolor{keyword}{write}(unit=Unit\_VTK,iostat=E\_IO)\textcolor{stringliteral}{'<?xml version = "1.0"?>'}//end\_rec
+01085 \textcolor{keyword}{write}(unit=Unit\_VTK,iostat=E\_IO)  \textcolor{stringliteral}{'<VTKFile'}                  &
+01086                                 //\textcolor{stringliteral}{' type = "PolyData"'}        &
+01087                                 //\textcolor{stringliteral}{' version="0.1"'}            &
+01088                                 //\textcolor{stringliteral}{' byte\_order="LittleEndian"'}&
+01089                                 //\textcolor{stringliteral}{'>'}//end\_rec
+01090 \textcolor{comment}{!}
+01091 \textcolor{comment}{! start unstructured grid infos}
+01092 \textcolor{comment}{!}
+01093 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<PolyData>'}//end\_rec
+01094 \textcolor{comment}{!}
+01095 \textcolor{comment}{! start piece infos}
+01096 \textcolor{comment}{!}
+01097 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)  \textcolor{stringliteral}{'<Piece'}                    &
+01098                                 //\textcolor{stringliteral}{' NumberOfPoints='}          &
+01099                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(cnp))//\textcolor{stringliteral}{'"'}&
+01100                                 //\textcolor{stringliteral}{'>'}//end\_rec
+01101 \textcolor{comment}{!}
+01102 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<Points>'}//end\_rec
+01103 \textcolor{comment}{!}
+01104 \textcolor{comment}{! ... points coordinates infos}
+01105 \textcolor{comment}{!}
+01106 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+01107 \textcolor{comment}{!}
+01108 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray'}                      &
+01109                                 //\textcolor{stringliteral}{' type="Float32" '}              &
+01110                                 //\textcolor{stringliteral}{' NumberOfComponents="3"'}       &
+01111                                 //\textcolor{stringliteral}{' Name="Points"'}                &
+01112                                 //\textcolor{stringliteral}{' format="appended"'}            &
+01113                                 //\textcolor{stringliteral}{' offset='}                      &
+01114                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'"'}&
+01115                                 //\textcolor{stringliteral}{'/>'}//end\_rec
+01116 \textcolor{comment}{!}
+01117 \textcolor{comment}{! end points info}
+01118 \textcolor{comment}{!}
+01119 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</Points>'}//end\_rec
+01120 \textcolor{comment}{!}
+01121 \textcolor{comment}{! end piece infos}
+01122 \textcolor{comment}{!}
+01123 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</Piece>'}//end\_rec
+01124 \textcolor{comment}{!}
+01125 \textcolor{comment}{! end unstructured grid infos}
+01126 \textcolor{comment}{!}
+01127 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</PolyData>'}//end\_rec
+01128 \textcolor{comment}{!}
+01129 \textcolor{comment}{! appended data infos}
+01130 \textcolor{comment}{!}
+01131 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<AppendedData encoding="raw">'}//end\_rec
+01132 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'\_'}
+01133 \textcolor{comment}{!}
+01134 \textcolor{comment}{! append data }
+01135 \textcolor{comment}{!}
+01136 \textcolor{comment}{! ... sites's coordinates}
+01137 \textcolor{comment}{!}
+01138 dim\_arrays =  int( sizeof(i*dx)*n\_sites\_invaded &
+01139                  + sizeof(j*dy)*n\_sites\_invaded &
+01140                  + sizeof(k*dz)*n\_sites\_invaded)
+01141 \textcolor{comment}{!}
+01142 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+01143 \textcolor{comment}{!}
+01144 \textcolor{keyword}{do} n = 1,n\_sites\_invaded
+01145    call ind2ijk(nx,ny,invasion\_list(n),i,j,k)
+01146    \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)i*dx,j*dy,k*dz
+01147 \textcolor{keyword}{enddo}
+01148 \textcolor{comment}{!}
+01149 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)end\_rec
+01150 \textcolor{comment}{!}
+01151 \textcolor{comment}{! end appended data infos}
+01152 \textcolor{comment}{!}
+01153 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</AppendedData>'}//end\_rec
+01154 \textcolor{comment}{!}
+01155 \textcolor{comment}{! write footer}
+01156 \textcolor{comment}{!}
+01157 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</VTKFile>'}//end\_rec
+01158 \textcolor{comment}{!}
+01159 \textcolor{comment}{! close file}
+01160 \textcolor{comment}{!}
+01161 \textcolor{keyword}{close}(unit=unit\_vtk)
+01162 \textcolor{comment}{!}
+01163 return
+01164 \textcolor{comment}{!}
+01165 \textcolor{comment}{!----------------------------------------------}
+01166 \textcolor{keyword}{end subroutine write\_invasion\_list\_cubic\_to\_vtk}
+01167 \textcolor{comment}{!----------------------------------------------}
+01168 \textcolor{comment}{!}
+\hypertarget{module__write__output__files_8f90_source_l01175}{}\hyperlink{classmodule__write__output__files_a198db49650f507f17b302215e61995cc}{01175} \textcolor{keyword}{subroutine }write\_invasion\_list\_arbitrary\_to\_vtk(invasion\_list,   &
+01176                                                 n\_sites\_invaded, &
+01177                                                 x,y,z,           &
+01178                                                 n\_sites,         &
+01179                                                 file\_name        )        
+01180 \textcolor{comment}{!-----------------------------------------------------------------}
+01181 \textcolor{comment}{!}
+01182 \textcolor{keyword}{implicit none}
+01183 \textcolor{comment}{!}
+01184 \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{!< number of sites invaded}
+01185 \textcolor{comment}{!}
+01186 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)} :: invasion\_list \textcolor{comment}{!< list of invaded sites}
+01187 \textcolor{comment}{!}
+01188 \textcolor{keywordtype}{integer} :: n\_sites \textcolor{comment}{!< number of sites i the lattice}
+01189 \textcolor{comment}{!}
+01190 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(n\_sites)} :: x \textcolor{comment}{!< x coordinates array}
+01191 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(n\_sites)} :: y \textcolor{comment}{!< y coordinates array}
+01192 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(n\_sites)} :: z \textcolor{comment}{!< z coordinates array}
+01193 \textcolor{comment}{!}
+01195 \textcolor{keywordtype}{character (len=*)} :: file\_name
+01196 \textcolor{comment}{!}
+01197 \textcolor{comment}{! internal variables}
+01198 \textcolor{comment}{!}
+01199 \textcolor{keywordtype}{integer} :: e\_io
+01200 \textcolor{keywordtype}{integer} :: i, l, n, n\_cells
+01201 \textcolor{keywordtype}{integer} :: dim\_arrays, offset
+01202 \textcolor{keywordtype}{character(1)}, \textcolor{keywordtype}{parameter}:: end\_rec = char(10)
+01203 \textcolor{keywordtype}{character*20} :: cnc, cnp, coffset
+01204 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{parameter} :: unit\_vtk = 33
+01205 \textcolor{keywordtype}{character(len=100)} :: file\_name\_vtk
+01206 \textcolor{comment}{!}
+01207 \textcolor{comment}{! convert integer values to strings}
+01208 \textcolor{comment}{!}
+01209 n\_cells = 0
+01210 \textcolor{keyword}{write}(cnc,*)n\_cells
+01211 \textcolor{keyword}{write}(cnp,*)n\_sites\_invaded
+01212 \textcolor{comment}{!}
+01213 \textcolor{comment}{! open output file (add extension if not present)}
+01214 \textcolor{comment}{!}
+01215 file\_name\_vtk = trim(adjustl(file\_name))
+01216 l = len\_trim(file\_name\_vtk)
+01217 \textcolor{keyword}{if}(file\_name\_vtk(l-3:l) /= \textcolor{stringliteral}{'.vtp'})\textcolor{keyword}{then}
+01218    file\_name\_vtk(l+1:l+4) = \textcolor{stringliteral}{'.vtp'}
+01219 \textcolor{keyword}{endif}
+01220 \textcolor{comment}{!}
+01221 \textcolor{comment}{! open file}
+01222 \textcolor{comment}{!}
+01223 \textcolor{keyword}{open}(unit       = unit\_vtk,                     &
+01224      file       = trim(adjustl(file\_name\_vtk)), &
+01225      form       = \textcolor{stringliteral}{'unformatted'},                &
+01226      access     = \textcolor{stringliteral}{'stream'},                     &
+01227      action     = \textcolor{stringliteral}{'write'},                      &
+01228      status     = \textcolor{stringliteral}{'replace'},                    &
+01229      convert    = \textcolor{stringliteral}{'little\_endian'},              &
+01230      iostat     = e\_io                          )
+01231 \textcolor{comment}{!}
+01232 \textcolor{comment}{! init offset for appended data}
+01233 \textcolor{comment}{!}
+01234 offset = 0
+01235 \textcolor{comment}{!}
+01236 \textcolor{comment}{! write header}
+01237 \textcolor{comment}{!}
+01238 \textcolor{keyword}{write}(unit=Unit\_VTK,iostat=E\_IO)\textcolor{stringliteral}{'<?xml version = "1.0"?>'}//end\_rec
+01239 \textcolor{keyword}{write}(unit=Unit\_VTK,iostat=E\_IO)  \textcolor{stringliteral}{'<VTKFile'}                  &
+01240                                 //\textcolor{stringliteral}{' type = "PolyData"'}        &
+01241                                 //\textcolor{stringliteral}{' version="0.1"'}            &
+01242                                 //\textcolor{stringliteral}{' byte\_order="LittleEndian"'}&
+01243                                 //\textcolor{stringliteral}{'>'}//end\_rec
+01244 \textcolor{comment}{!}
+01245 \textcolor{comment}{! start unstructured grid infos}
+01246 \textcolor{comment}{!}
+01247 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<PolyData>'}//end\_rec
+01248 \textcolor{comment}{!}
+01249 \textcolor{comment}{! start piece infos}
+01250 \textcolor{comment}{!}
+01251 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)  \textcolor{stringliteral}{'<Piece'}                    &
+01252                                 //\textcolor{stringliteral}{' NumberOfPoints='}          &
+01253                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(cnp))//\textcolor{stringliteral}{'"'}&
+01254                                 //\textcolor{stringliteral}{'>'}//end\_rec
+01255 \textcolor{comment}{!}
+01256 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<Points>'}//end\_rec
+01257 \textcolor{comment}{!}
+01258 \textcolor{comment}{! ... points coordinates infos}
+01259 \textcolor{comment}{!}
+01260 \textcolor{keyword}{write}(coffset,\textcolor{stringliteral}{'(I10)'})offset
+01261 \textcolor{comment}{!}
+01262 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<DataArray'}                      &
+01263                                 //\textcolor{stringliteral}{' type="Float32" '}              &
+01264                                 //\textcolor{stringliteral}{' NumberOfComponents="3"'}       &
+01265                                 //\textcolor{stringliteral}{' Name="Points"'}                &
+01266                                 //\textcolor{stringliteral}{' format="appended"'}            &
+01267                                 //\textcolor{stringliteral}{' offset='}                      &
+01268                                 //\textcolor{stringliteral}{'"'}//trim(adjustl(coffset))//\textcolor{stringliteral}{'"'}&
+01269                                 //\textcolor{stringliteral}{'/>'}//end\_rec
+01270 \textcolor{comment}{!}
+01271 \textcolor{comment}{! end points info}
+01272 \textcolor{comment}{!}
+01273 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</Points>'}//end\_rec
+01274 \textcolor{comment}{!}
+01275 \textcolor{comment}{! end piece infos}
+01276 \textcolor{comment}{!}
+01277 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</Piece>'}//end\_rec
+01278 \textcolor{comment}{!}
+01279 \textcolor{comment}{! end unstructured grid infos}
+01280 \textcolor{comment}{!}
+01281 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</PolyData>'}//end\_rec
+01282 \textcolor{comment}{!}
+01283 \textcolor{comment}{! appended data infos}
+01284 \textcolor{comment}{!}
+01285 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'<AppendedData encoding="raw">'}//end\_rec
+01286 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'\_'}
+01287 \textcolor{comment}{!}
+01288 \textcolor{comment}{! append data }
+01289 \textcolor{comment}{!}
+01290 \textcolor{comment}{! ... sites's coordinates}
+01291 \textcolor{comment}{!}
+01292 dim\_arrays =  int( sizeof(x(1:n\_sites\_invaded)) &
+01293                  + sizeof(y(1:n\_sites\_invaded)) &
+01294                  + sizeof(z(1:n\_sites\_invaded)))
+01295 \textcolor{comment}{!}
+01296 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)dim\_arrays
+01297 \textcolor{comment}{!}
+01298 \textcolor{keyword}{do} n = 1,n\_sites\_invaded
+01299    i = invasion\_list(n)
+01300    \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)x(i),y(i),z(i)
+01301 \textcolor{keyword}{enddo}
+01302 \textcolor{comment}{!}
+01303 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)end\_rec
+01304 \textcolor{comment}{!}
+01305 \textcolor{comment}{! end appended data infos}
+01306 \textcolor{comment}{!}
+01307 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</AppendedData>'}//end\_rec
+01308 \textcolor{comment}{!}
+01309 \textcolor{comment}{! write footer}
+01310 \textcolor{comment}{!}
+01311 \textcolor{keyword}{write}(unit=unit\_vtk,iostat=e\_io)\textcolor{stringliteral}{'</VTKFile>'}//end\_rec
+01312 \textcolor{comment}{!}
+01313 \textcolor{comment}{! close file}
+01314 \textcolor{comment}{!}
+01315 \textcolor{keyword}{close}(unit=unit\_vtk)
+01316 \textcolor{comment}{!}
+01317 return
+01318 \textcolor{comment}{!}
+01319 \textcolor{comment}{!--------------------------------------------------}
+01320 \textcolor{keyword}{end subroutine write\_invasion\_list\_arbitrary\_to\_vtk}
+01321 \textcolor{comment}{!--------------------------------------------------}
+01322 \textcolor{comment}{!}
+01323 \textcolor{comment}{!===================================}
+01324 \textcolor{keyword}{end module module\_write\_output\_files}
+01325 \textcolor{comment}{!===================================}
+\end{DoxyCode}

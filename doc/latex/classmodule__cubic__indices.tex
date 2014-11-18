@@ -1,0 +1,98 @@
+\hypertarget{classmodule__cubic__indices}{
+\section{module\-\_\-cubic\-\_\-indices \-Module \-Reference}
+\label{classmodule__cubic__indices}\index{module\-\_\-cubic\-\_\-indices@{module\-\_\-cubic\-\_\-indices}}
+}
+
+
+\-This module contains functions to transform 3\-D indices to 1\-D index and vice versa.  
+
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+integer function \hyperlink{classmodule__cubic__indices_ae8cab7f4dee55370ad9af071bdc7e281}{ijk2ind} (nx, ny, i, j, k)
+\begin{DoxyCompactList}\small\item\em \-Transform 3\-D indices (i,j,k) to 1\-D index (ijk2ind) \end{DoxyCompactList}\item 
+subroutine \hyperlink{classmodule__cubic__indices_aa2f083a1f3a62525283b9d9f6b0f3cd2}{ind2ijk} (nx, ny, ind, i, j, k)
+\begin{DoxyCompactList}\small\item\em \-Transform 1\-D index (ijk2ind) to 3\-D indices (i,j,k) \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-This module contains functions to transform 3\-D indices to 1\-D index and vice versa. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 23, 2014 
+\end{DoxyDate}
+
+
+\subsection{\-Member \-Function/\-Subroutine \-Documentation}
+\hypertarget{classmodule__cubic__indices_ae8cab7f4dee55370ad9af071bdc7e281}{
+\index{module\-\_\-cubic\-\_\-indices@{module\-\_\-cubic\-\_\-indices}!ijk2ind@{ijk2ind}}
+\index{ijk2ind@{ijk2ind}!module_cubic_indices@{module\-\_\-cubic\-\_\-indices}}
+\subsubsection[{ijk2ind}]{\setlength{\rightskip}{0pt plus 5cm}integer function module\-\_\-cubic\-\_\-indices\-::ijk2ind (
+\begin{DoxyParamCaption}
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{i, }
+\item[{integer}]{j, }
+\item[{integer}]{k}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__cubic__indices_ae8cab7f4dee55370ad9af071bdc7e281}
+
+
+\-Transform 3\-D indices (i,j,k) to 1\-D index (ijk2ind) 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em nx} & \-Grid dimension in the x direction ({\bfseries input}) \\
+\hline
+{\em ny} & \-Grid dimension in the y direction ({\bfseries input}) \\
+\hline
+{\em i} & i index, $ 1<i<\mbox{nx} $ ({\bfseries input}) \\
+\hline
+{\em j} & j index, $ 1<j<\mbox{ny} $ ({\bfseries input}) \\
+\hline
+{\em k} & k index, $ 1<k<\mbox{nz} $ ({\bfseries input}) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__cubic__indices_aa2f083a1f3a62525283b9d9f6b0f3cd2}{
+\index{module\-\_\-cubic\-\_\-indices@{module\-\_\-cubic\-\_\-indices}!ind2ijk@{ind2ijk}}
+\index{ind2ijk@{ind2ijk}!module_cubic_indices@{module\-\_\-cubic\-\_\-indices}}
+\subsubsection[{ind2ijk}]{\setlength{\rightskip}{0pt plus 5cm}subroutine module\-\_\-cubic\-\_\-indices\-::ind2ijk (
+\begin{DoxyParamCaption}
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{ind, }
+\item[{integer}]{i, }
+\item[{integer}]{j, }
+\item[{integer}]{k}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__cubic__indices_aa2f083a1f3a62525283b9d9f6b0f3cd2}
+
+
+\-Transform 1\-D index (ijk2ind) to 3\-D indices (i,j,k) 
+
+
+\begin{DoxyParams}{\-Parameters}
+{\em ind} & 1\-D index, $ 1<\mbox{ind}<\mbox{nx}\times\mbox{ny}\times\mbox{nz}$ \\
+\hline
+{\em nx} & \-Grid dimension in the x direction ({\bfseries input}) \\
+\hline
+{\em ny} & \-Grid dimension in the y direction ({\bfseries input}) \\
+\hline
+{\em i} & i index, $ 1<\mbox{i}<\mbox{nx} $ ({\bfseries input}) \\
+\hline
+{\em j} & j index, $ 1<\mbox{j}<\mbox{ny} $ ({\bfseries input}) \\
+\hline
+{\em k} & k index, $ 1<\mbox{k}<\mbox{nz} $ ({\bfseries input}) \\
+\hline
+\end{DoxyParams}
+
+
+\-The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+modules/src/\hyperlink{module__cubic__indices_8f90}{module\-\_\-cubic\-\_\-indices.\-f90}\end{DoxyCompactItemize}

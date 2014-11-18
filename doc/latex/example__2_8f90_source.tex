@@ -1,0 +1,266 @@
+\hypertarget{example__2_8f90_source}{
+\section{examples/src/example\-\_\-2.f90}
+}
+
+\begin{DoxyCode}
+00001 
+\hypertarget{example__2_8f90_source_l00005}{}\hyperlink{example__2_8f90_abc1eb48381332994bda2f9fa625923b1}{00005} \textcolor{keyword}{program} \hyperlink{example__2_8f90_abc1eb48381332994bda2f9fa625923b1}{example_2}
+00006 \textcolor{comment}{!----------------}
+00007 \textcolor{comment}{!}
+00008 use \textcolor{keywordflow}{module\_invasion\_percolation}
+00009 \textcolor{comment}{!}
+00010 \textcolor{keyword}{implicit none}
+00011 \textcolor{comment}{!}
+00012 \textcolor{keywordtype}{integer} :: nx
+00013 \textcolor{keywordtype}{integer} :: ny
+00014 \textcolor{keywordtype}{integer} :: nz
+00015 \textcolor{comment}{!}
+00016 \textcolor{keywordtype}{logical} :: period\_x 
+00017 \textcolor{keywordtype}{logical} :: period\_y
+00018 \textcolor{keywordtype}{logical} :: period\_z 
+00019 \textcolor{comment}{!}
+00020 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{allocatable} :: values(:) ,x(:),y(:),z(:)
+00021 \textcolor{comment}{!}
+00022 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: states(:), offsets(:), connectivity(:), trapping\_times(
+      :)
+00023 \textcolor{comment}{!}
+00024 \textcolor{keywordtype}{integer} :: n\_sites\_invaded
+00025 \textcolor{comment}{!}
+00026 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: invasion\_list(:), neighbors(:)
+00027 \textcolor{comment}{!}
+00028 \textcolor{keywordtype}{logical} :: gravity 
+00029 \textcolor{keywordtype}{logical} :: trapping 
+00030 \textcolor{comment}{!}
+00031 \textcolor{keywordtype}{real} :: sigma
+00032 \textcolor{keywordtype}{real} :: theta\_c 
+00033 \textcolor{keywordtype}{real} :: delta\_rho 
+00034 \textcolor{comment}{!}
+00035 \textcolor{keywordtype}{real} :: gx
+00036 \textcolor{keywordtype}{real} :: gy 
+00037 \textcolor{keywordtype}{real} :: gz 
+00038 \textcolor{comment}{!}
+00039 \textcolor{keywordtype}{integer} :: i,j,k,ii,jj,kk,n,i\_site,i\_neighbor,n\_sites,offset
+00040 \textcolor{comment}{!}
+00041 \textcolor{keywordtype}{real} :: pi,dh,d
+00042 \textcolor{comment}{!}
+00043 pi = 4.*atan(1.)
+00044 \textcolor{comment}{!}
+00045 print*, \textcolor{stringliteral}{'Setting up simulation ...'}
+00046 \textcolor{comment}{!}
+00047 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00048 \textcolor{comment}{!!! setting up an Invasion Percolation simulation !!!}
+00049 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00050 \textcolor{comment}{!}
+00051 \textcolor{comment}{! setup grid dimensions :}
+00052 \textcolor{comment}{!}
+00053 nx = 10
+00054 ny = 1
+00055 nz = 20
+00056 \textcolor{comment}{!}
+00057 n\_sites = nx*ny*nz
+00058 \textcolor{comment}{!}
+00059 dh = 1.0
+00060 \textcolor{comment}{!}
+00061 \textcolor{comment}{! setup domain boundaries : }
+00062 \textcolor{comment}{!}
+00063 \textcolor{comment}{! use period\_x = .true. for periodic bondaries in the x direction}
+00064 \textcolor{comment}{! use period\_x = .false. for sealed walls in the x direction}
+00065 \textcolor{comment}{!}
+00066 period\_x = .false.
+00067 period\_y = .false.
+00068 period\_z = .false.
+00069 \textcolor{comment}{!}
+00070 \textcolor{comment}{! allocate memory :}
+00071 \textcolor{comment}{!}
+00072 \textcolor{keyword}{allocate}(x(n\_sites))
+00073 \textcolor{keyword}{allocate}(y(n\_sites))
+00074 \textcolor{keyword}{allocate}(z(n\_sites))
+00075 \textcolor{keyword}{allocate}(offsets(n\_sites))
+00076 \textcolor{keyword}{allocate}(connectivity(n\_sites*(12+1)))
+00077 \textcolor{keyword}{allocate}(values(n\_sites))
+00078 \textcolor{keyword}{allocate}(states(n\_sites))
+00079 \textcolor{keyword}{allocate}(invasion\_list(n\_sites))
+00080 \textcolor{keyword}{allocate}(neighbors(12))
+00081 \textcolor{comment}{!}
+00082 \textcolor{comment}{! setup sites's percolation potentials}
+00083 \textcolor{comment}{!}
+00084 i\_site = 0
+00085 \textcolor{comment}{!}
+00086 \textcolor{keyword}{do} k = 1,nz
+00087    \textcolor{keyword}{do} j = 1,ny
+00088       \textcolor{keyword}{do} i = 1,nx
+00089          \textcolor{comment}{!}
+00090          i\_site = i\_site+1
+00091          \textcolor{comment}{!}
+00092          x(i\_site) = (2*i+mod(j,2)+mod(k,2))*dh/2.
+00093          y(i\_site) = 2.*sqrt(6.)/3.*j*dh/2.
+00094          z(i\_site) = sqrt(3.)*(k+mod(j,2)/3.)*dh/2.
+00095          \textcolor{comment}{!}
+00096          \textcolor{comment}{! init state}
+00097          \textcolor{comment}{!}
+00098          states(i\_site) = not\_invaded
+00099          \textcolor{comment}{!}
+00100          \textcolor{comment}{! setup injection region (bottom wall)}
+00101          \textcolor{comment}{!}
+00102          \textcolor{keyword}{if}(k==1)states(i\_site) = neighboring
+00103          \textcolor{comment}{!}
+00104          \textcolor{comment}{! setup exit\_region (top wall)}
+00105          \textcolor{comment}{!}
+00106          \textcolor{keyword}{if}(k==nz)states(i\_site) = exit\_site
+00107          \textcolor{comment}{!}
+00108       \textcolor{keyword}{enddo}
+00109    \textcolor{keyword}{enddo}
+00110 \textcolor{keyword}{enddo}
+00111 \textcolor{comment}{!}
+00112 \textcolor{comment}{! find sites's neighbors}
+00113 \textcolor{comment}{!}
+00114 i\_site = 0
+00115 offset = 1
+00116 \textcolor{comment}{!}
+00117 \textcolor{keyword}{do} k = 1,nz
+00118    \textcolor{keyword}{do} j = 1,ny
+00119       \textcolor{keyword}{do} i = 1,nx
+00120          \textcolor{comment}{!}
+00121          i\_site = i\_site+1
+00122          \textcolor{comment}{!}
+00123          n = 0
+00124          \textcolor{comment}{!}
+00125          \textcolor{keyword}{do} kk = max(1,k-1),min(nz,k+1)
+00126             \textcolor{keyword}{do} jj = max(1,j-1),min(ny,j+1)
+00127                \textcolor{keyword}{do} ii = max(1,i-1),min(nx,i+1)
+00128                   \textcolor{comment}{!}
+00129                   i\_neighbor = ijk2ind(nx,ny,ii,jj,kk)
+00130                   \textcolor{comment}{!}
+00131                   d = ( (x(i\_site)-x(i\_neighbor))**2 &
+00132                        +(y(i\_site)-y(i\_neighbor))**2 &
+00133                        +(z(i\_site)-z(i\_neighbor))**2 )
+00134                   \textcolor{comment}{!}
+00135                   \textcolor{keyword}{if}(d<dh*1.01.and.i\_neighbor/=i\_site)\textcolor{keyword}{then}
+00136                      n = n+1
+00137                      \textcolor{keyword}{if}(n>12)\textcolor{keyword}{then}
+00138                         print*,\textcolor{stringliteral}{'error : n should be less than 12 for hpc
+       lattices'}
+00139                         stop
+00140                      \textcolor{keyword}{endif}
+00141                      neighbors(n) = i\_neighbor
+00142                   \textcolor{keyword}{endif}
+00143                \textcolor{keyword}{enddo}
+00144             \textcolor{keyword}{enddo}
+00145          \textcolor{keyword}{enddo}
+00146          \textcolor{comment}{!}
+00147          offsets(i\_site) = offset
+00148          connectivity(offset) = n
+00149          connectivity(offset+1:offset+n) = neighbors(1:n)
+00150          offset = offset+n+1
+00151          \textcolor{comment}{!}
+00152       \textcolor{keyword}{enddo}
+00153    \textcolor{keyword}{enddo}
+00154 \textcolor{keyword}{enddo}
+00155 \textcolor{comment}{!}
+00156 \textcolor{comment}{! setup fluid properties}
+00157 \textcolor{comment}{!}
+00158 sigma = 0.0728
+00159 theta\_c = pi
+00160 delta\_rho  = 0.2
+00161 \textcolor{comment}{!}
+00162 \textcolor{comment}{! setup gravity}
+00163 \textcolor{comment}{!}
+00164 gx = 0.00
+00165 gy = 0.00
+00166 gz =-9.81
+00167 \textcolor{comment}{!}
+00168 gravity = .false.
+00169 \textcolor{comment}{!}
+00170 \textcolor{comment}{!setup trapping}
+00171 \textcolor{comment}{!}
+00172 trapping = .true.
+00173 \textcolor{comment}{!}
+00174 \textcolor{comment}{! set values}
+00175 \textcolor{comment}{!}
+00176 \textcolor{keyword}{do} i\_site = 1,n\_sites
+00177    values(i\_site) = rand()
+00178 \textcolor{keyword}{enddo}
+00179 \textcolor{comment}{!}
+00180 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00181 \textcolor{comment}{!!! Invasion Percolation simulation Setup Done !!!}
+00182 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00183 \textcolor{comment}{!}
+00184 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00185 \textcolor{comment}{!!! Now run the simulation simulation !!!}
+00186 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00187 \textcolor{comment}{!}
+00188 print*, \textcolor{stringliteral}{'Starting invasion ...'}
+00189 \textcolor{comment}{!}
+00190 call invade\_arbitrary\_lattice\_simple(n\_sites,         &
+00191                                    x,               &
+00192                                    y,               &
+00193                                    z,               &
+00194                                    offsets,         &
+00195                                    connectivity,    &
+00196                                    values,          &
+00197                                    states,          &
+00198                                    n\_sites\_invaded, &
+00199                                    invasion\_list,   &
+00200                                    gravity,         &
+00201                                    trapping,        &
+00202                                    sigma,           &
+00203                                    theta\_c,         &
+00204                                    delta\_rho,       &
+00205                                    gx,              &
+00206                                    gy,              &
+00207                                    gz               )
+00208 \textcolor{comment}{!}
+00209 print*, \textcolor{stringliteral}{'Invasion done !'}
+00210 \textcolor{comment}{!!!!!!!}
+00211 \textcolor{comment}{! get trapping times}
+00212 \textcolor{comment}{!!!!!}
+00213 
+00214 \textcolor{keyword}{allocate}(trapping\_times(n\_sites))
+00215 
+00216  call get\_trapping\_times\_arbitrary(n\_sites,           &
+00217                                           states,            &
+00218                                           offsets,           &
+00219                                           connectivity,      &
+00220                                           n\_sites\_invaded,   &
+00221                                           invasion\_list,     &
+00222                                           trapping\_times     )
+00223 \textcolor{comment}{!}
+00224 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00225 \textcolor{comment}{!!! write output to file !!!}
+00226 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00227 \textcolor{comment}{!}
+00228 print*, \textcolor{stringliteral}{'writing result to file ...'}
+00229 \textcolor{comment}{!}
+00230 call write\_arbitrary\_lattice\_to\_vtk(n\_sites,         &
+00231                                     states,          &
+00232                                     values,          &
+00233                                     n\_sites\_invaded, &
+00234                                     invasion\_list,   &
+00235                                     offsets,         &
+00236                                     connectivity,    &
+00237                                     x,y,z,           &
+00238                                     \textcolor{stringliteral}{'test\_hex.vtu'},  &
+00239                                     1                )  
+00240 call write\_arbitrary\_lattice\_to\_vtk(n\_sites,         &
+00241                                     trapping\_times,          &
+00242                                     values,          &
+00243                                     n\_sites\_invaded, &
+00244                                     invasion\_list,   &
+00245                                     offsets,         &
+00246                                     connectivity,    &
+00247                                     x,y,z,           &
+00248                                     \textcolor{stringliteral}{'test\_hex\_times.vtu'},  &
+00249                                     1                )  
+00250 \textcolor{comment}{!}
+00251 print*, \textcolor{stringliteral}{'done'}
+00252 \textcolor{comment}{!}
+00253 \textcolor{comment}{!!!!!!!!!!!!}
+00254 \textcolor{comment}{!!! done !!!}
+00255 \textcolor{comment}{!!!!!!!!!!!!}
+00256 \textcolor{comment}{!}
+00257 stop
+00258 \textcolor{comment}{!}
+00259 \textcolor{comment}{!--------------------}
+00260 \textcolor{keyword}{end program example\_2}
+00261 \textcolor{comment}{!--------------------}
+\end{DoxyCode}

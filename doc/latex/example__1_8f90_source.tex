@@ -1,0 +1,206 @@
+\hypertarget{example__1_8f90_source}{
+\section{examples/src/example\-\_\-1.f90}
+}
+
+\begin{DoxyCode}
+00001 
+\hypertarget{example__1_8f90_source_l00005}{}\hyperlink{example__1_8f90_a33b791e70f7381682d35121a46397153}{00005} \textcolor{keyword}{program} \hyperlink{example__1_8f90_a33b791e70f7381682d35121a46397153}{example_1}
+00006 \textcolor{comment}{!----------------}
+00007 \textcolor{comment}{!}
+00008 use \textcolor{keywordflow}{module\_invasion\_percolation}
+00009 \textcolor{comment}{!}
+00010 \textcolor{keyword}{implicit none}
+00011 \textcolor{comment}{!}
+00012 \textcolor{keywordtype}{integer} :: nx
+00013 \textcolor{keywordtype}{integer} :: ny
+00014 \textcolor{keywordtype}{integer} :: nz
+00015 \textcolor{comment}{!}
+00016 \textcolor{keywordtype}{real} :: dx 
+00017 \textcolor{keywordtype}{real} :: dy 
+00018 \textcolor{keywordtype}{real} :: dz 
+00019 \textcolor{comment}{!}
+00020 \textcolor{keywordtype}{logical} :: period\_x 
+00021 \textcolor{keywordtype}{logical} :: period\_y
+00022 \textcolor{keywordtype}{logical} :: period\_z 
+00023 \textcolor{comment}{!}
+00024 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{allocatable} :: values(:,:,:) 
+00025 \textcolor{comment}{!}
+00026 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: states(:,:,:)
+00027 \textcolor{comment}{!}
+00028 \textcolor{keywordtype}{integer} :: n\_sites\_invaded
+00029 \textcolor{comment}{!}
+00030 \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: invasion\_list(:)
+00031 \textcolor{comment}{!}
+00032 \textcolor{keywordtype}{logical} :: gravity 
+00033 \textcolor{keywordtype}{logical} :: trapping 
+00034 \textcolor{comment}{!}
+00035 \textcolor{keywordtype}{real} :: sigma
+00036 \textcolor{keywordtype}{real} :: theta\_c 
+00037 \textcolor{keywordtype}{real} :: delta\_rho 
+00038 \textcolor{comment}{!}
+00039 \textcolor{keywordtype}{real} :: gx
+00040 \textcolor{keywordtype}{real} :: gy 
+00041 \textcolor{keywordtype}{real} :: gz 
+00042 \textcolor{comment}{!}
+00043 \textcolor{keywordtype}{integer} :: i,j,k
+00044 \textcolor{comment}{!}
+00045 \textcolor{keywordtype}{real} :: pi
+00046 \textcolor{comment}{!}
+00047 pi = 4.*atan(1.)
+00048 \textcolor{comment}{!}
+00049 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00050 \textcolor{comment}{!!! setting up an Invasion Percolation simulation !!!}
+00051 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00052 \textcolor{comment}{!}
+00053 \textcolor{comment}{! setup grid dimensions :}
+00054 \textcolor{comment}{!}
+00055 nx = 50
+00056 ny = 50
+00057 nz = 50
+00058 \textcolor{comment}{!}
+00059 dx = 1.0
+00060 dy = 1.0
+00061 dz = 1.0
+00062 \textcolor{comment}{!}
+00063 \textcolor{comment}{! setup domain boundaries : }
+00064 \textcolor{comment}{!}
+00065 \textcolor{comment}{! use period\_x = .true. for periodic bondaries in the x direction}
+00066 \textcolor{comment}{! use period\_x = .false. for sealed walls in the x direction}
+00067 \textcolor{comment}{!}
+00068 period\_x = .false.
+00069 period\_y = .false.
+00070 period\_z = .false.
+00071 \textcolor{comment}{!}
+00072 \textcolor{comment}{! allocate memory :}
+00073 \textcolor{comment}{!}
+00074 \textcolor{keyword}{allocate}(values(nx,ny,nz))
+00075 \textcolor{keyword}{allocate}(states(nx,ny,nz))
+00076 \textcolor{keyword}{allocate}(invasion\_list(nx*ny*nz))
+00077 \textcolor{comment}{!}
+00078 \textcolor{comment}{! setup sites's percolation potentials}
+00079 \textcolor{comment}{!}
+00080 \textcolor{keyword}{do} k = 1,nz
+00081    \textcolor{keyword}{do} j = 1,ny
+00082       \textcolor{keyword}{do} i = 1,nx
+00083          values(i,j,k) = rand(0)*dx
+00084       \textcolor{keyword}{enddo}
+00085    \textcolor{keyword}{enddo}
+00086 \textcolor{keyword}{enddo}
+00087 \textcolor{comment}{!}
+00088 \textcolor{comment}{! add correlation}
+00089 \textcolor{comment}{!}
+00090 \textcolor{keyword}{write}(*,*)\textcolor{stringliteral}{'ok'}
+00091 call gen\_random\_media\_3D (values,             & 
+00092                           nx, ny, nz,         &
+00093                           dx, dy, dz,         &
+00094                           -.5,                 &
+00095                           1.,                 &
+00096                           1.,                 &
+00097                           \textcolor{stringliteral}{'white\_noise'}       )
+00098 \textcolor{keyword}{write}(*,*)\textcolor{stringliteral}{'ok1'}
+00099 \textcolor{comment}{!}
+00100 \textcolor{comment}{! initialize sites's states :}
+00101 \textcolor{comment}{!}
+00102 states(:,:,:) = not\_invaded
+00103 \textcolor{comment}{!}
+00104 \textcolor{comment}{! setup injection region (bottom wall here) :}
+00105 \textcolor{comment}{!}
+00106 states(:,:,1) = neighboring
+00107 \textcolor{comment}{!}
+00108 \textcolor{comment}{! setup exit region (top wall here) :}
+00109 \textcolor{comment}{!}
+00110 states(:,:,nz) = exit\_site
+00111 \textcolor{comment}{!}
+00112 \textcolor{comment}{! setup fluid properties}
+00113 \textcolor{comment}{!}
+00114 sigma = 0.0728
+00115 theta\_c = pi
+00116 delta\_rho  = 0.2
+00117 \textcolor{comment}{!}
+00118 \textcolor{comment}{! setup gravity}
+00119 \textcolor{comment}{!}
+00120 gx = 0.00
+00121 gy = 0.00
+00122 gz =-9.81
+00123 \textcolor{comment}{!}
+00124 gravity = .false.
+00125 \textcolor{comment}{!}
+00126 \textcolor{comment}{!setup trapping}
+00127 \textcolor{comment}{!}
+00128 trapping = .false.
+00129 \textcolor{comment}{!}
+00130 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00131 \textcolor{comment}{!!! Invasion Percolation simulation Setup Done !!!}
+00132 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00133 \textcolor{comment}{!}
+00134 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00135 \textcolor{comment}{!!! Now run the simulation simulation !!!}
+00136 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00137 \textcolor{comment}{!}
+00138 \textcolor{comment}{!--------------------------------------------------}
+00139 call invade\_cubic\_lattice\_fast(nx,              &
+00140                                  ny,              &
+00141                                  nz,              &
+00142                                  dx,              &
+00143                                  dy,              &
+00144                                  dz,              &
+00145                                  period\_x,        &
+00146                                  period\_y,        &
+00147                                  period\_z,        &
+00148                                  values,          &
+00149                                  states,          &
+00150                                  n\_sites\_invaded, &
+00151                                  invasion\_list,   &
+00152                                  gravity,         &
+00153                                  trapping,        &
+00154                                  sigma,           &
+00155                                  theta\_c,         &
+00156                                  delta\_rho,       &
+00157                                  gx,              &
+00158                                  gy,              &
+00159                                  gz               )
+00160 \textcolor{comment}{!--------------------------------------------------}
+00161 \textcolor{comment}{!}
+00162 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00163 \textcolor{comment}{!!! write results to file !!!}
+00164 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00165 \textcolor{comment}{!}
+00166 \textcolor{comment}{! write result to file}
+00167 \textcolor{comment}{!}
+00168 call write\_invasion\_list\_cubic\_to\_vtk(invasion\_list,   &
+00169                                       n\_sites\_invaded, &
+00170                                       nx,ny,           &
+00171                                       dx,dy,dz,        &
+00172                                       \textcolor{stringliteral}{'test\_vtk'}   )    
+00173 
+00174 call write\_invasion\_list\_cubic\_to\_csv(invasion\_list,   &
+00175                                       n\_sites\_invaded, &
+00176                                       nx,ny,           &
+00177                                       dx,dy,dz,        &
+00178                                       \textcolor{stringliteral}{'test\_csv'}       )
+00179 
+00180 call write\_cubic\_lattice\_to\_vtk\_cells(states,          &
+00181                                       values,          &
+00182                                       n\_sites\_invaded, &
+00183                                       invasion\_list,   &
+00184                                       nx,ny,nz,        &
+00185                                       dx,dy,dz,        &
+00186                                       \textcolor{stringliteral}{'example\_1'},     &
+00187                                       7                )
+00188 \textcolor{comment}{!}
+00189 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00190 \textcolor{comment}{!!! Print result on screen !!!}
+00191 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00192 \textcolor{comment}{!}
+00193 call funny\_3D(states,nx,ny,nz,INVADED)
+00194 \textcolor{comment}{!}
+00195 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!}
+00196 \textcolor{comment}{!!! We are done !!!}
+00197 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!}
+00198 \textcolor{comment}{!}
+00199 stop
+00200 \textcolor{comment}{!}
+00201 \textcolor{comment}{!--------------------}
+00202 \textcolor{keyword}{end program example\_1}
+00203 \textcolor{comment}{!--------------------}
+\end{DoxyCode}

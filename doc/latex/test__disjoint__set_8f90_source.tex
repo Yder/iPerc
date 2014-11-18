@@ -1,0 +1,93 @@
+\hypertarget{test__disjoint__set_8f90_source}{
+\section{examples/src/test\-\_\-disjoint\-\_\-set.f90}
+}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{!==========================!}
+00002 \textcolor{comment}{! TEST DISJOINT SET MODULE !}
+00003 \textcolor{comment}{!==========================!}
+00004 \textcolor{comment}{!}
+\hypertarget{test__disjoint__set_8f90_source_l00014}{}\hyperlink{test__disjoint__set_8f90_ae10b89f154e0887e67a5854100a8f465}{00014} \textcolor{keyword}{program} \hyperlink{test__disjoint__set_8f90_ae10b89f154e0887e67a5854100a8f465}{test_disjoint_set}
+00015 \textcolor{comment}{!========================}
+00016   \textcolor{comment}{!}
+00017   use \textcolor{keywordflow}{module\_disjoint\_set}
+00018   \textcolor{comment}{!}
+00019   \textcolor{keyword}{implicit none}
+00020   \textcolor{comment}{!}
+00021   \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{parameter} :: nclass=10 \textcolor{comment}{!< number of class to create}
+00022   \textcolor{keywordtype}{integer} :: i \textcolor{comment}{!< looping index}
+00023   \textcolor{keywordtype}{integer} :: c1 \textcolor{comment}{!< class label}
+00024   \textcolor{keywordtype}{integer} :: c2 \textcolor{comment}{!< class label}
+00025   \textcolor{comment}{!}
+00026   \textcolor{comment}{! allocate some memory to the data structure (this is optional)}
+00027   \textcolor{comment}{!}
+00028   call allocate\_disjoint\_set(2) \textcolor{comment}{! we use 2<nclass to check that reallocation
+       works fine}
+00029   \textcolor{comment}{! }
+00030   \textcolor{comment}{! initialize largest\_label (no class have yet been created)}
+00031   \textcolor{comment}{!}
+00032   largest\_label = 0
+00033   \textcolor{comment}{!}
+00034   \textcolor{comment}{! create new classes}
+00035   \textcolor{comment}{!}
+00036   print*,
+00037   \textcolor{comment}{!}
+00038   \textcolor{keyword}{do} i = 1,nclass
+00039      print \textcolor{stringliteral}{'(a,i3.0)'},\textcolor{stringliteral}{'we just created a new class with label: '},create\_set(
+      largest\_label)
+00040   \textcolor{keyword}{enddo}
+00041   \textcolor{comment}{!}
+00042   print*,
+00043   \textcolor{comment}{!}
+00044   \textcolor{comment}{! find the canonical class (label) of the newly created class}
+00045   \textcolor{comment}{! }
+00046   \textcolor{keyword}{do} i = 1,nclass
+00047      c1 = i
+00048      print \textcolor{stringliteral}{'(a,i3.0,a,i3.0)'},\textcolor{stringliteral}{'the canonical label of class '},c1,\textcolor{stringliteral}{' is '},find(c1)
+00049   \textcolor{keyword}{enddo}
+00050   \textcolor{comment}{!}
+00051   print*,
+00052   \textcolor{comment}{!}
+00053   \textcolor{comment}{! proceed to some unions}
+00054   \textcolor{comment}{!}
+00055   c1 = 1 ; c2 = 3
+00056   \textcolor{comment}{!}
+00057   print \textcolor{stringliteral}{'(a,i3.0,a,i3.0,a,i3.0)'},\textcolor{stringliteral}{"let's union class "},c1,\textcolor{stringliteral}{' and '},c2,&
+00058        \textcolor{stringliteral}{', they are now part of one and the same class:'},union(c1,c2)
+00059   \textcolor{comment}{!}
+00060   c1 = 4 ; c2 = 7
+00061   \textcolor{comment}{!}
+00062   print \textcolor{stringliteral}{'(a,i3.0,a,i3.0,a,i3.0)'},\textcolor{stringliteral}{"let's union class "},c1,\textcolor{stringliteral}{' and '},c2,&
+00063        \textcolor{stringliteral}{', they are now part of one and the same class:'},union(c1,c2)
+00064   \textcolor{comment}{!}
+00065   c1 = 1 ; c2 = 4
+00066   \textcolor{comment}{!}
+00067   print \textcolor{stringliteral}{'(a,i3.0,a,i3.0,a,i3.0)'},\textcolor{stringliteral}{"let's union class "},c1,\textcolor{stringliteral}{' and '},c2,&
+00068        \textcolor{stringliteral}{', they are now part of one and the same class:'},union(c1,c2)
+00069   \textcolor{comment}{!}
+00070   c1 = 9 ; c2 = 10
+00071   \textcolor{comment}{!}
+00072   print \textcolor{stringliteral}{'(a,i3.0,a,i3.0,a,i3.0)'},\textcolor{stringliteral}{"let's union class "},c1,\textcolor{stringliteral}{' and '},c2,&
+00073        \textcolor{stringliteral}{', they are now part of one and the same class:'},union(c1,c2)
+00074   \textcolor{comment}{!}
+00075   print*,
+00076   \textcolor{comment}{!}
+00077   \textcolor{comment}{! check the new equivlent classes}
+00078   \textcolor{comment}{!}
+00079   \textcolor{keyword}{do} i = 1,nclass
+00080      c1 = i
+00081      print \textcolor{stringliteral}{'(a,i3.0,a,i3.0)'},\textcolor{stringliteral}{'the canonical label of class '},c1,\textcolor{stringliteral}{' is '},find(c1)
+00082   \textcolor{keyword}{enddo}
+00083   print*,
+00084   \textcolor{comment}{!}
+00085   \textcolor{comment}{! clean data structure}
+00086   \textcolor{comment}{!}
+00087   call deallocate\_disjoint\_set()
+00088   \textcolor{comment}{!}
+00089   stop
+00090   \textcolor{comment}{!}
+00091 \textcolor{comment}{!}
+00092 \textcolor{comment}{!============================}
+00093 \textcolor{keyword}{end program test\_disjoint\_set}
+00094 \textcolor{comment}{!============================}
+\end{DoxyCode}

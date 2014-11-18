@@ -1,0 +1,193 @@
+\hypertarget{module__gravity_8f90_source}{
+\section{modules/src/module\-\_\-gravity.f90}
+}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{!========================!}
+00002 \textcolor{comment}{!                        !}
+00003 \textcolor{comment}{!                        !}
+00004 \textcolor{comment}{!     MODULE GRAVITY     !}
+00005 \textcolor{comment}{!                        !}
+00006 \textcolor{comment}{!                        !}
+00007 \textcolor{comment}{!========================!}
+00008 \textcolor{comment}{!}
+\hypertarget{module__gravity_8f90_source_l00017}{}\hyperlink{classmodule__gravity}{00017} \textcolor{keyword}{module} \hyperlink{classmodule__gravity}{module_gravity}
+00018 \textcolor{comment}{!====================}
+00019   \textcolor{comment}{!}
+00020 \textcolor{keyword}{contains}
+00021   \textcolor{comment}{!}
+\hypertarget{module__gravity_8f90_source_l00030}{}\hyperlink{classmodule__gravity_a0ef06b39c155a8de1baa8cd15c38da9d}{00030}   \textcolor{keyword}{subroutine }add\_gravity\_cubic\_lattice(values,    &
+00031                                        nx,        &
+00032                                        ny,        &
+00033                                        nz,        &
+00034                                        dx,        &
+00035                                        dy,        &
+00036                                        dz,        &
+00037                                        sigma,     &
+00038                                        theta\_c,   &
+00039                                        delta\_rho, &
+00040                                        gx,        &
+00041                                        gy,        &
+00042                                        gz         )
+00043   \textcolor{comment}{!------------------------------------------------}
+00044     \textcolor{comment}{!}
+00045     \textcolor{keyword}{implicit none}
+00046     \textcolor{comment}{!}
+00047     \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< Grid dimension in the x direction (\(\backslash\)b input)}
+00048     \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< Grid dimension in the y direction (\(\backslash\)b input)}
+00049     \textcolor{keywordtype}{integer} :: nz \textcolor{comment}{!< Grid dimension in the z direction (\(\backslash\)b input)}
+00050     \textcolor{comment}{!}
+00051     \textcolor{keywordtype}{real} :: dx \textcolor{comment}{!<  Grid spacing in the x direction \(\backslash\)f$ \(\backslash\)Delta x\(\backslash\)f$ (\(\backslash\)b input)}
+00052     \textcolor{keywordtype}{real} :: dy \textcolor{comment}{!<  Grid spacing in the x direction \(\backslash\)f$ \(\backslash\)Delta y\(\backslash\)f$ (\(\backslash\)b input)}
+00053     \textcolor{keywordtype}{real} :: dz \textcolor{comment}{!<  Grid spacing in the x direction \(\backslash\)f$ \(\backslash\)Delta z\(\backslash\)f$ (\(\backslash\)b input)}
+00054     \textcolor{comment}{!}
+00059     \textcolor{keywordtype}{real} :: values(nx,ny,nz) 
+00060     \textcolor{comment}{!}
+00061     \textcolor{keywordtype}{real} :: sigma \textcolor{comment}{!< Surface tension \(\backslash\)f$ \(\backslash\)sigma \(\backslash\)f$ (\(\backslash\)b input)}
+00062     \textcolor{keywordtype}{real} :: theta\_c \textcolor{comment}{!< Equilibrium contact angle \(\backslash\)f$ \(\backslash\)theta\_c \(\backslash\)f$ (\(\backslash\)b input)}
+00063     \textcolor{keywordtype}{real} :: delta\_rho \textcolor{comment}{!< Fluid density contrast \(\backslash\)f$ \(\backslash\)Delta \(\backslash\)rho \(\backslash\)f$ (\(\backslash\)b input)}
+00064     \textcolor{comment}{!}
+00065     \textcolor{keywordtype}{real} :: gx \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the x direction (\(\backslash\)b
+       input)}
+00066     \textcolor{keywordtype}{real} :: gy \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the y direction (\(\backslash\)b
+       input)}
+00067     \textcolor{keywordtype}{real} :: gz \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the z direction (\(\backslash\)b
+       input)}
+00068     \textcolor{comment}{!}
+00069     \textcolor{comment}{! internal variables}
+00070     \textcolor{comment}{!}
+00071     \textcolor{keywordtype}{real} :: l\_max \textcolor{comment}{!< Height of the system to be invaded \(\backslash\)f$ L \(\backslash\)f$}
+00072     \textcolor{comment}{!}
+00073     \textcolor{keywordtype}{integer} :: i \textcolor{comment}{!< Looping index}
+00074     \textcolor{keywordtype}{integer} :: j \textcolor{comment}{!< Looping index}
+00075     \textcolor{keywordtype}{integer} :: k \textcolor{comment}{!< Looping index}
+00076     \textcolor{keywordtype}{integer} :: n \textcolor{comment}{!< counter}
+00077     \textcolor{comment}{!}
+00078     \textcolor{keywordtype}{real} :: norm\_g \textcolor{comment}{!< norm of the gravity vector with components gx,gy,gz.}
+00079     \textcolor{keywordtype}{real} :: l \textcolor{comment}{!< height of the site taken in the direction of unit gravity
+       vector}
+00080     \textcolor{comment}{!}
+00081     \textcolor{keywordtype}{real} :: x \textcolor{comment}{!< site's coordinate x}
+00082     \textcolor{keywordtype}{real} :: y \textcolor{comment}{!< site's coordinate y}
+00083     \textcolor{keywordtype}{real} :: z \textcolor{comment}{!< site's coordinate z}
+00084     \textcolor{comment}{!}
+00085     \textcolor{comment}{! Computing norm\_g is useless, it is only used for clarity}
+00086     \textcolor{comment}{!}
+00087     norm\_g = sqrt(gx**2+gy**2+gz**2)
+00088     \textcolor{comment}{!}
+00089     \textcolor{comment}{! First find l\_max}
+00090     \textcolor{comment}{!}
+00091     n = 0
+00092     \textcolor{comment}{!}
+00093     \textcolor{keyword}{do} k = 1,nz
+00094        z = k*dz
+00095        \textcolor{keyword}{do} j = 1,ny
+00096           y = j*dy
+00097           \textcolor{keyword}{do} i = 1,nx
+00098              x = i*dx
+00099              n = n+1
+00100              l = (x*gx+y*gy+z*gz)/norm\_g
+00101              \textcolor{keyword}{if}(n==1)\textcolor{keyword}{then}
+00102                 l\_max = l
+00103              \textcolor{keyword}{else}
+00104                 l\_max = max(l\_max,l)
+00105              \textcolor{keyword}{endif}
+00106           \textcolor{keyword}{enddo}
+00107        \textcolor{keyword}{enddo}
+00108     \textcolor{keyword}{enddo}
+00109     \textcolor{comment}{!}
+00110     \textcolor{comment}{! Compute site's invasion potential}
+00111     \textcolor{comment}{!}
+00112     \textcolor{keyword}{do} k = 1,nz
+00113        z = k*dz
+00114        \textcolor{keyword}{do} j = 1,ny
+00115           y = j*dy
+00116           \textcolor{keyword}{do} i = 1,nx
+00117              x = i*dx
+00118              l = (x*gx+y*gy+z*gz)/norm\_g
+00119              values(i,j,k) = 2*sigma*cos(theta\_c)/values(i,j,k)&
+00120                             -delta\_rho*norm\_g*(l\_max-l)
+00121           \textcolor{keyword}{enddo}
+00122        \textcolor{keyword}{enddo}
+00123     \textcolor{keyword}{enddo}
+00124     \textcolor{comment}{! }
+00125     return
+00126     \textcolor{comment}{!}
+00127   \textcolor{comment}{!---------------------------------------}
+00128 \textcolor{keyword}{  end subroutine add\_gravity\_cubic\_lattice}
+00129   \textcolor{comment}{!---------------------------------------}
+00130   \textcolor{comment}{!}
+\hypertarget{module__gravity_8f90_source_l00139}{}\hyperlink{classmodule__gravity_aec4d82af2ee63137ace94fec23131058}{00139}   \textcolor{keyword}{subroutine }add\_gravity\_arbitrary\_lattice(values,    &
+00140                                            n,         &
+00141                                            x,         &
+00142                                            y,         &
+00143                                            z,         &
+00144                                            sigma,     &
+00145                                            theta\_c,   &
+00146                                            delta\_rho, &
+00147                                            gx,        &
+00148                                            gy,        &
+00149                                            gz         )
+00150   \textcolor{comment}{!----------------------------------------------------}
+00151     \textcolor{comment}{!}
+00152     \textcolor{keyword}{implicit none}
+00153     \textcolor{comment}{!}
+00154     \textcolor{keywordtype}{integer} :: n \textcolor{comment}{!< Total number of sites in the lattice (\(\backslash\)b input) }
+00155     \textcolor{comment}{!}
+00156     \textcolor{keywordtype}{real} :: x(:) \textcolor{comment}{!< Array containing the x coordinates od the sites (\(\backslash\)b input)}
+00157     \textcolor{keywordtype}{real} :: y(:) \textcolor{comment}{!< Array containing the y coordinates od the sites (\(\backslash\)b input)}
+00158     \textcolor{keywordtype}{real} :: z(:) \textcolor{comment}{!< Array containing the z coordinates od the sites (\(\backslash\)b input)}
+00159     \textcolor{comment}{!}
+00160     \textcolor{comment}{!}
+00165     \textcolor{keywordtype}{real} :: values(:) 
+00166     \textcolor{comment}{!}
+00167     \textcolor{keywordtype}{real} :: sigma \textcolor{comment}{!< Surface tension \(\backslash\)f$ \(\backslash\)sigma \(\backslash\)f$ (\(\backslash\)b input)}
+00168     \textcolor{keywordtype}{real} :: theta\_c \textcolor{comment}{!< Equilibrium contact angle \(\backslash\)f$ \(\backslash\)theta\_c \(\backslash\)f$ (\(\backslash\)b input)}
+00169     \textcolor{keywordtype}{real} :: delta\_rho \textcolor{comment}{!< Fluid density contrast \(\backslash\)f$ \(\backslash\)Delta \(\backslash\)rho \(\backslash\)f$ (\(\backslash\)b input)}
+00170     \textcolor{comment}{!}
+00171     \textcolor{keywordtype}{real} :: gx \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the x direction (\(\backslash\)b
+       input)}
+00172     \textcolor{keywordtype}{real} :: gy \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the y direction (\(\backslash\)b
+       input)}
+00173     \textcolor{keywordtype}{real} :: gz \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the z direction (\(\backslash\)b
+       input)}
+00174     \textcolor{comment}{!}
+00175     \textcolor{keywordtype}{real} :: l\_max \textcolor{comment}{!< Height of the system to be invaded \(\backslash\)f$ L \(\backslash\)f$}
+00176     \textcolor{keywordtype}{integer} :: i \textcolor{comment}{!< Looping index}
+00177     \textcolor{keywordtype}{real} :: norm\_g \textcolor{comment}{!< norm of the gravity vector with components gx,gy,gz.}
+00178     \textcolor{keywordtype}{real} :: l \textcolor{comment}{!< height of the site taken in the direction of unit gravity
+       vector}
+00179     \textcolor{comment}{!}
+00180     \textcolor{comment}{! Computing norm\_g is useless, it is only used for clarity}
+00181     \textcolor{comment}{!}
+00182     norm\_g = sqrt(gx**2+gy**2+gz**2)
+00183     \textcolor{comment}{!}
+00184     \textcolor{comment}{! First find l\_max}
+00185     \textcolor{comment}{!}
+00186     \textcolor{keyword}{do} i = 1,n
+00187        l = (x(i)*gx+y(i)*gy+z(i)*gz)/norm\_g
+00188        \textcolor{keyword}{if}(i==1)\textcolor{keyword}{then}
+00189           l\_max = l
+00190        \textcolor{keyword}{else}
+00191           l\_max = max(l\_max,l)
+00192        \textcolor{keyword}{endif}
+00193     \textcolor{keyword}{enddo}
+00194     \textcolor{comment}{!}
+00195     \textcolor{comment}{! Compute site's invasion potential}
+00196     \textcolor{comment}{!}
+00197     \textcolor{keyword}{do} i = 1,n
+00198        l = (x(i)*gx+y(i)*gy+z(i)*gz)/norm\_g
+00199        values(i) = 2*sigma*cos(theta\_c)/values(i)&
+00200                   -delta\_rho*norm\_g*(l\_max-l)
+00201     \textcolor{keyword}{enddo}
+00202     \textcolor{comment}{! }
+00203     return
+00204     \textcolor{comment}{!}
+00205   \textcolor{comment}{!-------------------------------------------}
+00206 \textcolor{keyword}{  end subroutine add\_gravity\_arbitrary\_lattice}
+00207   \textcolor{comment}{!-------------------------------------------}
+00208   \textcolor{comment}{!}
+00209 \textcolor{comment}{!========================}
+00210 \textcolor{keyword}{end module module\_gravity}
+00211 \textcolor{comment}{!========================}
+\end{DoxyCode}

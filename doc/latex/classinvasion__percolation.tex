@@ -1,0 +1,395 @@
+\hypertarget{classinvasion__percolation}{
+\section{invasion\-\_\-percolation \-Module \-Reference}
+\label{classinvasion__percolation}\index{invasion\-\_\-percolation@{invasion\-\_\-percolation}}
+}
+
+
+\-This module contains the functions for simulating invasion percolation.  
+
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{classinvasion__percolation_a4424ce72dbef1b3465996d08ca3b3e6e}{invade\-\_\-cubic\-\_\-lattice\-\_\-simple} (nx, ny, nz, dx, dy, dz, period\-\_\-x, period\-\_\-y, period\-\_\-z, values, states, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, gravity, trapping, sigma, theta\-\_\-c, delta\-\_\-rho, gx, gy, gz)
+\begin{DoxyCompactList}\small\item\em \-A simple but inefficient implementation of invasion percolation on a 3\-D cubic lattice. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classinvasion__percolation_a1c8680d7b1d4bcb917c381eb2ea65428}{invade\-\_\-cubic\-\_\-lattice\-\_\-fast} (nx, ny, nz, dx, dy, dz, period\-\_\-x, period\-\_\-y, period\-\_\-z, values, states, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, gravity, trapping, sigma, theta\-\_\-c, delta\-\_\-rho, gx, gy, gz)
+\begin{DoxyCompactList}\small\item\em \-An efficient implementation of invasion percolation on a 3\-D cubic lattice. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classinvasion__percolation_ad749a176ab9a880b71ce83034d6f849d}{invade\-\_\-arbitrary\-\_\-lattice\-\_\-simple} (n\-\_\-sites, x, y, z, offsets, connectivity, values, states, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, gravity, trapping, sigma, theta\-\_\-c, delta\-\_\-rho, gx, gy, gz)
+\begin{DoxyCompactList}\small\item\em \-A simple but inefficient implementation of invasion percolation on arbitrary lattices. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classinvasion__percolation_ab1f938022112bd409e736f30a8751ec0}{invade\-\_\-arbitrary\-\_\-lattice\-\_\-fast} (n\-\_\-sites, x, y, z, offsets, connectivity, values, states, n\-\_\-sites\-\_\-invaded, invasion\-\_\-list, gravity, trapping, sigma, theta\-\_\-c, delta\-\_\-rho, gx, gy, gz)
+\begin{DoxyCompactList}\small\item\em \-An efficient implementation of invasion percolation on arbitrary lattices. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-This module contains the functions for simulating invasion percolation. 
+
+\subsection{\-Member \-Function/\-Subroutine \-Documentation}
+\hypertarget{classinvasion__percolation_ab1f938022112bd409e736f30a8751ec0}{
+\index{invasion\-\_\-percolation@{invasion\-\_\-percolation}!invade\-\_\-arbitrary\-\_\-lattice\-\_\-fast@{invade\-\_\-arbitrary\-\_\-lattice\-\_\-fast}}
+\index{invade\-\_\-arbitrary\-\_\-lattice\-\_\-fast@{invade\-\_\-arbitrary\-\_\-lattice\-\_\-fast}!invasion_percolation@{invasion\-\_\-percolation}}
+\subsubsection[{invade\-\_\-arbitrary\-\_\-lattice\-\_\-fast}]{\setlength{\rightskip}{0pt plus 5cm}subroutine invasion\-\_\-percolation\-::invade\-\_\-arbitrary\-\_\-lattice\-\_\-fast (
+\begin{DoxyParamCaption}
+\item[{integer}]{n\-\_\-sites, }
+\item[{real, dimension(\-:)}]{x, }
+\item[{real, dimension(\-:)}]{y, }
+\item[{real, dimension(\-:)}]{z, }
+\item[{integer, dimension(\-:)}]{offsets, }
+\item[{integer, dimension(\-:)}]{connectivity, }
+\item[{real, dimension(\-:)}]{values, }
+\item[{integer, dimension(\-:)}]{states, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{logical}]{gravity, }
+\item[{logical}]{trapping, }
+\item[{real}]{sigma, }
+\item[{real}]{theta\-\_\-c, }
+\item[{real}]{delta\-\_\-rho, }
+\item[{real}]{gx, }
+\item[{real}]{gy, }
+\item[{real}]{gz}
+\end{DoxyParamCaption}
+)}}
+\label{classinvasion__percolation_ab1f938022112bd409e736f30a8751ec0}
+
+
+\-An efficient implementation of invasion percolation on arbitrary lattices. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 21, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em n\-\_\-sites} & \-Total number of sites in the lattice ({\bfseries \-Input}) \\
+\hline
+{\em x} & \-Array containing the x coordinates of the sites ({\bfseries \-Input}) \\
+\hline
+{\em y} & \-Array containing the y coordinates of the sites ({\bfseries \-Input}) \\
+\hline
+{\em z} & \-Array containing the z coordinates of the sites ({\bfseries \-Input}) \\
+\hline
+{\em offsets} & \-Array containing the offsets of the data stored in the connectivity array ({\bfseries \-Input}) \\
+\hline
+{\em connectivity} & \-Array containing thelattice connectivity ({\bfseries input}) \par
+ \-For a given site {\bfseries i}, with offset {\bfseries j = offsets(i)} \-: \par
+ {\bfseries n=connectivity(j)} is the number of sites neighboring site {\bfseries i}. \par
+ {\bfseries connectivity(j+1, j+2, ... ,j+n)} contains the indices of the sites that are neighboring site {\bfseries i}. \\
+\hline
+{\em values} & \-Array containing the sites's sizes $ a_i $ ({\bfseries input/{\bfseries output})} \par
+ \-When {\bfseries gravity==.true.} this array is modified and contains the invasion potentials $ P_i $ at output time \\
+\hline
+{\em states} & \-Array containing the sites's states ({\bfseries input/{\bfseries output})} \par
+ \-Set {\bfseries state(i)=neighboring} at sites {\bfseries i} where you would like to inject the fluid \par
+ \-Set {\bfseries state(i)=exit\-\_\-site} at sites {\bfseries i} where the defending fluid can escape (the simulation will stop when the invading fluid percolates, i.\-e. it reaches one of these sites) \par
+ \-Set {\bfseries state(i)=sealed} to prevent sites {\bfseries i} from being invaded \par
+ \-At output time, we have {\bfseries state(i)=trapped} at trapped sites \par
+ \-At output time, we have {\bfseries state(i)=invaded} at invaded sites \\
+\hline
+{\em n\-\_\-sites\-\_\-invaded} & \-Number of sites invaded ({\bfseries output}) \\
+\hline
+{\em invasion\-\_\-list} & \-Array containing the list of sites invaded sorted in chronological order ({\bfseries output}) \\
+\hline
+{\em gravity} & \-Flag for gravity ({\bfseries input}) \par
+ \-Set {\bfseries gravity=.true.} to account for gravity \par
+ \-Set {\bfseries gravity=.false.} to ignore gravity \\
+\hline
+{\em trapping} & \-Flag for trapping ({\bfseries input}) \par
+ \-Set {\bfseries trapping=.true.} to account for trapping \par
+ \-Set {\bfseries trapping=.false.} to ignore trapping \\
+\hline
+{\em sigma} & \-Surface tension $ \sigma $ ({\bfseries input}) \\
+\hline
+{\em theta\-\_\-c} & \-Equilibrium contact angle $ \theta_c $ ({\bfseries input}) \\
+\hline
+{\em delta\-\_\-rho} & \-Fluid density contrast $ \Delta \rho $ ({\bfseries input}) \\
+\hline
+{\em gx} & \-Acceleration of gravity $ g $ in the x direction ({\bfseries input}) \\
+\hline
+{\em gy} & \-Acceleration of gravity $ g $ in the y direction ({\bfseries input}) \\
+\hline
+{\em gz} & \-Acceleration of gravity $ g $ in the z direction ({\bfseries input}) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classinvasion__percolation_ad749a176ab9a880b71ce83034d6f849d}{
+\index{invasion\-\_\-percolation@{invasion\-\_\-percolation}!invade\-\_\-arbitrary\-\_\-lattice\-\_\-simple@{invade\-\_\-arbitrary\-\_\-lattice\-\_\-simple}}
+\index{invade\-\_\-arbitrary\-\_\-lattice\-\_\-simple@{invade\-\_\-arbitrary\-\_\-lattice\-\_\-simple}!invasion_percolation@{invasion\-\_\-percolation}}
+\subsubsection[{invade\-\_\-arbitrary\-\_\-lattice\-\_\-simple}]{\setlength{\rightskip}{0pt plus 5cm}subroutine invasion\-\_\-percolation\-::invade\-\_\-arbitrary\-\_\-lattice\-\_\-simple (
+\begin{DoxyParamCaption}
+\item[{integer}]{n\-\_\-sites, }
+\item[{real, dimension(\-:)}]{x, }
+\item[{real, dimension(\-:)}]{y, }
+\item[{real, dimension(\-:)}]{z, }
+\item[{integer, dimension(\-:)}]{offsets, }
+\item[{integer, dimension(\-:)}]{connectivity, }
+\item[{real, dimension(\-:)}]{values, }
+\item[{integer, dimension(\-:)}]{states, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{logical}]{gravity, }
+\item[{logical}]{trapping, }
+\item[{real}]{sigma, }
+\item[{real}]{theta\-\_\-c, }
+\item[{real}]{delta\-\_\-rho, }
+\item[{real}]{gx, }
+\item[{real}]{gy, }
+\item[{real}]{gz}
+\end{DoxyParamCaption}
+)}}
+\label{classinvasion__percolation_ad749a176ab9a880b71ce83034d6f849d}
+
+
+\-A simple but inefficient implementation of invasion percolation on arbitrary lattices. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 21, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em n\-\_\-sites} & \-Total number of sites in the lattice ({\bfseries \-Input}) \\
+\hline
+{\em x} & \-Array containing the x coordinates of the sites ({\bfseries \-Input}) \\
+\hline
+{\em y} & \-Array containing the y coordinates of the sites ({\bfseries \-Input}) \\
+\hline
+{\em z} & \-Array containing the z coordinates of the sites ({\bfseries \-Input}) \\
+\hline
+{\em offsets} & \-Array containing the offsets of the data stored in the connectivity array ({\bfseries \-Input}) \\
+\hline
+{\em connectivity} & \-Array containing thelattice connectivity ({\bfseries input}) \par
+ \-For a given site {\bfseries i}, with offset {\bfseries j = offsets(i)} \-: \par
+ {\bfseries n=connectivity(j)} is the number of sites neighboring site {\bfseries i}. \par
+ {\bfseries connectivity(j+1, j+2, ... ,j+n)} contains the indices of the sites that are neighboring site {\bfseries i}. \\
+\hline
+{\em values} & \-Array containing the sites's sizes $ a_i $ ({\bfseries input/{\bfseries output})} \par
+ \-When {\bfseries gravity==.true.} this array is modified and contains the invasion potentials $ P_i $ at output time \\
+\hline
+{\em states} & \-Array containing the sites's states ({\bfseries input/{\bfseries output})} \par
+ \-Set {\bfseries state(i)=neighboring} at sites {\bfseries i} where you would like to inject the fluid \par
+ \-Set {\bfseries state(i)=exit\-\_\-site} at sites {\bfseries i} where the defending fluid can escape (the simulation will stop when the invading fluid percolates, i.\-e. it reaches one of these sites) \par
+ \-Set {\bfseries state(i)=sealed} to prevent sites {\bfseries i} from being invaded \par
+ \-At output time, we have {\bfseries state(i)=trapped} at trapped sites \par
+ \-At output time, we have {\bfseries state(i)=invaded} at invaded sites \\
+\hline
+{\em n\-\_\-sites\-\_\-invaded} & \-Number of sites invaded ({\bfseries output}) \\
+\hline
+{\em invasion\-\_\-list} & \-Array containing the list of sites invaded sorted in chronological order ({\bfseries output}) \\
+\hline
+{\em gravity} & \-Flag for gravity ({\bfseries input}) \par
+ \-Set {\bfseries gravity=.true.} to account for gravity \par
+ \-Set {\bfseries gravity=.false.} to ignore gravity \\
+\hline
+{\em trapping} & \-Flag for trapping ({\bfseries input}) \par
+ \-Set {\bfseries trapping=.true.} to account for trapping \par
+ \-Set {\bfseries trapping=.false.} to ignore trapping \\
+\hline
+{\em sigma} & \-Surface tension $ \sigma $ ({\bfseries input}) \\
+\hline
+{\em theta\-\_\-c} & \-Equilibrium contact angle $ \theta_c $ ({\bfseries input}) \\
+\hline
+{\em delta\-\_\-rho} & \-Fluid density contrast $ \Delta \rho $ ({\bfseries input}) \\
+\hline
+{\em gx} & \-Acceleration of gravity $ g $ in the x direction ({\bfseries input}) \\
+\hline
+{\em gy} & \-Acceleration of gravity $ g $ in the y direction ({\bfseries input}) \\
+\hline
+{\em gz} & \-Acceleration of gravity $ g $ in the z direction ({\bfseries input}) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classinvasion__percolation_a1c8680d7b1d4bcb917c381eb2ea65428}{
+\index{invasion\-\_\-percolation@{invasion\-\_\-percolation}!invade\-\_\-cubic\-\_\-lattice\-\_\-fast@{invade\-\_\-cubic\-\_\-lattice\-\_\-fast}}
+\index{invade\-\_\-cubic\-\_\-lattice\-\_\-fast@{invade\-\_\-cubic\-\_\-lattice\-\_\-fast}!invasion_percolation@{invasion\-\_\-percolation}}
+\subsubsection[{invade\-\_\-cubic\-\_\-lattice\-\_\-fast}]{\setlength{\rightskip}{0pt plus 5cm}subroutine invasion\-\_\-percolation\-::invade\-\_\-cubic\-\_\-lattice\-\_\-fast (
+\begin{DoxyParamCaption}
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{real}]{dx, }
+\item[{real}]{dy, }
+\item[{real}]{dz, }
+\item[{logical}]{period\-\_\-x, }
+\item[{logical}]{period\-\_\-y, }
+\item[{logical}]{period\-\_\-z, }
+\item[{real, dimension(nx$\ast$ny$\ast$nz)}]{values, }
+\item[{integer, dimension(nx,ny,nz)}]{states, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{logical}]{gravity, }
+\item[{logical}]{trapping, }
+\item[{real}]{sigma, }
+\item[{real}]{theta\-\_\-c, }
+\item[{real}]{delta\-\_\-rho, }
+\item[{real}]{gx, }
+\item[{real}]{gy, }
+\item[{real}]{gz}
+\end{DoxyParamCaption}
+)}}
+\label{classinvasion__percolation_a1c8680d7b1d4bcb917c381eb2ea65428}
+
+
+\-An efficient implementation of invasion percolation on a 3\-D cubic lattice. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 21, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em nx} & \-Grid dimension in the x direction ({\bfseries input}) \\
+\hline
+{\em ny} & \-Grid dimension in the y direction ({\bfseries input}) \\
+\hline
+{\em nz} & \-Grid dimension in the z direction ({\bfseries input}) \\
+\hline
+{\em dx} & \-Grid spacing in the x direction $ \Delta x$ ({\bfseries input}) \\
+\hline
+{\em dy} & \-Grid spacing in the x direction $ \Delta y$ ({\bfseries input}) \\
+\hline
+{\em dz} & \-Grid spacing in the x direction $ \Delta z$ ({\bfseries input}) \\
+\hline
+{\em period\-\_\-x} & \-Flag for periodic boundaries in the x direction ({\bfseries input}) \\
+\hline
+{\em period\-\_\-y} & \-Flag for periodic boundaries in the y direction ({\bfseries input}) \\
+\hline
+{\em period\-\_\-z} & \-Flag for periodic boundaries in the z direction ({\bfseries input}) \\
+\hline
+{\em values} & \-Array containing the sites's sizes $ a_i $ ({\bfseries input/{\bfseries output})} \par
+ \-When {\bfseries gravity==.true.} this array is modified and contains the invasion potentials $ P_i $ at output time \\
+\hline
+{\em states} & \-Array containing the sites's states ({\bfseries input/{\bfseries output})} \par
+ \-Set {\bfseries state(i)=neighboring} at sites {\bfseries i} where you would like to inject the fluid \par
+ \-Set {\bfseries state(i)=exit\-\_\-site} at sites {\bfseries i} where the defending fluid can escape (the simulation will stop when the invading fluid percolates, i.\-e. it reaches one of these sites) \par
+ \-Set {\bfseries state(i)=sealed} to prevent sites {\bfseries i} from being invaded \par
+ \-At output time, we have {\bfseries state(i)=trapped} at trapped sites \par
+ \-At output time, we have {\bfseries state(i)=invaded} at invaded sites \\
+\hline
+{\em n\-\_\-sites\-\_\-invaded} & \-Number of sites invaded ({\bfseries output}) \\
+\hline
+{\em invasion\-\_\-list} & \-Array containing the list of sites invaded sorted in chronological order ({\bfseries output}) \\
+\hline
+{\em gravity} & \-Flag for gravity ({\bfseries input}) \par
+ \-Set {\bfseries gravity=.true.} to account for gravity \par
+ \-Set {\bfseries gravity=.false.} to ignore gravity \\
+\hline
+{\em trapping} & \-Flag for trapping ({\bfseries input}) \par
+ \-Set {\bfseries trapping=.true.} to account for trapping \par
+ \-Set {\bfseries trapping=.false.} to ignore trapping \\
+\hline
+{\em sigma} & \-Surface tension $ \sigma $ ({\bfseries input}) \\
+\hline
+{\em theta\-\_\-c} & \-Equilibrium contact angle $ \theta_c $ ({\bfseries input}) \\
+\hline
+{\em delta\-\_\-rho} & \-Fluid density contrast $ \Delta \rho $ ({\bfseries input}) \\
+\hline
+{\em gx} & \-Acceleration of gravity $ g $ in the x direction ({\bfseries input}) \\
+\hline
+{\em gy} & \-Acceleration of gravity $ g $ in the y direction ({\bfseries input}) \\
+\hline
+{\em gz} & \-Acceleration of gravity $ g $ in the z direction ({\bfseries input}) \\
+\hline
+\end{DoxyParams}
+\hypertarget{classinvasion__percolation_a4424ce72dbef1b3465996d08ca3b3e6e}{
+\index{invasion\-\_\-percolation@{invasion\-\_\-percolation}!invade\-\_\-cubic\-\_\-lattice\-\_\-simple@{invade\-\_\-cubic\-\_\-lattice\-\_\-simple}}
+\index{invade\-\_\-cubic\-\_\-lattice\-\_\-simple@{invade\-\_\-cubic\-\_\-lattice\-\_\-simple}!invasion_percolation@{invasion\-\_\-percolation}}
+\subsubsection[{invade\-\_\-cubic\-\_\-lattice\-\_\-simple}]{\setlength{\rightskip}{0pt plus 5cm}subroutine invasion\-\_\-percolation\-::invade\-\_\-cubic\-\_\-lattice\-\_\-simple (
+\begin{DoxyParamCaption}
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{real}]{dx, }
+\item[{real}]{dy, }
+\item[{real}]{dz, }
+\item[{logical}]{period\-\_\-x, }
+\item[{logical}]{period\-\_\-y, }
+\item[{logical}]{period\-\_\-z, }
+\item[{real, dimension(nx,ny,nz)}]{values, }
+\item[{integer, dimension(nx,ny,nz)}]{states, }
+\item[{integer}]{n\-\_\-sites\-\_\-invaded, }
+\item[{integer, dimension(\-:)}]{invasion\-\_\-list, }
+\item[{logical}]{gravity, }
+\item[{logical}]{trapping, }
+\item[{real}]{sigma, }
+\item[{real}]{theta\-\_\-c, }
+\item[{real}]{delta\-\_\-rho, }
+\item[{real}]{gx, }
+\item[{real}]{gy, }
+\item[{real}]{gz}
+\end{DoxyParamCaption}
+)}}
+\label{classinvasion__percolation_a4424ce72dbef1b3465996d08ca3b3e6e}
+
+
+\-A simple but inefficient implementation of invasion percolation on a 3\-D cubic lattice. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 21, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em nx} & \-Grid dimension in the x direction ({\bfseries input}) \\
+\hline
+{\em ny} & \-Grid dimension in the y direction ({\bfseries input}) \\
+\hline
+{\em nz} & \-Grid dimension in the z direction ({\bfseries input}) \\
+\hline
+{\em dx} & \-Grid spacing in the x direction $ \Delta x$ ({\bfseries input}) \\
+\hline
+{\em dy} & \-Grid spacing in the x direction $ \Delta y$ ({\bfseries input}) \\
+\hline
+{\em dz} & \-Grid spacing in the x direction $ \Delta z$ ({\bfseries input}) \\
+\hline
+{\em period\-\_\-x} & \-Flag for periodic boundaries in the x direction ({\bfseries input}) \\
+\hline
+{\em period\-\_\-y} & \-Flag for periodic boundaries in the y direction ({\bfseries input}) \\
+\hline
+{\em period\-\_\-z} & \-Flag for periodic boundaries in the z direction ({\bfseries input}) \\
+\hline
+{\em values} & \-Array containing the sites's sizes $ a_i $ ({\bfseries input/{\bfseries output})} \par
+ \-When {\bfseries gravity==.true.} this array is modified and contains the invasion potentials $ P_i $ at output time \\
+\hline
+{\em states} & \-Array containing the sites's states ({\bfseries input/{\bfseries output})} \par
+ \-Set {\bfseries state(i)=neighboring} at sites {\bfseries i} where you would like to inject the fluid \par
+ \-Set {\bfseries state(i)=exit\-\_\-site} at sites {\bfseries i} where the defending fluid can escape (the simulation will stop when the invading fluid percolates, i.\-e. it reaches one of these sites) \par
+ \-Set {\bfseries state(i)=sealed} to prevent sites {\bfseries i} from being invaded \par
+ \-At output time, we have {\bfseries state(i)=trapped} at trapped sites \par
+ \-At output time, we have {\bfseries state(i)=invaded} at invaded sites \\
+\hline
+{\em n\-\_\-sites\-\_\-invaded} & \-Number of sites invaded ({\bfseries output}) \\
+\hline
+{\em invasion\-\_\-list} & \-Array containing the list of sites invaded sorted in chronological order ({\bfseries output}) \\
+\hline
+{\em gravity} & \-Flag for gravity ({\bfseries input}) \par
+ \-Set {\bfseries gravity=.true.} to account for gravity \par
+ \-Set {\bfseries gravity=.false.} to ignore gravity \\
+\hline
+{\em trapping} & \-Flag for trapping ({\bfseries input}) \par
+ \-Set {\bfseries trapping=.true.} to account for trapping \par
+ \-Set {\bfseries trapping=.false.} to ignore trapping \\
+\hline
+{\em sigma} & \-Surface tension $ \sigma $ ({\bfseries input}) \\
+\hline
+{\em theta\-\_\-c} & \-Equilibrium contact angle $ \theta_c $ ({\bfseries input}) \\
+\hline
+{\em delta\-\_\-rho} & \-Fluid density contrast $ \Delta \rho $ ({\bfseries input}) \\
+\hline
+{\em gx} & \-Acceleration of gravity $ g $ in the x direction ({\bfseries input}) \\
+\hline
+{\em gy} & \-Acceleration of gravity $ g $ in the y direction ({\bfseries input}) \\
+\hline
+{\em gz} & \-Acceleration of gravity $ g $ in the z direction ({\bfseries input}) \\
+\hline
+\end{DoxyParams}
+
+
+\-The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+modules/src/\hyperlink{module__invasion__percolation_8f90}{module\-\_\-invasion\-\_\-percolation.\-f90}\end{DoxyCompactItemize}

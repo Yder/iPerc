@@ -1,0 +1,211 @@
+\hypertarget{module__label__clusters_8f90_source}{
+\section{modules/src/module\-\_\-label\-\_\-clusters.f90}
+}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{!===============================!}
+00002 \textcolor{comment}{!                               !}
+00003 \textcolor{comment}{!                               !}
+00004 \textcolor{comment}{!     MODULE LABEL CLUSTERS     !}
+00005 \textcolor{comment}{!                               !}
+00006 \textcolor{comment}{!                               !}
+00007 \textcolor{comment}{!===============================!}
+00008 \textcolor{comment}{!}
+\hypertarget{module__label__clusters_8f90_source_l00015}{}\hyperlink{classmodule__label__clusters}{00015} \textcolor{keyword}{module} \hyperlink{classmodule__label__clusters}{module_label_clusters}
+00016 \textcolor{comment}{!===========================}
+00017   \textcolor{comment}{!}
+00018   use \textcolor{keywordflow}{module\_disjoint\_set} 
+00019   \textcolor{comment}{!}
+00020 \textcolor{keyword}{contains}
+00021   \textcolor{comment}{!}
+\hypertarget{module__label__clusters_8f90_source_l00026}{}\hyperlink{classmodule__label__clusters_ac59dcadecc65ca2548221f9ea7858382}{00026}   \textcolor{keyword}{subroutine }label\_clusters\_cubic(mat,nx,ny,nz,period\_x,period\_y,period\_z)
+00027   \textcolor{comment}{!-----------------------------------------------------------------------}
+00028     \textcolor{comment}{!}
+00029     \textcolor{keyword}{implicit none}
+00030     \textcolor{comment}{!}
+00031     \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< Grid dimension in the x direction (\(\backslash\)b input)}
+00032     \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< Grid dimension in the y direction (\(\backslash\)b input)}
+00033     \textcolor{keywordtype}{integer} :: nz \textcolor{comment}{!< Grid dimension in the z direction (\(\backslash\)b input)}
+00034 
+00040     \textcolor{keywordtype}{integer} :: mat(nx,ny,nz) 
+00041     \textcolor{keywordtype}{logical} :: period\_x \textcolor{comment}{!< Flag for periodic boundaries in the x direction (\(\backslash\)b
+       input)}
+00042     \textcolor{keywordtype}{logical} :: period\_y \textcolor{comment}{!< Flag for periodic boundaries in the y direction (\(\backslash\)b
+       input)}
+00043     \textcolor{keywordtype}{logical} :: period\_z \textcolor{comment}{!< Flag for periodic boundaries in the z direction (\(\backslash\)b
+       input)}
+00044     \textcolor{comment}{!}
+00045     \textcolor{comment}{! internal variables}
+00046     \textcolor{comment}{! }
+00047     \textcolor{keywordtype}{integer} :: i, j, k, n, lc(3)
+00048     \textcolor{comment}{!}
+00049     \textcolor{comment}{! init largest label}
+00050     \textcolor{comment}{!}
+00051     largest\_label = 0
+00052     \textcolor{comment}{!}
+00053     \textcolor{keyword}{do} k = 1,nz
+00054        \textcolor{keyword}{do} j = 1,ny
+00055           \textcolor{keyword}{do} i = 1,nx
+00056              \textcolor{keyword}{if}(mat(i,j,k)<0)\textcolor{keyword}{then}
+00057                 n = 0
+00058                 \textcolor{keyword}{if}(i/=1.and.mat(i-1,j,k)/=0)\textcolor{keyword}{then}
+00059                    n = n+1
+00060                    lc(n) = mat(i-1,j,k)
+00061                 \textcolor{keyword}{endif}
+00062                 \textcolor{keyword}{if}(j/=1.and.mat(i,j-1,k)/=0)\textcolor{keyword}{then}
+00063                    n = n+1
+00064                    lc(n) = mat(i,j-1,k)
+00065                 \textcolor{keyword}{endif}
+00066                 \textcolor{keyword}{if}(k/=1.and.mat(i,j,k-1)/=0)\textcolor{keyword}{then}
+00067                    n = n+1
+00068                    lc(n) = mat(i,j,k-1)
+00069                 \textcolor{keyword}{endif}
+00070                 mat(i,j,k) = get\_label\_mat(n,lc)
+00071              \textcolor{keyword}{endif}
+00072           \textcolor{keyword}{enddo}
+00073        \textcolor{keyword}{enddo}
+00074     \textcolor{keyword}{enddo}
+00075     \textcolor{comment}{!}
+00076     \textcolor{comment}{! apply periodic boundaries}
+00077     \textcolor{comment}{!}
+00078     \textcolor{keyword}{if}(period\_x)\textcolor{keyword}{then}
+00079        \textcolor{keyword}{do} k = 1,nz
+00080           \textcolor{keyword}{do} j = 1,ny
+00081              \textcolor{keyword}{if}(mat(1,j,k)/=0.and.mat(nx,j,k)/=0)\textcolor{keyword}{then}
+00082                 mat(1,j,k)=union(mat(1,j,k),mat(nx,j,k))
+00083              \textcolor{keyword}{endif}
+00084           \textcolor{keyword}{enddo}
+00085        \textcolor{keyword}{enddo}
+00086     \textcolor{keyword}{endif}
+00087     \textcolor{comment}{!}
+00088     \textcolor{keyword}{if}(period\_y)\textcolor{keyword}{then}
+00089        \textcolor{keyword}{do} k = 1,nz
+00090           \textcolor{keyword}{do} i = 1,nx
+00091              \textcolor{keyword}{if}(mat(i,1,k)/=0.and.mat(i,ny,k)/=0)\textcolor{keyword}{then}
+00092                 mat(i,1,k)=union(mat(i,1,k),mat(i,ny,k))
+00093              \textcolor{keyword}{endif}
+00094           \textcolor{keyword}{enddo}
+00095        \textcolor{keyword}{enddo}
+00096     \textcolor{keyword}{endif}
+00097     \textcolor{comment}{!}
+00098     \textcolor{keyword}{if}(period\_z)\textcolor{keyword}{then}
+00099        \textcolor{keyword}{do} j = 1,ny
+00100           \textcolor{keyword}{do} i = 1,nx
+00101              \textcolor{keyword}{if}(mat(i,j,1)/=0.and.mat(i,j,nz)/=0)\textcolor{keyword}{then}
+00102                 mat(i,j,1)=union(mat(i,j,1),mat(i,j,nz))
+00103              \textcolor{keyword}{endif}
+00104           \textcolor{keyword}{enddo}
+00105        \textcolor{keyword}{enddo}
+00106     \textcolor{keyword}{endif}
+00107     \textcolor{comment}{!}
+00108     \textcolor{comment}{! find canonical labels}
+00109     \textcolor{comment}{!}
+00110     \textcolor{keyword}{do} k = 1,nz
+00111        \textcolor{keyword}{do} j = 1,ny
+00112           \textcolor{keyword}{do} i = 1,nx
+00113              \textcolor{keyword}{if}(mat(i,j,k)/=0)mat(i,j,k) = find(mat(i,j,k))
+00114           \textcolor{keyword}{enddo}
+00115        \textcolor{keyword}{enddo}
+00116     \textcolor{keyword}{enddo}
+00117     \textcolor{comment}{!}
+00118     return
+00119     \textcolor{comment}{!}
+00120   \textcolor{comment}{!----------------------------------}
+00121 \textcolor{keyword}{  end subroutine label\_clusters\_cubic}
+00122   \textcolor{comment}{!----------------------------------}
+00123   \textcolor{comment}{!}
+\hypertarget{module__label__clusters_8f90_source_l00128}{}\hyperlink{classmodule__label__clusters_a9b73572fdcc3c709bcd6b67e343b7263}{00128}   \textcolor{keyword}{subroutine }label\_clusters\_arbitrary(mat,n\_sites,offsets,connectivity)
+00129   \textcolor{comment}{!--------------------------------------------------------------------}
+00130     \textcolor{comment}{!}
+00131     \textcolor{keyword}{implicit none}
+00132     \textcolor{comment}{!}
+00133     \textcolor{keywordtype}{integer} :: n\_sites \textcolor{comment}{!< Number of sites invaded (\(\backslash\)b output)}
+00134 
+00140     \textcolor{keywordtype}{integer} :: mat(n\_sites)
+00141 
+00143     \textcolor{keywordtype}{integer} :: offsets(:)
+00144 
+00149     \textcolor{keywordtype}{integer} :: connectivity(:)
+00150     \textcolor{comment}{!}
+00151     \textcolor{comment}{! intenal variables}
+00152     \textcolor{comment}{!}
+00153     \textcolor{keywordtype}{integer} :: n,i,i\_site,i\_start,i\_end,n\_neighbors
+00154     \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{allocatable} :: lc(:)
+00155     \textcolor{comment}{!}
+00156     largest\_label = 0
+00157     \textcolor{comment}{!}
+00158     \textcolor{keyword}{do} i\_site = 1,n\_sites
+00159        \textcolor{comment}{!}
+00160        \textcolor{keyword}{if}(mat(i\_site)<0)\textcolor{keyword}{then}
+00161           \textcolor{comment}{!}
+00162           i = offsets(i\_site)
+00163           n\_neighbors = connectivity(i)
+00164           i\_start = i+1
+00165           i\_end   = i+n\_neighbors
+00166           \textcolor{comment}{!}
+00167           \textcolor{keyword}{if}(.not.\textcolor{keyword}{allocated}(lc))\textcolor{keyword}{allocate}(lc(n\_neighbors))
+00168           \textcolor{keyword}{if}(n\_neighbors>\textcolor{keyword}{size}(lc))\textcolor{keyword}{then}
+00169              \textcolor{keyword}{deallocate}(lc)
+00170              \textcolor{keyword}{allocate}(lc(n\_neighbors))
+00171           \textcolor{keyword}{endif}
+00172           \textcolor{comment}{!}
+00173           n = 0
+00174           \textcolor{comment}{!}
+00175           \textcolor{keyword}{do} i = i\_start,i\_end
+00176              \textcolor{keyword}{if}(mat(connectivity(i))>0)\textcolor{keyword}{then}
+00177                 n = n+1
+00178                 lc(n) = mat(connectivity(i))
+00179              \textcolor{keyword}{endif}
+00180           \textcolor{keyword}{enddo}
+00181           \textcolor{comment}{!}
+00182           mat(i\_site) = get\_label\_mat(n,lc)
+00183           \textcolor{comment}{!}
+00184        \textcolor{keyword}{endif}
+00185     \textcolor{keyword}{enddo}
+00186     \textcolor{comment}{!}
+00187     \textcolor{keyword}{if}(\textcolor{keyword}{allocated}(lc))\textcolor{keyword}{deallocate}(lc)
+00188     \textcolor{comment}{!}
+00189     \textcolor{comment}{! find canonical label}
+00190     \textcolor{comment}{!}
+00191     \textcolor{keyword}{do} i = 1,n\_sites
+00192        \textcolor{keyword}{if}(mat(i)/=0)mat(i) = find(mat(i))
+00193     \textcolor{keyword}{enddo}
+00194     \textcolor{comment}{!}
+00195     return
+00196     \textcolor{comment}{!}
+00197   \textcolor{comment}{!--------------------------------------}
+00198 \textcolor{keyword}{  end subroutine label\_clusters\_arbitrary}
+00199   \textcolor{comment}{!--------------------------------------}
+00200   \textcolor{comment}{!}
+\hypertarget{module__label__clusters_8f90_source_l00207}{}\hyperlink{classmodule__label__clusters_a293fe1439386c2fdcaddda3f2325162c}{00207}   \textcolor{keyword}{integer }\textcolor{keyword}{function }get\_label\_mat(n,lc)
+00208   \textcolor{comment}{!-----------------------------------}
+00209     \textcolor{comment}{!}
+00210     \textcolor{keyword}{implicit none}
+00211     \textcolor{comment}{!}
+00212     \textcolor{keywordtype}{integer} :: n \textcolor{comment}{!< Number of neighbors}
+00213     \textcolor{keywordtype}{integer} :: lc(:) \textcolor{comment}{!< Array containing the indices of the neighbors}
+00214     \textcolor{comment}{!}
+00215     \textcolor{comment}{! internal variables}
+00216     \textcolor{comment}{!}
+00217     \textcolor{keywordtype}{integer} :: j
+00218     \textcolor{comment}{!}
+00219     \textcolor{keyword}{if}(n==0)\textcolor{keyword}{then}
+00220        get\_label\_mat = create\_set(largest\_label)
+00221     elseif(n==1)\textcolor{keyword}{then}
+00222        get\_label\_mat = find(lc(1))
+00223     \textcolor{keyword}{else}
+00224        \textcolor{keyword}{do} j = 2,n
+00225           get\_label\_mat = union(lc(1),lc(j))
+00226        \textcolor{keyword}{enddo}
+00227     \textcolor{keyword}{endif}
+00228     \textcolor{comment}{!}
+00229     return
+00230     \textcolor{comment}{!}
+00231   \textcolor{comment}{!-------------------------}
+00232 \textcolor{keyword}{  end function get\_label\_mat}
+00233   \textcolor{comment}{!-------------------------}
+00234   \textcolor{comment}{!}
+00235 \textcolor{comment}{!===============================}
+00236 \textcolor{keyword}{end module module\_label\_clusters}
+00237 \textcolor{comment}{!===============================}
+\end{DoxyCode}

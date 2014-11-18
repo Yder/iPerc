@@ -1,0 +1,787 @@
+\hypertarget{module__invasion__percolation_8f90_source}{
+\section{modules/src/module\-\_\-invasion\-\_\-percolation.f90}
+}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{!=====================================!}
+00002 \textcolor{comment}{!                                     !}
+00003 \textcolor{comment}{!                                     !}
+00004 \textcolor{comment}{!     MODULE INVASION PERCOLATION     !}
+00005 \textcolor{comment}{!                                     ! }
+00006 \textcolor{comment}{!                                     !}
+00007 \textcolor{comment}{!=====================================!}
+00008 \textcolor{comment}{!}
+00009 \textcolor{comment}{!=================================}
+\hypertarget{module__invasion__percolation_8f90_source_l00010}{}\hyperlink{classmodule__invasion__percolation}{00010} \textcolor{keyword}{module} \hyperlink{classmodule__invasion__percolation}{module_invasion_percolation}
+00011 \textcolor{comment}{!=================================}
+00012   \textcolor{comment}{!}
+00013   use \textcolor{keywordflow}{module\_trapping}
+00014   use \textcolor{keywordflow}{module\_gravity}
+00015   use \textcolor{keywordflow}{module\_cubic\_indices}
+00016   use \textcolor{keywordflow}{module\_invasion\_percolation\_constants}
+00017   use \textcolor{keywordflow}{module\_disjoint\_set}
+00018   use \textcolor{keywordflow}{module\_binary\_tree}
+00019   use \textcolor{keywordflow}{module\_write\_output\_files}
+00020   use \textcolor{keywordflow}{module\_random\_media}
+00021   \textcolor{comment}{!}
+00022 \textcolor{keyword}{contains}
+00023   \textcolor{comment}{!}
+00024 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00025 \textcolor{comment}{!!! functions for cubic lattices !!!}
+00026 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00027   \textcolor{comment}{!}
+\hypertarget{module__invasion__percolation_8f90_source_l00035}{}\hyperlink{classmodule__invasion__percolation_a9249417bedcee0cd28dc65eba16868bd}{00035}   \textcolor{keyword}{subroutine }invade\_cubic\_lattice\_simple(nx,              &
+00036                                          ny,              &
+00037                                          nz,              &
+00038                                          dx,              &
+00039                                          dy,              &
+00040                                          dz,              &
+00041                                          period\_x,        &
+00042                                          period\_y,        &
+00043                                          period\_z,        &
+00044                                          values,          &
+00045                                          states,          &
+00046                                          n\_sites\_invaded, &
+00047                                          invasion\_list,   &
+00048                                          gravity,         &
+00049                                          trapping,        &
+00050                                          sigma,           &
+00051                                          theta\_c,         &
+00052                                          delta\_rho,       &
+00053                                          gx,              &
+00054                                          gy,              &
+00055                                          gz               )
+00056   \textcolor{comment}{!--------------------------------------------------------}
+00057     \textcolor{comment}{!}
+00058     \textcolor{keyword}{implicit none}
+00059     \textcolor{comment}{!}
+00060     \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< Grid dimension in the x direction (\(\backslash\)b input)}
+00061     \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< Grid dimension in the y direction (\(\backslash\)b input)}
+00062     \textcolor{keywordtype}{integer} :: nz \textcolor{comment}{!< Grid dimension in the z direction (\(\backslash\)b input)}
+00063     \textcolor{comment}{!}
+00064     \textcolor{keywordtype}{real} :: dx \textcolor{comment}{!<  Grid spacing in the x direction \(\backslash\)f$ \(\backslash\)Delta x\(\backslash\)f$ (\(\backslash\)b input)}
+00065     \textcolor{keywordtype}{real} :: dy \textcolor{comment}{!<  Grid spacing in the x direction \(\backslash\)f$ \(\backslash\)Delta y\(\backslash\)f$ (\(\backslash\)b input)}
+00066     \textcolor{keywordtype}{real} :: dz \textcolor{comment}{!<  Grid spacing in the x direction \(\backslash\)f$ \(\backslash\)Delta z\(\backslash\)f$ (\(\backslash\)b input)}
+00067     \textcolor{comment}{!}
+00068     \textcolor{keywordtype}{logical} :: period\_x \textcolor{comment}{!< Flag for periodic boundaries in the x direction (\(\backslash\)b
+       input)}
+00069     \textcolor{keywordtype}{logical} :: period\_y \textcolor{comment}{!< Flag for periodic boundaries in the y direction (\(\backslash\)b
+       input)}
+00070     \textcolor{keywordtype}{logical} :: period\_z \textcolor{comment}{!< Flag for periodic boundaries in the z direction (\(\backslash\)b
+       input)}
+00071     \textcolor{comment}{!}
+00075     \textcolor{keywordtype}{real} :: values(nx,ny,nz) 
+00076     \textcolor{comment}{!}
+00087     \textcolor{keywordtype}{integer} :: states(nx,ny,nz)
+00088     \textcolor{comment}{!}
+00089     \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{!< Number of sites invaded (\(\backslash\)b output)}
+00090     \textcolor{comment}{!}
+00093     \textcolor{keywordtype}{integer} :: invasion\_list(:)
+00094     \textcolor{comment}{!}
+00095     \textcolor{keywordtype}{logical} :: gravity \textcolor{comment}{!< Flag for gravity (\(\backslash\)b input)}
+00096     \textcolor{comment}{!! \(\backslash\)n Set <b>gravity=.true.</b> to account for gravity}
+00097     \textcolor{comment}{!! \(\backslash\)n Set <b>gravity=.false.</b> to ignore gravity}
+00098     \textcolor{comment}{!}
+00099     \textcolor{keywordtype}{logical} :: trapping \textcolor{comment}{!< Flag for trapping (\(\backslash\)b input)}
+00100     \textcolor{comment}{!! \(\backslash\)n Set <b>trapping=.true.</b> to account for trapping}
+00101     \textcolor{comment}{!! \(\backslash\)n Set <b>trapping=.false.</b> to ignore trapping}
+00102     \textcolor{comment}{!}
+00103     \textcolor{keywordtype}{real} :: sigma \textcolor{comment}{!< Surface tension \(\backslash\)f$ \(\backslash\)sigma \(\backslash\)f$ (\(\backslash\)b input)}
+00104     \textcolor{keywordtype}{real} :: theta\_c \textcolor{comment}{!< Equilibrium contact angle \(\backslash\)f$ \(\backslash\)theta\_c \(\backslash\)f$ (\(\backslash\)b input)}
+00105     \textcolor{keywordtype}{real} :: delta\_rho \textcolor{comment}{!< Fluid density contrast \(\backslash\)f$ \(\backslash\)Delta \(\backslash\)rho \(\backslash\)f$ (\(\backslash\)b input)}
+00106     \textcolor{comment}{!}
+00107     \textcolor{keywordtype}{real} :: gx \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the x direction (\(\backslash\)b
+       input)}
+00108     \textcolor{keywordtype}{real} :: gy \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the y direction (\(\backslash\)b
+       input)}
+00109     \textcolor{keywordtype}{real} :: gz \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the z direction (\(\backslash\)b
+       input)}
+00110     \textcolor{comment}{!}
+00111     \textcolor{comment}{! internal variables :}
+00112     \textcolor{comment}{!}
+00113     \textcolor{keywordtype}{integer} :: i\_site,j\_site,k\_site
+00114     \textcolor{keywordtype}{integer} :: i\_minus\_one,i\_plus\_one  
+00115     \textcolor{keywordtype}{integer} :: j\_minus\_one,j\_plus\_one  
+00116     \textcolor{keywordtype}{integer} :: k\_minus\_one,k\_plus\_one  
+00117     \textcolor{keywordtype}{real}    :: min\_value 
+00118     \textcolor{keywordtype}{integer} :: i,j,k 
+00119     \textcolor{keywordtype}{logical}, \textcolor{keywordtype}{parameter} :: undo\_invasion = .false.
+00120     \textcolor{comment}{!}
+00121     \textcolor{comment}{! Add gravity if desired}
+00122     \textcolor{comment}{!}
+00123     \textcolor{keyword}{if}(gravity)\textcolor{keyword}{then}
+00124        \textcolor{comment}{!}
+00125        call add\_gravity\_cubic\_lattice(values,    &
+00126                                       nx,ny,nz,  &
+00127                                       dx,dy,dz,  &
+00128                                       sigma,     &
+00129                                       theta\_c,   &
+00130                                       delta\_rho, &
+00131                                       gx,gy,gz)
+00132        \textcolor{comment}{!}
+00133     \textcolor{keyword}{endif}
+00134     \textcolor{comment}{!}
+00135     \textcolor{comment}{! Set number of invaded sites to zero}
+00136     \textcolor{comment}{!}
+00137     n\_sites\_invaded = 0
+00138     \textcolor{comment}{!}
+00139     \textcolor{comment}{! Invasion percolation loop starts here}
+00140     \textcolor{comment}{!}
+00141     \textcolor{keyword}{do}
+00142        \textcolor{comment}{!}
+00143        \textcolor{comment}{! Find next site to invade}
+00144        \textcolor{comment}{!}
+00145        \textcolor{comment}{! Set min\_value to huge number}
+00146        \textcolor{comment}{!}
+00147        min\_value = huge(min\_value)
+00148        \textcolor{comment}{!}
+00149        \textcolor{comment}{! Find the index of the neighboring site}
+00150        \textcolor{comment}{!}
+00151        \textcolor{keyword}{do} k = 1,nz
+00152           \textcolor{keyword}{do} j = 1,ny
+00153              \textcolor{keyword}{do} i = 1,nx
+00154                 \textcolor{keyword}{if}(states(i,j,k)==neighboring.and.values(i,j,k)<min\_value)\textcolor{keyword}{then}
+00155                    i\_site = i
+00156                    j\_site = j
+00157                    k\_site = k
+00158                    min\_value = values(i\_site,j\_site,k\_site)
+00159                 \textcolor{keyword}{endif}
+00160              \textcolor{keyword}{enddo}
+00161           \textcolor{keyword}{enddo}
+00162        \textcolor{keyword}{enddo}
+00163        \textcolor{comment}{!}
+00164        \textcolor{comment}{! Invade site }
+00165        \textcolor{comment}{!}
+00166        n\_sites\_invaded = n\_sites\_invaded+1
+00167        states(i\_site,j\_site,k\_site) = invaded
+00168        invasion\_list(n\_sites\_invaded) = ijk2ind(nx,ny,i\_site,j\_site,k\_site)
+00169        \textcolor{comment}{!}
+00170        \textcolor{comment}{! Update neighboring sites's states}
+00171        \textcolor{comment}{!}
+00172        \textcolor{comment}{!}
+00173        \textcolor{comment}{! Neighboring sites indices }
+00174        \textcolor{comment}{!}
+00175        i\_minus\_one = i\_site - 1
+00176        i\_plus\_one  = i\_site + 1
+00177        j\_minus\_one = j\_site - 1
+00178        j\_plus\_one  = j\_site + 1
+00179        k\_minus\_one = k\_site - 1
+00180        k\_plus\_one  = k\_site + 1
+00181        \textcolor{comment}{!}
+00182        \textcolor{comment}{! Account for periodic boundaries}
+00183        \textcolor{comment}{!}
+00184        \textcolor{keyword}{if}(i\_minus\_one<1.and.period\_x) i\_minus\_one = i\_minus\_one + nx
+00185        \textcolor{keyword}{if}(i\_plus\_one>nx.and.period\_x) i\_plus\_one  = i\_plus\_one  - nx
+00186        \textcolor{keyword}{if}(j\_minus\_one<1.and.period\_y) j\_minus\_one = j\_minus\_one + ny
+00187        \textcolor{keyword}{if}(j\_plus\_one>ny.and.period\_y) j\_plus\_one  = j\_plus\_one  - ny
+00188        \textcolor{keyword}{if}(k\_minus\_one<1.and.period\_z) k\_minus\_one = k\_minus\_one + nz
+00189        \textcolor{keyword}{if}(k\_plus\_one>nz.and.period\_z) k\_plus\_one  = k\_plus\_one  - nz
+00190        \textcolor{comment}{!}
+00191        \textcolor{comment}{! Exit when cluster percolates}
+00192        \textcolor{comment}{!}
+00193        \textcolor{keyword}{if}(i\_minus\_one>=1 .and.states(i\_minus\_one,j\_site,k\_site)==exit\_site) 
+      exit
+00194        \textcolor{keyword}{if}(i\_plus\_one<=nx.and.states(i\_plus\_one,j\_site,k\_site)==exit\_site) exit
+00195        \textcolor{keyword}{if}(j\_minus\_one>=1 .and.states(i\_site,j\_minus\_one,k\_site)==exit\_site) 
+      exit
+00196        \textcolor{keyword}{if}(j\_plus\_one<=ny.and.states(i\_site,j\_plus\_one,k\_site)==exit\_site) exit
+00197        \textcolor{keyword}{if}(k\_minus\_one>=1 .and.states(i\_site,j\_site,k\_minus\_one)==exit\_site) 
+      exit
+00198        \textcolor{keyword}{if}(k\_plus\_one<=nz.and.states(i\_site,j\_site,k\_plus\_one)==exit\_site) exit
+00199        \textcolor{comment}{!}
+00200        \textcolor{comment}{! Update neighboring sites's states}
+00201        \textcolor{comment}{!}
+00202        \textcolor{keyword}{if}(i\_minus\_one>=1 .and. states(i\_minus\_one,j\_site,k\_site)==not\_invaded)&
+00203             states(i\_minus\_one,j\_site,k\_site)=neighboring
+00204        \textcolor{keyword}{if}(i\_plus\_one<=nx .and. states(i\_plus\_one,j\_site,k\_site)==not\_invaded)&
+00205             states(i\_plus\_one,j\_site,k\_site)=neighboring
+00206        \textcolor{keyword}{if}(j\_minus\_one>=1 .and. states(i\_site,j\_minus\_one,k\_site)==not\_invaded)&
+00207             states(i\_site,j\_minus\_one,k\_site)=neighboring
+00208        \textcolor{keyword}{if}(j\_plus\_one<=ny .and. states(i\_site,j\_plus\_one,k\_site)==not\_invaded)&
+00209             states(i\_site,j\_plus\_one,k\_site)=neighboring
+00210        \textcolor{keyword}{if}(k\_minus\_one>=1 .and. states(i\_site,j\_site,k\_minus\_one)==not\_invaded)&
+00211             states(i\_site,j\_site,k\_minus\_one)=neighboring
+00212        \textcolor{keyword}{if}(k\_plus\_one<=nz .and. states(i\_site,j\_site,k\_plus\_one)==not\_invaded)&
+00213             states(i\_site,j\_site,k\_plus\_one)=neighboring 
+00214        \textcolor{comment}{!}
+00215        \textcolor{comment}{! Account for trapping }
+00216        \textcolor{comment}{!}
+00217        \textcolor{keyword}{if}(trapping)\textcolor{keyword}{then}
+00218           call find\_trapped\_sites\_cubic(nx,                &
+00219                                         ny,                &
+00220                                         nz,                &
+00221                                         states,            &
+00222                                         period\_x,          &
+00223                                         period\_y,          &
+00224                                         period\_z,          &
+00225                                         n\_sites\_invaded,   &
+00226                                         invasion\_list,     &
+00227                                         undo\_invasion      )
+00228        \textcolor{keyword}{endif}
+00229        \textcolor{comment}{!}
+00230     \textcolor{keyword}{end do} \textcolor{comment}{! Invasion percolation loop ends here}
+00231     \textcolor{comment}{!}
+00232     return
+00233     \textcolor{comment}{!}
+00234   \textcolor{comment}{!-----------------------------------------}
+00235 \textcolor{keyword}{  end subroutine invade\_cubic\_lattice\_simple}
+00236   \textcolor{comment}{!-----------------------------------------}
+00237   \textcolor{comment}{!}
+\hypertarget{module__invasion__percolation_8f90_source_l00245}{}\hyperlink{classmodule__invasion__percolation_a9e829564e60b49318517ba5e944da4d8}{00245}   \textcolor{keyword}{subroutine }invade\_cubic\_lattice\_fast(nx,              &
+00246                                        ny,              &
+00247                                        nz,              &
+00248                                        dx,              &
+00249                                        dy,              &
+00250                                        dz,              &
+00251                                        period\_x,        &
+00252                                        period\_y,        &
+00253                                        period\_z,        &
+00254                                        values,          &
+00255                                        states,          &
+00256                                        n\_sites\_invaded, &
+00257                                        invasion\_list,   &
+00258                                        gravity,         &
+00259                                        trapping,        &
+00260                                        sigma,           &
+00261                                        theta\_c,         &
+00262                                        delta\_rho,       &
+00263                                        gx,              &
+00264                                        gy,              &
+00265                                        gz               )
+00266   \textcolor{comment}{!------------------------------------------------------}
+00267     \textcolor{comment}{!}
+00268     \textcolor{keyword}{implicit none}
+00269     \textcolor{comment}{!}
+00270     \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< Grid dimension in the x direction (\(\backslash\)b input)}
+00271     \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< Grid dimension in the y direction (\(\backslash\)b input)}
+00272     \textcolor{keywordtype}{integer} :: nz \textcolor{comment}{!< Grid dimension in the z direction (\(\backslash\)b input)}
+00273     \textcolor{comment}{!}
+00274     \textcolor{keywordtype}{real} :: dx \textcolor{comment}{!<  Grid spacing in the x direction \(\backslash\)f$ \(\backslash\)Delta x\(\backslash\)f$ (\(\backslash\)b input)}
+00275     \textcolor{keywordtype}{real} :: dy \textcolor{comment}{!<  Grid spacing in the x direction \(\backslash\)f$ \(\backslash\)Delta y\(\backslash\)f$ (\(\backslash\)b input)}
+00276     \textcolor{keywordtype}{real} :: dz \textcolor{comment}{!<  Grid spacing in the x direction \(\backslash\)f$ \(\backslash\)Delta z\(\backslash\)f$ (\(\backslash\)b input)}
+00277     \textcolor{comment}{!}
+00278     \textcolor{keywordtype}{logical} :: period\_x \textcolor{comment}{!< Flag for periodic boundaries in the x direction (\(\backslash\)b
+       input)}
+00279     \textcolor{keywordtype}{logical} :: period\_y \textcolor{comment}{!< Flag for periodic boundaries in the y direction (\(\backslash\)b
+       input)}
+00280     \textcolor{keywordtype}{logical} :: period\_z \textcolor{comment}{!< Flag for periodic boundaries in the z direction (\(\backslash\)b
+       input)}
+00281     \textcolor{comment}{!}
+00285     \textcolor{keywordtype}{real} :: values(nx*ny*nz) \textcolor{comment}{! declared as 1D array for use with the binary
+       tree module}
+00286     \textcolor{comment}{!}
+00297     \textcolor{keywordtype}{integer} :: states(nx,ny,nz)
+00298     \textcolor{comment}{!}
+00299     \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{!< Number of sites invaded (\(\backslash\)b output)}
+00300     \textcolor{comment}{!}
+00303     \textcolor{keywordtype}{integer} :: invasion\_list(:)
+00304     \textcolor{comment}{!}
+00305     \textcolor{keywordtype}{logical} :: gravity \textcolor{comment}{!< Flag for gravity (\(\backslash\)b input)}
+00306     \textcolor{comment}{!! \(\backslash\)n Set <b>gravity=.true.</b> to account for gravity}
+00307     \textcolor{comment}{!! \(\backslash\)n Set <b>gravity=.false.</b> to ignore gravity}
+00308     \textcolor{comment}{!}
+00309     \textcolor{keywordtype}{logical} :: trapping \textcolor{comment}{!< Flag for trapping (\(\backslash\)b input)}
+00310     \textcolor{comment}{!! \(\backslash\)n Set <b>trapping=.true.</b> to account for trapping}
+00311     \textcolor{comment}{!! \(\backslash\)n Set <b>trapping=.false.</b> to ignore trapping}
+00312     \textcolor{comment}{!}
+00313     \textcolor{keywordtype}{real} :: sigma \textcolor{comment}{!< Surface tension \(\backslash\)f$ \(\backslash\)sigma \(\backslash\)f$ (\(\backslash\)b input)}
+00314     \textcolor{keywordtype}{real} :: theta\_c \textcolor{comment}{!< Equilibrium contact angle \(\backslash\)f$ \(\backslash\)theta\_c \(\backslash\)f$ (\(\backslash\)b input)}
+00315     \textcolor{keywordtype}{real} :: delta\_rho \textcolor{comment}{!< Fluid density contrast \(\backslash\)f$ \(\backslash\)Delta \(\backslash\)rho \(\backslash\)f$ (\(\backslash\)b input)}
+00316     \textcolor{comment}{!}
+00317     \textcolor{keywordtype}{real} :: gx \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the x direction (\(\backslash\)b
+       input)}
+00318     \textcolor{keywordtype}{real} :: gy \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the y direction (\(\backslash\)b
+       input)}
+00319     \textcolor{keywordtype}{real} :: gz \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the z direction (\(\backslash\)b
+       input)}
+00320     \textcolor{comment}{!}
+00321     \textcolor{comment}{! internal variables}
+00322     \textcolor{comment}{!}
+00323     \textcolor{keywordtype}{integer} :: i\_site,j\_site,k\_site 
+00324     \textcolor{keywordtype}{integer} :: i\_minus\_one,i\_plus\_one 
+00325     \textcolor{keywordtype}{integer} :: j\_minus\_one,j\_plus\_one  
+00326     \textcolor{keywordtype}{integer} :: k\_minus\_one,k\_plus\_one  
+00327     \textcolor{keywordtype}{integer} :: i,j,k 
+00328     \textcolor{keywordtype}{logical}, \textcolor{keywordtype}{parameter} :: undo\_invasion = .true.
+00329     \textcolor{comment}{!}
+00330     \textcolor{comment}{! Add gravity if desired}
+00331     \textcolor{comment}{!}
+00332     \textcolor{keyword}{if}(gravity)\textcolor{keyword}{then}
+00333        \textcolor{comment}{!}
+00334        call add\_gravity\_cubic\_lattice(values,    &
+00335                                       nx,ny,nz,  &
+00336                                       dx,dy,dz,  &
+00337                                       sigma,     &
+00338                                       theta\_c,   &
+00339                                       delta\_rho, &
+00340                                       gx,gy,gz)
+00341        \textcolor{comment}{!}
+00342     \textcolor{keyword}{endif}
+00343     \textcolor{comment}{!}
+00344     \textcolor{comment}{! Initialize binary tree}
+00345     \textcolor{comment}{! }
+00346     \textcolor{keyword}{allocate}(tree(1))
+00347     treedim = 0
+00348     \textcolor{keyword}{do} k = 1,nz
+00349        \textcolor{keyword}{do} j = 1,ny
+00350           \textcolor{keyword}{do} i = 1,nx
+00351              \textcolor{keyword}{if}(states(i,j,k)==neighboring)\textcolor{keyword}{then}
+00352                 call add\_branch(values,ijk2ind(nx,ny,i,j,k))
+00353              \textcolor{keyword}{endif}
+00354           \textcolor{keyword}{enddo}
+00355        \textcolor{keyword}{enddo}
+00356     \textcolor{keyword}{enddo}
+00357     \textcolor{comment}{!}
+00358     \textcolor{comment}{! Set number of invaded sites to zero}
+00359     \textcolor{comment}{!}
+00360     n\_sites\_invaded = 0
+00361     \textcolor{comment}{!}
+00362     \textcolor{comment}{! Invasion percolation loop starts here}
+00363     \textcolor{comment}{!}
+00364     \textcolor{keyword}{do}
+00365        \textcolor{comment}{!}
+00366        \textcolor{comment}{! Find next site to invade}
+00367        \textcolor{comment}{!}
+00368        i = tree(1)
+00369        \textcolor{comment}{!}
+00370        call ind2ijk(nx,ny,i,i\_site,j\_site,k\_site)
+00371        call update\_tree\_root(values)
+00372        \textcolor{comment}{!}
+00373        \textcolor{comment}{! Invade site}
+00374        \textcolor{comment}{!}
+00375        n\_sites\_invaded = n\_sites\_invaded+1
+00376        states(i\_site,j\_site,k\_site) = invaded
+00377        invasion\_list(n\_sites\_invaded) = ijk2ind(nx,ny,i\_site,j\_site,k\_site)
+00378        \textcolor{comment}{!}
+00379        \textcolor{comment}{! Update neighboring sites's states }
+00380        \textcolor{comment}{!}
+00381        \textcolor{comment}{! Neighboring sites indices }
+00382        \textcolor{comment}{!}
+00383        i\_minus\_one = i\_site - 1
+00384        i\_plus\_one  = i\_site + 1
+00385        j\_minus\_one = j\_site - 1
+00386        j\_plus\_one  = j\_site + 1
+00387        k\_minus\_one = k\_site - 1
+00388        k\_plus\_one  = k\_site + 1
+00389        \textcolor{comment}{!}
+00390        \textcolor{comment}{! Account for periodic boundaries}
+00391        \textcolor{comment}{!}
+00392        \textcolor{keyword}{if}(i\_minus\_one<1.and.period\_x) i\_minus\_one = i\_minus\_one + nx
+00393        \textcolor{keyword}{if}(i\_plus\_one>nx.and.period\_x) i\_plus\_one  = i\_plus\_one  - nx
+00394        \textcolor{keyword}{if}(j\_minus\_one<1.and.period\_y) j\_minus\_one = j\_minus\_one + ny
+00395        \textcolor{keyword}{if}(j\_plus\_one>ny.and.period\_y) j\_plus\_one  = j\_plus\_one  - ny
+00396        \textcolor{keyword}{if}(k\_minus\_one<1.and.period\_z) k\_minus\_one = k\_minus\_one + nz
+00397        \textcolor{keyword}{if}(k\_plus\_one>nz.and.period\_z) k\_plus\_one  = k\_plus\_one  - nz
+00398        \textcolor{comment}{!}
+00399        \textcolor{comment}{! Exit when cluster percolates}
+00400        \textcolor{comment}{!}
+00401        \textcolor{keyword}{if}(i\_minus\_one>=1 .and.states(i\_minus\_one,j\_site,k\_site)==exit\_site) 
+      exit
+00402        \textcolor{keyword}{if}(i\_plus\_one<=nx.and.states(i\_plus\_one,j\_site,k\_site)==exit\_site) exit
+00403        \textcolor{keyword}{if}(j\_minus\_one>=1 .and.states(i\_site,j\_minus\_one,k\_site)==exit\_site) 
+      exit
+00404        \textcolor{keyword}{if}(j\_plus\_one<=ny.and.states(i\_site,j\_plus\_one,k\_site)==exit\_site) exit
+00405        \textcolor{keyword}{if}(k\_minus\_one>=1 .and.states(i\_site,j\_site,k\_minus\_one)==exit\_site) 
+      exit
+00406        \textcolor{keyword}{if}(k\_plus\_one<=nz.and.states(i\_site,j\_site,k\_plus\_one)==exit\_site) exit
+00407        \textcolor{comment}{!}
+00408        \textcolor{comment}{! Update neighboring sites's states}
+00409        \textcolor{comment}{!}
+00410        \textcolor{keyword}{if}(i\_minus\_one>=1 .and. states(i\_minus\_one,j\_site,k\_site)==not\_invaded)\textcolor{keyword}{
+      then}
+00411           states(i\_minus\_one,j\_site,k\_site)=neighboring
+00412           call add\_branch(values,ijk2ind(nx,ny,i\_minus\_one,j\_site,k\_site))
+00413        \textcolor{keyword}{endif}
+00414        \textcolor{keyword}{if}(i\_plus\_one<=nx .and. states(i\_plus\_one,j\_site,k\_site)==not\_invaded)\textcolor{keyword}{
+      then}
+00415           states(i\_plus\_one,j\_site,k\_site)=neighboring                    
+00416           call add\_branch(values,ijk2ind(nx,ny,i\_plus\_one,j\_site,k\_site))
+00417        \textcolor{keyword}{endif}
+00418        \textcolor{keyword}{if}(j\_minus\_one>=1 .and. states(i\_site,j\_minus\_one,k\_site)==not\_invaded)\textcolor{keyword}{
+      then}
+00419           states(i\_site,j\_minus\_one,k\_site)=neighboring                    
+00420           call add\_branch(values,ijk2ind(nx,ny,i\_site,j\_minus\_one,k\_site))
+00421        \textcolor{keyword}{endif}
+00422        \textcolor{keyword}{if}(j\_plus\_one<=ny .and. states(i\_site,j\_plus\_one,k\_site)==not\_invaded)\textcolor{keyword}{
+      then}
+00423           states(i\_site,j\_plus\_one,k\_site)=neighboring                    
+00424           call add\_branch(values,ijk2ind(nx,ny,i\_site,j\_plus\_one,k\_site))
+00425        \textcolor{keyword}{endif}
+00426        \textcolor{keyword}{if}(k\_minus\_one>=1 .and. states(i\_site,j\_site,k\_minus\_one)==not\_invaded)\textcolor{keyword}{
+      then}
+00427           states(i\_site,j\_site,k\_minus\_one)=neighboring                    
+00428           call add\_branch(values,ijk2ind(nx,ny,i\_site,j\_site,k\_minus\_one))
+00429        \textcolor{keyword}{endif}
+00430        \textcolor{keyword}{if}(k\_plus\_one<=nz .and. states(i\_site,j\_site,k\_plus\_one)==not\_invaded)\textcolor{keyword}{
+      then}
+00431           states(i\_site,j\_site,k\_plus\_one)=neighboring                    
+00432           call add\_branch(values,ijk2ind(nx,ny,i\_site,j\_site,k\_plus\_one))
+00433        \textcolor{keyword}{endif}
+00434        \textcolor{comment}{!}
+00435     \textcolor{keyword}{end do} \textcolor{comment}{! invasion percolation loop ends here}
+00436     \textcolor{comment}{!}
+00437     \textcolor{comment}{! Account for trapping a posteriori}
+00438     \textcolor{comment}{!}
+00439     \textcolor{keyword}{if}(trapping)\textcolor{keyword}{then}
+00440        call find\_trapped\_sites\_cubic(nx,                &
+00441                                      ny,                &
+00442                                      nz,                &
+00443                                      states,            &
+00444                                      period\_x,          &
+00445                                      period\_y,          &
+00446                                      period\_z,          &
+00447                                      n\_sites\_invaded,   &
+00448                                      invasion\_list,     &
+00449                                      undo\_invasion      )
+00450     \textcolor{keyword}{endif}
+00451     \textcolor{comment}{!}
+00452     \textcolor{comment}{! Deallocate tree}
+00453     \textcolor{comment}{!}
+00454     call deallocate\_binary\_tree
+00455     \textcolor{comment}{!}
+00456     return
+00457     \textcolor{comment}{!}
+00458   \textcolor{comment}{!---------------------------------------}
+00459 \textcolor{keyword}{  end subroutine invade\_cubic\_lattice\_fast}
+00460   \textcolor{comment}{!---------------------------------------}
+00461   \textcolor{comment}{!}
+00462 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00463 \textcolor{comment}{!!! functions for arbitrary lattices !!!}
+00464 \textcolor{comment}{!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!}
+00465   \textcolor{comment}{!}
+\hypertarget{module__invasion__percolation_8f90_source_l00473}{}\hyperlink{classmodule__invasion__percolation_a0da324ef25bd77f5a4d986a19d401902}{00473}   \textcolor{keyword}{subroutine }invade\_arbitrary\_lattice\_simple(n\_sites,         &
+00474                                              x,               &
+00475                                              y,               &
+00476                                              z,               &
+00477                                              offsets,         &
+00478                                              connectivity,    &
+00479                                              values,          &
+00480                                              states,          &
+00481                                              n\_sites\_invaded, &
+00482                                              invasion\_list,   &
+00483                                              gravity,         &
+00484                                              trapping,        &
+00485                                              sigma,           &
+00486                                              theta\_c,         &
+00487                                              delta\_rho,       &
+00488                                              gx,              &
+00489                                              gy,              &
+00490                                              gz               )
+00491   \textcolor{comment}{!------------------------------------------------------------}
+00492     \textcolor{comment}{!}
+00493     \textcolor{keyword}{implicit none}
+00494     \textcolor{comment}{!}
+00495     \textcolor{keywordtype}{integer} :: n\_sites \textcolor{comment}{!< Total number of sites in the lattice (\(\backslash\)b Input)}
+00496     \textcolor{comment}{!}
+00497     \textcolor{keywordtype}{real},\textcolor{keywordtype}{dimension(:)} :: x \textcolor{comment}{!< Array containing the x coordinates of the sites
+       (\(\backslash\)b Input)}
+00498     \textcolor{keywordtype}{real},\textcolor{keywordtype}{dimension(:)} :: y \textcolor{comment}{!< Array containing the y coordinates of the sites
+       (\(\backslash\)b Input)}
+00499     \textcolor{keywordtype}{real},\textcolor{keywordtype}{dimension(:)} :: z \textcolor{comment}{!< Array containing the z coordinates of the sites
+       (\(\backslash\)b Input)}
+00500     \textcolor{comment}{!}
+00503     \textcolor{keywordtype}{integer} :: offsets(:)
+00504     \textcolor{comment}{!}
+00510     \textcolor{keywordtype}{integer} :: connectivity(:)
+00511     \textcolor{comment}{!}
+00516     \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(:)} :: values 
+00517     \textcolor{comment}{!}
+00528     \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)} :: states
+00529     \textcolor{comment}{!}
+00530     \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{!< Number of sites invaded (\(\backslash\)b output)}
+00531     \textcolor{comment}{!}
+00534     \textcolor{keywordtype}{integer} :: invasion\_list(:)
+00535     \textcolor{comment}{!}
+00536     \textcolor{keywordtype}{logical} :: gravity \textcolor{comment}{!< Flag for gravity (\(\backslash\)b input)}
+00537     \textcolor{comment}{!! \(\backslash\)n Set <b>gravity=.true.</b> to account for gravity}
+00538     \textcolor{comment}{!! \(\backslash\)n Set <b>gravity=.false.</b> to ignore gravity}
+00539     \textcolor{comment}{!}
+00540     \textcolor{keywordtype}{logical} :: trapping \textcolor{comment}{!< Flag for trapping (\(\backslash\)b input)}
+00541     \textcolor{comment}{!! \(\backslash\)n Set <b>trapping=.true.</b> to account for trapping}
+00542     \textcolor{comment}{!! \(\backslash\)n Set <b>trapping=.false.</b> to ignore trapping}
+00543     \textcolor{comment}{!}
+00544     \textcolor{keywordtype}{real} :: sigma \textcolor{comment}{!< Surface tension \(\backslash\)f$ \(\backslash\)sigma \(\backslash\)f$ (\(\backslash\)b input)}
+00545     \textcolor{keywordtype}{real} :: theta\_c \textcolor{comment}{!< Equilibrium contact angle \(\backslash\)f$ \(\backslash\)theta\_c \(\backslash\)f$ (\(\backslash\)b input)}
+00546     \textcolor{keywordtype}{real} :: delta\_rho \textcolor{comment}{!< Fluid density contrast \(\backslash\)f$ \(\backslash\)Delta \(\backslash\)rho \(\backslash\)f$ (\(\backslash\)b input)}
+00547     \textcolor{comment}{!}
+00548     \textcolor{keywordtype}{real} :: gx \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the x direction (\(\backslash\)b
+       input)}
+00549     \textcolor{keywordtype}{real} :: gy \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the y direction (\(\backslash\)b
+       input)}
+00550     \textcolor{keywordtype}{real} :: gz \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the z direction (\(\backslash\)b
+       input)}
+00551     \textcolor{comment}{!}
+00552     \textcolor{comment}{! internal variables}
+00553     \textcolor{comment}{!}
+00554     \textcolor{keywordtype}{integer} :: i\_site
+00555     \textcolor{keywordtype}{integer} :: i, i\_start,i\_end, i\_neighbor, n\_neighbors
+00556     \textcolor{keywordtype}{real}    :: min\_value
+00557     \textcolor{keywordtype}{logical}, \textcolor{keywordtype}{parameter} :: undo\_invasion = .false.
+00558     \textcolor{comment}{!}
+00559     \textcolor{comment}{! Add gravity if desired}
+00560     \textcolor{comment}{!}
+00561     \textcolor{keyword}{if}(gravity)\textcolor{keyword}{then}
+00562        \textcolor{comment}{!}
+00563        call add\_gravity\_arbitrary\_lattice(values,    &
+00564                                           n\_sites,   &
+00565                                           x,         &
+00566                                           y,         &
+00567                                           z,         &
+00568                                           sigma,     &
+00569                                           theta\_c,   &
+00570                                           delta\_rho, &
+00571                                           gx,        &
+00572                                           gy,        &
+00573                                           gz         )
+00574        \textcolor{comment}{!}
+00575     \textcolor{keyword}{endif}
+00576     \textcolor{comment}{!}
+00577     \textcolor{comment}{! Set number of invaded sites to zero}
+00578     \textcolor{comment}{!}
+00579     n\_sites\_invaded = 0
+00580     \textcolor{comment}{!}
+00581     \textcolor{comment}{! Invasion percolation loop starts here}
+00582     \textcolor{comment}{!}
+00583     \textcolor{keyword}{do}
+00584        \textcolor{comment}{!}
+00585        \textcolor{comment}{! Find next site to invade}
+00586        \textcolor{comment}{!}
+00587        \textcolor{comment}{! Set min\_value to huge number}
+00588        \textcolor{comment}{!}
+00589        min\_value = huge(min\_value)
+00590        \textcolor{comment}{!}
+00591        \textcolor{comment}{! Find the index of the neighboring site}
+00592        \textcolor{comment}{!}
+00593        \textcolor{keyword}{do} i = 1,n\_sites
+00594           \textcolor{keyword}{if}(states(i)==neighboring.and.values(i)<min\_value)\textcolor{keyword}{then}
+00595              i\_site = i
+00596              min\_value = values(i\_site)
+00597           \textcolor{keyword}{endif}
+00598        \textcolor{keyword}{enddo}
+00599        \textcolor{comment}{!}
+00600        \textcolor{comment}{! Invade site }
+00601        \textcolor{comment}{!}
+00602        n\_sites\_invaded = n\_sites\_invaded+1
+00603        states(i\_site) = invaded
+00604        invasion\_list(n\_sites\_invaded) = i\_site
+00605        \textcolor{comment}{!}
+00606        \textcolor{comment}{! Update neighboring sites's states }
+00607        \textcolor{comment}{!}
+00608        i\_neighbor = offsets(i\_site)
+00609        n\_neighbors = connectivity(i\_neighbor)
+00610        i\_start = i\_neighbor + 1
+00611        i\_end   = i\_neighbor + n\_neighbors
+00612        \textcolor{comment}{!}
+00613        \textcolor{comment}{! For all sites neighboring the site invaded (i\_site)}
+00614        \textcolor{comment}{!}
+00615        \textcolor{keyword}{do} i = i\_start,i\_end
+00616           \textcolor{comment}{!}
+00617           \textcolor{comment}{! Exit when cluster percolates}
+00618           \textcolor{comment}{!}
+00619           \textcolor{keyword}{if}(states(connectivity(i))==exit\_site)\textcolor{keyword}{then}
+00620              return
+00621           \textcolor{keyword}{endif}
+00622           \textcolor{comment}{!}
+00623           \textcolor{comment}{! Update neighbor site's state}
+00624           \textcolor{comment}{!}
+00625           \textcolor{keyword}{if}(states(connectivity(i))==not\_invaded)\textcolor{keyword}{then}
+00626              states(connectivity(i))=neighboring
+00627           \textcolor{keyword}{endif}
+00628           \textcolor{comment}{!}
+00629        \textcolor{keyword}{enddo}
+00630        \textcolor{comment}{!}
+00631        \textcolor{comment}{! Account for trapping }
+00632        \textcolor{comment}{!}
+00633        \textcolor{keyword}{if}(trapping)\textcolor{keyword}{then}
+00634           call find\_trapped\_sites\_arbitrary(n\_sites,           &
+00635                                             states,            &
+00636                                             offsets,           &
+00637                                             connectivity,      &
+00638                                             n\_sites\_invaded,   &
+00639                                             invasion\_list,     &
+00640                                             undo\_invasion      )
+00641        \textcolor{keyword}{endif}
+00642        \textcolor{comment}{!}
+00643     \textcolor{keyword}{end do} \textcolor{comment}{! Invasion percolation loop ends here}
+00644     \textcolor{comment}{!}
+00645     return
+00646     \textcolor{comment}{!}
+00647   \textcolor{comment}{!---------------------------------------------}
+00648 \textcolor{keyword}{  end subroutine invade\_arbitrary\_lattice\_simple}
+00649   \textcolor{comment}{!---------------------------------------------}
+00650   \textcolor{comment}{!}
+\hypertarget{module__invasion__percolation_8f90_source_l00658}{}\hyperlink{classmodule__invasion__percolation_a227847a38bc7518fdce187bbad590de0}{00658}   \textcolor{keyword}{subroutine }invade\_arbitrary\_lattice\_fast(n\_sites,         &
+00659                                            x,               &
+00660                                            y,               &
+00661                                            z,               &
+00662                                            offsets,         &
+00663                                            connectivity,    &
+00664                                            values,          &
+00665                                            states,          &
+00666                                            n\_sites\_invaded, &
+00667                                            invasion\_list,   &
+00668                                            gravity,         &
+00669                                            trapping,        &
+00670                                            sigma,           &
+00671                                            theta\_c,         &
+00672                                            delta\_rho,       &
+00673                                            gx,              &
+00674                                            gy,              &
+00675                                            gz               )
+00676   \textcolor{comment}{!----------------------------------------------------------}
+00677     \textcolor{comment}{!}
+00678     \textcolor{keyword}{implicit none}
+00679     \textcolor{comment}{!}
+00680     \textcolor{keywordtype}{integer} :: n\_sites \textcolor{comment}{!< Total number of sites in the lattice (\(\backslash\)b Input)}
+00681     \textcolor{comment}{!}
+00682     \textcolor{keywordtype}{real},\textcolor{keywordtype}{dimension(:)} :: x \textcolor{comment}{!< Array containing the x coordinates of the sites
+       (\(\backslash\)b Input)}
+00683     \textcolor{keywordtype}{real},\textcolor{keywordtype}{dimension(:)} :: y \textcolor{comment}{!< Array containing the y coordinates of the sites
+       (\(\backslash\)b Input)}
+00684     \textcolor{keywordtype}{real},\textcolor{keywordtype}{dimension(:)} :: z \textcolor{comment}{!< Array containing the z coordinates of the sites
+       (\(\backslash\)b Input)}
+00685     \textcolor{comment}{!}
+00688     \textcolor{keywordtype}{integer} :: offsets(:)
+00689     \textcolor{comment}{!}
+00695     \textcolor{keywordtype}{integer} :: connectivity(:)
+00696     \textcolor{comment}{!}
+00701     \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(:)} :: values 
+00702     \textcolor{comment}{!}
+00713     \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)} :: states
+00714     \textcolor{comment}{!}
+00715     \textcolor{keywordtype}{integer} :: n\_sites\_invaded \textcolor{comment}{!< Number of sites invaded (\(\backslash\)b output)}
+00716     \textcolor{comment}{!}
+00719     \textcolor{keywordtype}{integer} :: invasion\_list(:)
+00720     \textcolor{comment}{!}
+00721     \textcolor{keywordtype}{logical} :: gravity \textcolor{comment}{!< Flag for gravity (\(\backslash\)b input)}
+00722     \textcolor{comment}{!! \(\backslash\)n Set <b>gravity=.true.</b> to account for gravity}
+00723     \textcolor{comment}{!! \(\backslash\)n Set <b>gravity=.false.</b> to ignore gravity}
+00724     \textcolor{comment}{!}
+00725     \textcolor{keywordtype}{logical} :: trapping \textcolor{comment}{!< Flag for trapping (\(\backslash\)b input)}
+00726     \textcolor{comment}{!! \(\backslash\)n Set <b>trapping=.true.</b> to account for trapping}
+00727     \textcolor{comment}{!! \(\backslash\)n Set <b>trapping=.false.</b> to ignore trapping}
+00728     \textcolor{comment}{!}
+00729     \textcolor{keywordtype}{real} :: sigma \textcolor{comment}{!< Surface tension \(\backslash\)f$ \(\backslash\)sigma \(\backslash\)f$ (\(\backslash\)b input)}
+00730     \textcolor{keywordtype}{real} :: theta\_c \textcolor{comment}{!< Equilibrium contact angle \(\backslash\)f$ \(\backslash\)theta\_c \(\backslash\)f$ (\(\backslash\)b input)}
+00731     \textcolor{keywordtype}{real} :: delta\_rho \textcolor{comment}{!< Fluid density contrast \(\backslash\)f$ \(\backslash\)Delta \(\backslash\)rho \(\backslash\)f$ (\(\backslash\)b input)}
+00732     \textcolor{comment}{!}
+00733     \textcolor{keywordtype}{real} :: gx \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the x direction (\(\backslash\)b
+       input)}
+00734     \textcolor{keywordtype}{real} :: gy \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the y direction (\(\backslash\)b
+       input)}
+00735     \textcolor{keywordtype}{real} :: gz \textcolor{comment}{!< Acceleration of gravity \(\backslash\)f$ g \(\backslash\)f$ in the z direction (\(\backslash\)b
+       input)}
+00736     \textcolor{comment}{!}
+00737     \textcolor{comment}{! Internal variables}
+00738     \textcolor{comment}{!}
+00739     \textcolor{keywordtype}{integer} :: i\_site
+00740     \textcolor{keywordtype}{integer} :: i, i\_start,i\_end, i\_neighbor, n\_neighbors
+00741     \textcolor{keywordtype}{logical}, \textcolor{keywordtype}{parameter} :: undo\_invasion = .true.
+00742     \textcolor{keywordtype}{logical} :: percolation
+00743     \textcolor{comment}{!}
+00744     \textcolor{comment}{! Add gravity if desired}
+00745     \textcolor{comment}{!}
+00746     \textcolor{keyword}{if}(gravity)\textcolor{keyword}{then}
+00747        \textcolor{comment}{!}
+00748        call add\_gravity\_arbitrary\_lattice(values,    &
+00749                                           n\_sites,   &
+00750                                           x,         &
+00751                                           y,         &
+00752                                           z,         &
+00753                                           sigma,     &
+00754                                           theta\_c,   &
+00755                                           delta\_rho, &
+00756                                           gx,        &
+00757                                           gy,        &
+00758                                           gz         )
+00759        \textcolor{comment}{!}
+00760     \textcolor{keyword}{endif}
+00761     \textcolor{comment}{!}
+00762     \textcolor{comment}{! Initialize binary tree}
+00763     \textcolor{comment}{! }
+00764     \textcolor{keyword}{allocate}(tree(1))
+00765     treedim = 0
+00766     \textcolor{keyword}{do} i = 1,n\_sites
+00767        \textcolor{keyword}{if}(states(i)==neighboring)call add\_branch(values,i)
+00768     \textcolor{keyword}{enddo}
+00769     \textcolor{comment}{!}
+00770     \textcolor{comment}{! Set number of invaded sites to zero}
+00771     \textcolor{comment}{!}
+00772     n\_sites\_invaded = 0
+00773     \textcolor{comment}{!}
+00774     \textcolor{comment}{! Init percolation flag}
+00775     \textcolor{comment}{!}
+00776     percolation = .false.
+00777     \textcolor{comment}{!}
+00778     \textcolor{comment}{! Invasion percolation loop starts here}
+00779     \textcolor{comment}{!}
+00780     \textcolor{keyword}{do}
+00781        \textcolor{comment}{!}
+00782        \textcolor{comment}{! Find next site to invade}
+00783        \textcolor{comment}{!}
+00784        i\_site = tree(1)
+00785        call update\_tree\_root(values)
+00786        \textcolor{comment}{!}
+00787        \textcolor{comment}{! Invade site}
+00788        \textcolor{comment}{!}
+00789        n\_sites\_invaded = n\_sites\_invaded+1
+00790        states(i\_site) = invaded
+00791        invasion\_list(n\_sites\_invaded) = i\_site
+00792        \textcolor{comment}{!}
+00793        \textcolor{comment}{! update neighboring sites's states}
+00794        \textcolor{comment}{!}
+00795        i\_neighbor = offsets(i\_site)
+00796        n\_neighbors = connectivity(i\_neighbor)
+00797        i\_start = i\_neighbor + 1
+00798        i\_end   = i\_neighbor + n\_neighbors
+00799        \textcolor{comment}{!}
+00800        \textcolor{comment}{! For all sites neighboring the site invaded (i\_site)}
+00801        \textcolor{comment}{!}
+00802        \textcolor{keyword}{do} i = i\_start,i\_end
+00803           \textcolor{comment}{!}
+00804           \textcolor{comment}{! Exit if cluster percolates}
+00805           \textcolor{comment}{!}
+00806           \textcolor{keyword}{if}(states(connectivity(i))==exit\_site)\textcolor{keyword}{then} 
+00807              \textcolor{comment}{!}
+00808              \textcolor{comment}{! Account for trapping a posteriori}
+00809              \textcolor{comment}{!}
+00810              \textcolor{keyword}{if}(trapping)\textcolor{keyword}{then}
+00811                 call find\_trapped\_sites\_arbitrary(n\_sites,           &
+00812                                                   states,            &
+00813                                                   offsets,           &
+00814                                                   connectivity,      &
+00815                                                   n\_sites\_invaded,   &
+00816                                                   invasion\_list,     &
+00817                                                   undo\_invasion      )
+00818              \textcolor{keyword}{endif}
+00819              \textcolor{comment}{!}
+00820              return
+00821              \textcolor{comment}{! }
+00822           \textcolor{keyword}{endif}
+00823           \textcolor{comment}{!}
+00824           \textcolor{comment}{! Update neighbor site's state}
+00825           \textcolor{comment}{!}
+00826           \textcolor{keyword}{if}(states(connectivity(i))==not\_invaded)\textcolor{keyword}{then}
+00827              states(connectivity(i))=neighboring
+00828              call add\_branch(values,connectivity(i))
+00829           \textcolor{keyword}{endif}
+00830           \textcolor{comment}{!}
+00831        \textcolor{keyword}{enddo}
+00832        \textcolor{comment}{!}
+00833     \textcolor{keyword}{end do} \textcolor{comment}{! Invasion percolation loop ends here}
+00834     \textcolor{comment}{!}
+00835     \textcolor{comment}{! Deallocate tree}
+00836     \textcolor{comment}{!}
+00837     call deallocate\_binary\_tree
+00838     \textcolor{comment}{!}
+00839     return
+00840     \textcolor{comment}{!}
+00841   \textcolor{comment}{!-------------------------------------------}
+00842 \textcolor{keyword}{  end subroutine invade\_arbitrary\_lattice\_fast}
+00843   \textcolor{comment}{!-------------------------------------------}
+00844   \textcolor{comment}{!}
+00845 \textcolor{comment}{!=====================================}
+00846 \textcolor{keyword}{end module module\_invasion\_percolation}
+00847 \textcolor{comment}{!=====================================}
+00848 
+\end{DoxyCode}

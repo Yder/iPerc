@@ -1,0 +1,135 @@
+\hypertarget{classmodule__interpolation}{
+\section{module\-\_\-interpolation \-Module \-Reference}
+\label{classmodule__interpolation}\index{module\-\_\-interpolation@{module\-\_\-interpolation}}
+}
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+real function \hyperlink{classmodule__interpolation_ace479a4b690efc96c08cc306efbc089c}{trilinear\-\_\-iterpolation} (mat, nx, ny, nz, xmin, xmax, ymin, ymax, zmin, zmax, x, y, z)
+\item 
+real function \hyperlink{classmodule__interpolation_ad2c12cef852fdbaceaae5999778eb885}{bilinear\-\_\-interpolation} (mat, nx, ny, xmin, xmax, ymin, ymax, x, y)
+\item 
+real function \hyperlink{classmodule__interpolation_a174ca6e4c79e7b933ae04e6d4db3a348}{linear\-\_\-interpolation} (mat, nx, xmin, xmax, x)
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Member \-Function/\-Subroutine \-Documentation}
+\hypertarget{classmodule__interpolation_ad2c12cef852fdbaceaae5999778eb885}{
+\index{module\-\_\-interpolation@{module\-\_\-interpolation}!bilinear\-\_\-interpolation@{bilinear\-\_\-interpolation}}
+\index{bilinear\-\_\-interpolation@{bilinear\-\_\-interpolation}!module_interpolation@{module\-\_\-interpolation}}
+\subsubsection[{bilinear\-\_\-interpolation}]{\setlength{\rightskip}{0pt plus 5cm}real function module\-\_\-interpolation\-::bilinear\-\_\-interpolation (
+\begin{DoxyParamCaption}
+\item[{real, dimension(0\-:nx-\/1,0\-:ny-\/1)}]{mat, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{real}]{xmin, }
+\item[{real}]{xmax, }
+\item[{real}]{ymin, }
+\item[{real}]{ymax, }
+\item[{real}]{x, }
+\item[{real}]{y}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__interpolation_ad2c12cef852fdbaceaae5999778eb885}
+
+\begin{DoxyParams}{\-Parameters}
+{\em mat} & 2\-D matrix of real values\\
+\hline
+{\em nx} & \-Number of grid points in the x direction\\
+\hline
+{\em ny} & \-Number of grid points in the y direction\\
+\hline
+{\em xmin} & \-Lower bound of grid extent in the x direction\\
+\hline
+{\em xmax} & \-Upper bound of grid extent in the x direction\\
+\hline
+{\em ymin} & \-Lower bound of grid extent in the y direction\\
+\hline
+{\em ymax} & \-Upper bound of grid extent in the y direction\\
+\hline
+{\em x} & x coordinate of the interpolation point\\
+\hline
+{\em y} & y coordinate of the interpolation point \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__interpolation_a174ca6e4c79e7b933ae04e6d4db3a348}{
+\index{module\-\_\-interpolation@{module\-\_\-interpolation}!linear\-\_\-interpolation@{linear\-\_\-interpolation}}
+\index{linear\-\_\-interpolation@{linear\-\_\-interpolation}!module_interpolation@{module\-\_\-interpolation}}
+\subsubsection[{linear\-\_\-interpolation}]{\setlength{\rightskip}{0pt plus 5cm}real function module\-\_\-interpolation\-::linear\-\_\-interpolation (
+\begin{DoxyParamCaption}
+\item[{real, dimension(0\-:nx-\/1)}]{mat, }
+\item[{integer}]{nx, }
+\item[{real}]{xmin, }
+\item[{real}]{xmax, }
+\item[{real}]{x}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__interpolation_a174ca6e4c79e7b933ae04e6d4db3a348}
+
+\begin{DoxyParams}{\-Parameters}
+{\em mat} & 1\-D vector of real values\\
+\hline
+{\em nx} & \-Number of grid points\\
+\hline
+{\em xmin} & \-Lower bound of grid extent\\
+\hline
+{\em xmax} & \-Upper bound of grid extent\\
+\hline
+{\em x} & x coordinate of the interpolation point \\
+\hline
+\end{DoxyParams}
+\hypertarget{classmodule__interpolation_ace479a4b690efc96c08cc306efbc089c}{
+\index{module\-\_\-interpolation@{module\-\_\-interpolation}!trilinear\-\_\-iterpolation@{trilinear\-\_\-iterpolation}}
+\index{trilinear\-\_\-iterpolation@{trilinear\-\_\-iterpolation}!module_interpolation@{module\-\_\-interpolation}}
+\subsubsection[{trilinear\-\_\-iterpolation}]{\setlength{\rightskip}{0pt plus 5cm}real function module\-\_\-interpolation\-::trilinear\-\_\-iterpolation (
+\begin{DoxyParamCaption}
+\item[{real, dimension(0\-:nx-\/1,0\-:ny-\/1,0\-:nz-\/1)}]{mat, }
+\item[{integer}]{nx, }
+\item[{integer}]{ny, }
+\item[{integer}]{nz, }
+\item[{real}]{xmin, }
+\item[{real}]{xmax, }
+\item[{real}]{ymin, }
+\item[{real}]{ymax, }
+\item[{real}]{zmin, }
+\item[{real}]{zmax, }
+\item[{real}]{x, }
+\item[{real}]{y, }
+\item[{real}]{z}
+\end{DoxyParamCaption}
+)}}
+\label{classmodule__interpolation_ace479a4b690efc96c08cc306efbc089c}
+
+\begin{DoxyParams}{\-Parameters}
+{\em mat} & 3\-D matrix of real values\\
+\hline
+{\em nx} & grid dimension in the x direction\\
+\hline
+{\em ny} & grid dimension in the y direction\\
+\hline
+{\em nz} & grid dimension in the z direction\\
+\hline
+{\em xmin} & \-Lower bound of grid extent in the x direction\\
+\hline
+{\em xmax} & \-Upper bound of grid extent in the x direction\\
+\hline
+{\em ymin} & \-Lower bound of grid extent in the y direction\\
+\hline
+{\em ymax} & \-Upper bound of grid extent in the y direction\\
+\hline
+{\em zmin} & \-Lower bound of grid extent in the z direction\\
+\hline
+{\em zmax} & \-Upper bound of grid extent in the z direction\\
+\hline
+{\em x} & x coordinate of the interpolation point\\
+\hline
+{\em y} & y coordinate of the interpolation point\\
+\hline
+{\em z} & z coordinate of the interpolation point \\
+\hline
+\end{DoxyParams}
+
+
+\-The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+modules/src/\hyperlink{module__interpolation_8f90}{module\-\_\-interpolation.\-f90}\end{DoxyCompactItemize}

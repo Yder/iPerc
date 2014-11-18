@@ -1,0 +1,211 @@
+\hypertarget{classbinary__tree}{
+\section{binary\-\_\-tree \-Module \-Reference}
+\label{classbinary__tree}\index{binary\-\_\-tree@{binary\-\_\-tree}}
+}
+
+
+\-Defines the binary tree data structure and the associated {\bfseries add\-\_\-branch} and {\bfseries update\-\_\-root} procedures.  
+
+
+\subsection*{\-Public \-Member \-Functions}
+\begin{DoxyCompactItemize}
+\item 
+subroutine \hyperlink{classbinary__tree_acbc95484fe0d8cc6b619ba1be3298e03}{add\-\_\-branch} (values, ind)
+\begin{DoxyCompactList}\small\item\em \-Add a new site to the tree. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classbinary__tree_a6591358e429920cdf6705fe71e763085}{update\-\_\-tree\-\_\-root} (values)
+\begin{DoxyCompactList}\small\item\em \-Update the root of the binary tree. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classbinary__tree_aa68626a4b5cb1f325a1758467df69b0e}{swap} (a, b)
+\begin{DoxyCompactList}\small\item\em exchange {\bfseries a} and {\bfseries b} values. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classbinary__tree_a2ce1b6d895d3ebd095e5772c47a5c07f}{allocate\-\_\-binary\-\_\-tree} (new\-\_\-size)
+\begin{DoxyCompactList}\small\item\em \-Allocate memory for the {\bfseries tree} array. \end{DoxyCompactList}\item 
+subroutine \hyperlink{classbinary__tree_a1781e6f25fb369466b12fc2fc0fab78d}{deallocate\-\_\-binary\-\_\-tree} ()
+\begin{DoxyCompactList}\small\item\em \-Deallocate array {\bfseries tree}. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{\-Public \-Attributes}
+\begin{DoxyCompactItemize}
+\item 
+integer \hyperlink{classbinary__tree_a9fab803f212d6a162cc702c8bc36b60c}{treedim}
+\begin{DoxyCompactList}\small\item\em \-Tree dimension (i.\-e. the number of sites or nodes in the tree, not the memory size) \end{DoxyCompactList}\item 
+integer, dimension(\-:), allocatable \hyperlink{classbinary__tree_abdb595cef78ddee3138beca3b9913019}{tree}
+\begin{DoxyCompactList}\small\item\em \-Tree array, each site with index {\bfseries i} points toward his parent site with index {\bfseries tree(i)} \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{\-Detailed \-Description}
+\-Defines the binary tree data structure and the associated {\bfseries add\-\_\-branch} and {\bfseries update\-\_\-root} procedures. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-M\-A\-S\-S\-O\-N 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 7, 2014 
+\end{DoxyDate}
+\begin{DoxySeeAlso}{\-See also}
+{\bfseries \-A} {\bfseries fast} {\bfseries algorithm} {\bfseries for} {\bfseries invasion} {\bfseries percolation} \-Y \-Masson, \-S\-R \-Pride -\/ \-Transport in porous media, 2014 -\/ \-Springer 
+
+\href{http://link.springer.com/article/10.1007/s11242-014-0277-8}{\tt http\-://link.\-springer.\-com/article/10.\-1007/s11242-\/014-\/0277-\/8} 
+
+\href{https://sites.google.com/site/ydermasson/}{\tt https\-://sites.\-google.\-com/site/ydermasson/} 
+\end{DoxySeeAlso}
+
+
+\subsection{\-Member \-Function/\-Subroutine \-Documentation}
+\hypertarget{classbinary__tree_acbc95484fe0d8cc6b619ba1be3298e03}{
+\index{binary\-\_\-tree@{binary\-\_\-tree}!add\-\_\-branch@{add\-\_\-branch}}
+\index{add\-\_\-branch@{add\-\_\-branch}!binary_tree@{binary\-\_\-tree}}
+\subsubsection[{add\-\_\-branch}]{\setlength{\rightskip}{0pt plus 5cm}subroutine binary\-\_\-tree\-::add\-\_\-branch (
+\begin{DoxyParamCaption}
+\item[{real, dimension(\-:)}]{values, }
+\item[{integer}]{ind}
+\end{DoxyParamCaption}
+)}}
+\label{classbinary__tree_acbc95484fe0d8cc6b619ba1be3298e03}
+
+
+\-Add a new site to the tree. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-Masson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 6, 2014 
+\end{DoxyDate}
+\begin{DoxySeeAlso}{\-See also}
+\-Y \-Masson, \-S\-R \-Pride -\/ \-Transport in porous media, 2014 -\/ \-Springer 
+
+\href{http://link.springer.com/article/10.1007/s11242-014-0277-8}{\tt http\-://link.\-springer.\-com/article/10.\-1007/s11242-\/014-\/0277-\/8} 
+
+\href{https://sites.google.com/site/ydermasson/}{\tt https\-://sites.\-google.\-com/site/ydermasson/} 
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{\-Parameters}
+{\em ind} & \-Index of the site to be added to the tree \\
+\hline
+{\em values} & \-Array containing sites's values \\
+\hline
+\end{DoxyParams}
+\hypertarget{classbinary__tree_a2ce1b6d895d3ebd095e5772c47a5c07f}{
+\index{binary\-\_\-tree@{binary\-\_\-tree}!allocate\-\_\-binary\-\_\-tree@{allocate\-\_\-binary\-\_\-tree}}
+\index{allocate\-\_\-binary\-\_\-tree@{allocate\-\_\-binary\-\_\-tree}!binary_tree@{binary\-\_\-tree}}
+\subsubsection[{allocate\-\_\-binary\-\_\-tree}]{\setlength{\rightskip}{0pt plus 5cm}subroutine binary\-\_\-tree\-::allocate\-\_\-binary\-\_\-tree (
+\begin{DoxyParamCaption}
+\item[{integer}]{new\-\_\-size}
+\end{DoxyParamCaption}
+)}}
+\label{classbinary__tree_a2ce1b6d895d3ebd095e5772c47a5c07f}
+
+
+\-Allocate memory for the {\bfseries tree} array. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-Masson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 6, 2014
+\end{DoxyDate}
+\-If the array is too small, use the intrinsic function {\bfseries move\-\_\-alloc} to increase the size of the {\bfseries tree} array. \-To prevent reallocation, allocate enough memory in the first call. 
+\begin{DoxyParams}{\-Parameters}
+{\em new\-\_\-size} & \-Desired dimension for the {\bfseries tree} array. \\
+\hline
+\end{DoxyParams}
+\hypertarget{classbinary__tree_a1781e6f25fb369466b12fc2fc0fab78d}{
+\index{binary\-\_\-tree@{binary\-\_\-tree}!deallocate\-\_\-binary\-\_\-tree@{deallocate\-\_\-binary\-\_\-tree}}
+\index{deallocate\-\_\-binary\-\_\-tree@{deallocate\-\_\-binary\-\_\-tree}!binary_tree@{binary\-\_\-tree}}
+\subsubsection[{deallocate\-\_\-binary\-\_\-tree}]{\setlength{\rightskip}{0pt plus 5cm}subroutine binary\-\_\-tree\-::deallocate\-\_\-binary\-\_\-tree (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}
+\label{classbinary__tree_a1781e6f25fb369466b12fc2fc0fab78d}
+
+
+\-Deallocate array {\bfseries tree}. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-Masson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 6, 2014 
+\end{DoxyDate}
+\hypertarget{classbinary__tree_aa68626a4b5cb1f325a1758467df69b0e}{
+\index{binary\-\_\-tree@{binary\-\_\-tree}!swap@{swap}}
+\index{swap@{swap}!binary_tree@{binary\-\_\-tree}}
+\subsubsection[{swap}]{\setlength{\rightskip}{0pt plus 5cm}subroutine binary\-\_\-tree\-::swap (
+\begin{DoxyParamCaption}
+\item[{integer}]{a, }
+\item[{integer}]{b}
+\end{DoxyParamCaption}
+)}}
+\label{classbinary__tree_aa68626a4b5cb1f325a1758467df69b0e}
+
+
+exchange {\bfseries a} and {\bfseries b} values. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-Masson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 6, 2014
+\end{DoxyDate}
+
+\begin{DoxyParams}{\-Parameters}
+{\em a} & input value 1 \\
+\hline
+{\em b} & input value 2 \\
+\hline
+\end{DoxyParams}
+\hypertarget{classbinary__tree_a6591358e429920cdf6705fe71e763085}{
+\index{binary\-\_\-tree@{binary\-\_\-tree}!update\-\_\-tree\-\_\-root@{update\-\_\-tree\-\_\-root}}
+\index{update\-\_\-tree\-\_\-root@{update\-\_\-tree\-\_\-root}!binary_tree@{binary\-\_\-tree}}
+\subsubsection[{update\-\_\-tree\-\_\-root}]{\setlength{\rightskip}{0pt plus 5cm}subroutine binary\-\_\-tree\-::update\-\_\-tree\-\_\-root (
+\begin{DoxyParamCaption}
+\item[{real, dimension(\-:)}]{values}
+\end{DoxyParamCaption}
+)}}
+\label{classbinary__tree_a6591358e429920cdf6705fe71e763085}
+
+
+\-Update the root of the binary tree. 
+
+\begin{DoxyAuthor}{\-Author}
+\-Yder \-Masson 
+\end{DoxyAuthor}
+\begin{DoxyDate}{\-Date}
+\-October 6, 2014 
+\end{DoxyDate}
+\begin{DoxySeeAlso}{\-See also}
+\-Y \-Masson, \-S\-R \-Pride -\/ \-Transport in porous media, 2014 -\/ \-Springer 
+
+\href{http://link.springer.com/article/10.1007/s11242-014-0277-8}{\tt http\-://link.\-springer.\-com/article/10.\-1007/s11242-\/014-\/0277-\/8} 
+
+\href{https://sites.google.com/site/ydermasson/}{\tt https\-://sites.\-google.\-com/site/ydermasson/} 
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{\-Parameters}
+{\em values} & array containing the values atached to sites (tree nodes) \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{\-Member \-Data \-Documentation}
+\hypertarget{classbinary__tree_abdb595cef78ddee3138beca3b9913019}{
+\index{binary\-\_\-tree@{binary\-\_\-tree}!tree@{tree}}
+\index{tree@{tree}!binary_tree@{binary\-\_\-tree}}
+\subsubsection[{tree}]{\setlength{\rightskip}{0pt plus 5cm}integer, dimension(\-:), allocatable {\bf binary\-\_\-tree\-::tree}}}
+\label{classbinary__tree_abdb595cef78ddee3138beca3b9913019}
+
+
+\-Tree array, each site with index {\bfseries i} points toward his parent site with index {\bfseries tree(i)} 
+
+\hypertarget{classbinary__tree_a9fab803f212d6a162cc702c8bc36b60c}{
+\index{binary\-\_\-tree@{binary\-\_\-tree}!treedim@{treedim}}
+\index{treedim@{treedim}!binary_tree@{binary\-\_\-tree}}
+\subsubsection[{treedim}]{\setlength{\rightskip}{0pt plus 5cm}integer {\bf binary\-\_\-tree\-::treedim}}}
+\label{classbinary__tree_a9fab803f212d6a162cc702c8bc36b60c}
+
+
+\-Tree dimension (i.\-e. the number of sites or nodes in the tree, not the memory size) 
+
+
+
+\-The documentation for this module was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+modules/src/\hyperlink{module__binary__tree_8f90}{module\-\_\-binary\-\_\-tree.\-f90}\end{DoxyCompactItemize}

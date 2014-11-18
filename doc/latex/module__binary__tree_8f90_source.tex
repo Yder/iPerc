@@ -1,0 +1,206 @@
+\hypertarget{module__binary__tree_8f90_source}{
+\section{modules/src/module\-\_\-binary\-\_\-tree.f90}
+}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{!============================!}
+00002 \textcolor{comment}{!                            !}
+00003 \textcolor{comment}{!                            !}
+00004 \textcolor{comment}{!     MODULE BINARY TREE     !}
+00005 \textcolor{comment}{!                            !}
+00006 \textcolor{comment}{!                            !}
+00007 \textcolor{comment}{!============================!}
+00008 \textcolor{comment}{!}
+\hypertarget{module__binary__tree_8f90_source_l00019}{}\hyperlink{classmodule__binary__tree}{00019} \textcolor{keyword}{module} \hyperlink{classmodule__binary__tree}{module_binary_tree}
+00020 \textcolor{comment}{!========================}
+00021   \textcolor{comment}{!}
+00022   \textcolor{keyword}{implicit none}
+00023   \textcolor{comment}{!}
+\hypertarget{module__binary__tree_8f90_source_l00025}{}\hyperlink{classmodule__binary__tree_a61c89527c6e2f4f499d86efd842c571a}{00025}   \textcolor{keywordtype}{integer} :: treedim
+00026 
+\hypertarget{module__binary__tree_8f90_source_l00028}{}\hyperlink{classmodule__binary__tree_a85d3e520ba717952e9c915f085fa2caf}{00028}   \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)}, \textcolor{keywordtype}{allocatable} :: tree
+00029   \textcolor{comment}{!}
+00030 \textcolor{keyword}{contains}
+00031   \textcolor{comment}{!}
+\hypertarget{module__binary__tree_8f90_source_l00040}{}\hyperlink{classmodule__binary__tree_a9238e1484a74b966c0aabc0db55ab280}{00040}   \textcolor{keyword}{subroutine }add\_branch(values,ind)
+00041   \textcolor{comment}{!--------------------------------}
+00042     \textcolor{comment}{!}
+00043     \textcolor{comment}{! add a new site to the tree}
+00044     \textcolor{comment}{!}
+00045     \textcolor{keyword}{implicit none}
+00047     \textcolor{keywordtype}{integer} inode
+00048 
+00049     \textcolor{keywordtype}{integer} :: ind
+00050 
+00051     \textcolor{keywordtype}{real} :: values(:)
+00052     \textcolor{comment}{!}
+00053     treedim = treedim+1
+00054     \textcolor{comment}{!}
+00055     \textcolor{comment}{! check if tree is allocated}
+00056     \textcolor{comment}{!}
+00057     call allocate\_binary\_tree(treedim)
+00058     \textcolor{comment}{!}
+00059     \textcolor{comment}{! add new site to tree}
+00060     \textcolor{comment}{!}
+00061     tree(treedim) = ind
+00062     \textcolor{comment}{!}
+00063     \textcolor{comment}{! put new site at the right place in the tree}
+00064     \textcolor{comment}{!}
+00065     inode = treedim
+00066     \textcolor{comment}{!}
+00067     \textcolor{keyword}{if}(treedim==1)return
+00068     \textcolor{comment}{!}
+00069     \textcolor{keyword}{do} 
+00070        \textcolor{comment}{!}
+00071        \textcolor{keyword}{select} \textcolor{keyword}{case}(values(tree(inode))<=values(tree(inode/2)))
+00072        \textcolor{keyword}{case}(.true.)
+00073           call swap(tree(inode),tree(inode/2))
+00074           inode=inode/2
+00075           \textcolor{keyword}{if}(inode==1)exit
+00076        \textcolor{keyword}{case}(.false.)
+00077           exit
+00078        \textcolor{keyword}{end select}
+00079        \textcolor{comment}{!}
+00080     \textcolor{keyword}{enddo}
+00081     \textcolor{comment}{!}
+00082     return
+00083     \textcolor{comment}{!}
+00084   \textcolor{comment}{!------------------------}
+00085 \textcolor{keyword}{  end subroutine add\_branch}
+00086   \textcolor{comment}{!------------------------}
+00087   \textcolor{comment}{!}
+\hypertarget{module__binary__tree_8f90_source_l00096}{}\hyperlink{classmodule__binary__tree_a337bb7bdb8a65779775bb85e5b8b0c76}{00096}   \textcolor{keyword}{subroutine }update\_tree\_root(values)
+00097   \textcolor{comment}{!----------------------------------}
+00098     \textcolor{comment}{!}
+00099     \textcolor{keyword}{implicit none}
+00100     \textcolor{comment}{!}
+00102     \textcolor{keywordtype}{integer} :: inode
+00103 
+00104     \textcolor{keywordtype}{real} :: values(:)
+00105     \textcolor{comment}{! }
+00106     inode = 1
+00107     \textcolor{keyword}{if}(treedim.le.1)\textcolor{keyword}{then}
+00108        treedim = 0
+00109        return
+00110     \textcolor{keyword}{endif}
+00111     \textcolor{comment}{!}
+00112     \textcolor{keyword}{do}
+00113        \textcolor{comment}{!}
+00114        \textcolor{keyword}{if}(2*inode+1<treedim)\textcolor{keyword}{then}
+00115           \textcolor{comment}{!}
+00116           \textcolor{keyword}{select} \textcolor{keyword}{case}(values(tree(2*inode))<=values(tree(2*inode+1)))
+00117           \textcolor{keyword}{case}(.true.)
+00118              tree(inode)=tree(inode*2)
+00119              inode = 2*inode
+00120           \textcolor{keyword}{case}(.false.)
+00121              tree(inode)=tree(inode*2+1)
+00122              inode = 2*inode+1
+00123           \textcolor{keyword}{end select}
+00124           \textcolor{comment}{!}
+00125        elseif(2*inode+1.eq.treedim)\textcolor{keyword}{then}
+00126           \textcolor{comment}{!}
+00127           \textcolor{keyword}{if}(values(tree(2*inode))<=values(tree(2*inode+1)))\textcolor{keyword}{then}
+00128              tree(inode)=tree(2*inode)
+00129              tree(2*inode)=tree(2*inode+1)
+00130           \textcolor{keyword}{else}
+00131              tree(inode)=tree(2*inode+1)
+00132           \textcolor{keyword}{endif}
+00133           treedim = treedim-1
+00134           exit
+00135           \textcolor{comment}{!}
+00136        elseif(2*inode.eq.treedim)\textcolor{keyword}{then}
+00137           \textcolor{comment}{!}
+00138           tree(inode)=tree(inode*2)
+00139           treedim = treedim-1
+00140           exit
+00141           \textcolor{comment}{!}
+00142        \textcolor{keyword}{else}
+00143           \textcolor{keyword}{if}(inode.eq.1)exit
+00144           tree(inode)=tree(treedim)
+00145           treedim = treedim-1
+00146           \textcolor{keyword}{do}
+00147              \textcolor{keyword}{if}(values(tree(inode))<values(tree(inode/2)))\textcolor{keyword}{then}
+00148                 call swap(tree(inode),tree(inode/2))
+00149                 inode=inode/2
+00150                 \textcolor{keyword}{if}(inode==1)exit
+00151              \textcolor{keyword}{else}
+00152                 exit
+00153              \textcolor{keyword}{endif}
+00154           \textcolor{keyword}{end do}
+00155           exit
+00156           \textcolor{comment}{!}
+00157        \textcolor{keyword}{endif}
+00158        \textcolor{comment}{!}
+00159     \textcolor{keyword}{enddo}
+00160     \textcolor{comment}{!}
+00161     return
+00162     \textcolor{comment}{!}
+00163   \textcolor{comment}{!------------------------------}
+00164 \textcolor{keyword}{  end subroutine update\_tree\_root}
+00165   \textcolor{comment}{!------------------------------}
+00166   \textcolor{comment}{!}
+\hypertarget{module__binary__tree_8f90_source_l00171}{}\hyperlink{classmodule__binary__tree_a038c2b54735ff5c76847e780403880a6}{00171}   \textcolor{keyword}{subroutine }swap(a,b)
+00172   \textcolor{comment}{!-------------------}
+00173     \textcolor{comment}{!}
+00174     \textcolor{comment}{! swap two values a becomes b and b becomes a}
+00175     \textcolor{comment}{!}
+00176     \textcolor{keyword}{implicit none}
+00177     \textcolor{comment}{!}
+00178     \textcolor{keywordtype}{integer} :: a \textcolor{comment}{!< input value 1}
+00179     \textcolor{keywordtype}{integer} :: b \textcolor{comment}{!< input value 2}
+00180     \textcolor{keywordtype}{integer} :: save\_b \textcolor{comment}{!< tmp value}
+00181     \textcolor{comment}{!}
+00182     save\_b=b
+00183     b=a
+00184     a=save\_b
+00185     \textcolor{comment}{!}
+00186     return
+00187     \textcolor{comment}{!}
+00188   \textcolor{comment}{!------------------}
+00189 \textcolor{keyword}{  end subroutine swap}
+00190   \textcolor{comment}{!------------------}
+00191   \textcolor{comment}{!}
+\hypertarget{module__binary__tree_8f90_source_l00200}{}\hyperlink{classmodule__binary__tree_a3b5f15e8bcc08bfe14e24f4b1930ea47}{00200}   \textcolor{keyword}{subroutine }allocate\_binary\_tree(new\_size)
+00201   \textcolor{comment}{!----------------------------------------}
+00202     \textcolor{comment}{!}
+00203     \textcolor{keyword}{implicit none}  
+00204     \textcolor{comment}{!}
+00206     \textcolor{keywordtype}{integer} :: new\_size
+00207 
+00208     \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)}, \textcolor{keywordtype}{allocatable} :: buffer
+00209     \textcolor{comment}{!}
+00210     \textcolor{comment}{! make sure array is not yet allocated before allocating}
+00211     \textcolor{comment}{!}
+00212     \textcolor{keyword}{if}(.not.\textcolor{keyword}{allocated}(tree))\textcolor{keyword}{allocate}(tree(new\_size))
+00213     \textcolor{comment}{!}
+00214     \textcolor{comment}{! allocate more memory if needed}
+00215     \textcolor{comment}{! }
+00216     \textcolor{keyword}{if}(new\_size>\textcolor{keyword}{size}(tree))\textcolor{keyword}{then}
+00217        \textcolor{keyword}{allocate}(buffer(2*\textcolor{keyword}{size}(tree)))
+00218        buffer(1:\textcolor{keyword}{size}(tree)) = tree(:)
+00219        call move\_alloc(buffer,tree)
+00220     \textcolor{keyword}{endif}
+00221     \textcolor{comment}{!}
+00222     return
+00223     \textcolor{comment}{!}
+00224   \textcolor{comment}{!----------------------------------}
+00225 \textcolor{keyword}{  end subroutine allocate\_binary\_tree}
+00226   \textcolor{comment}{!----------------------------------}
+00227   \textcolor{comment}{!}
+\hypertarget{module__binary__tree_8f90_source_l00233}{}\hyperlink{classmodule__binary__tree_aa34576eb21fe1f7d974ab467d449d49c}{00233}   \textcolor{keyword}{subroutine }deallocate\_binary\_tree()
+00234   \textcolor{comment}{!----------------------------------}
+00235     \textcolor{comment}{!}
+00236     \textcolor{keyword}{implicit none} 
+00237     \textcolor{comment}{!}
+00238     \textcolor{keyword}{if}(\textcolor{keyword}{allocated}(tree))\textcolor{keyword}{deallocate}(tree)
+00239     \textcolor{comment}{!}
+00240     return
+00241     \textcolor{comment}{!}
+00242   \textcolor{comment}{!------------------------------------}
+00243 \textcolor{keyword}{  end subroutine deallocate\_binary\_tree}
+00244   \textcolor{comment}{!------------------------------------}
+00245   \textcolor{comment}{!}
+00246 \textcolor{comment}{!============================}
+00247 \textcolor{keyword}{end module module\_binary\_tree}
+00248 \textcolor{comment}{!============================}
+\end{DoxyCode}

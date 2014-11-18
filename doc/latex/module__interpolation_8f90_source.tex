@@ -1,0 +1,154 @@
+\hypertarget{module__interpolation_8f90_source}{
+\section{modules/src/module\-\_\-interpolation.f90}
+}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{!==============================!}
+00002 \textcolor{comment}{!                              !}
+00003 \textcolor{comment}{!                              !}
+00004 \textcolor{comment}{!     MODULE INTERPOLATION     !}
+00005 \textcolor{comment}{!                              !}
+00006 \textcolor{comment}{!                              !}
+00007 \textcolor{comment}{!==============================!}
+00008 
+00009 \textcolor{comment}{!==========================}
+\hypertarget{module__interpolation_8f90_source_l00010}{}\hyperlink{classmodule__interpolation}{00010} \textcolor{keyword}{module} \hyperlink{classmodule__interpolation}{module_interpolation}
+00011 \textcolor{comment}{!==========================}
+00012 \textcolor{comment}{!}
+00013 \textcolor{keyword}{contains}
+00014 \textcolor{comment}{!}
+00015 \textcolor{comment}{! @author Yder MASSON}
+00016 \textcolor{comment}{! @date November 12, 2014}
+00017 \textcolor{comment}{! @brief Preforms 3D trilinear interpolation }
+00018 \textcolor{comment}{!}
+00019 \textcolor{comment}{
+      !-------------------------------------------------------------------------------------}
+\hypertarget{module__interpolation_8f90_source_l00020}{}\hyperlink{classmodule__interpolation_ace479a4b690efc96c08cc306efbc089c}{00020} \textcolor{keyword}{real }\textcolor{keyword}{function }trilinear\_iterpolation
+      (mat,nx,ny,nz,xmin,xmax,ymin,ymax,zmin,zmax,x,y,z)
+00021 \textcolor{comment}{
+      !-------------------------------------------------------------------------------------}
+00022 \textcolor{comment}{!}
+00023 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(0:nx-1,0:ny-1,0:nz-1)} :: mat \textcolor{comment}{!< 3D matrix of real values }
+00024 \textcolor{comment}{!}
+00025 \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< grid dimension in the x direction}
+00026 \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< grid dimension in the y direction}
+00027 \textcolor{keywordtype}{integer} :: nz \textcolor{comment}{!< grid dimension in the z direction}
+00028 \textcolor{comment}{!}
+00029 \textcolor{keywordtype}{real} :: xmin \textcolor{comment}{!< Lower bound of grid extent in the x direction}
+00030 \textcolor{keywordtype}{real} :: xmax \textcolor{comment}{!< Upper bound of grid extent in the x direction }
+00031 \textcolor{keywordtype}{real} :: ymin \textcolor{comment}{!< Lower bound of grid extent in the y direction }
+00032 \textcolor{keywordtype}{real} :: ymax \textcolor{comment}{!< Upper bound of grid extent in the y direction}
+00033 \textcolor{keywordtype}{real} :: zmin \textcolor{comment}{!< Lower bound of grid extent in the z direction}
+00034 \textcolor{keywordtype}{real} :: zmax \textcolor{comment}{!< Upper bound of grid extent in the z direction}
+00035 \textcolor{comment}{!}
+00036 \textcolor{keywordtype}{real} :: x \textcolor{comment}{!< x coordinate of the interpolation point }
+00037 \textcolor{keywordtype}{real} :: y \textcolor{comment}{!< y coordinate of the interpolation point }
+00038 \textcolor{keywordtype}{real} :: z \textcolor{comment}{!< z coordinate of the interpolation point}
+00039 \textcolor{comment}{!}
+00040 \textcolor{comment}{! Internal variables}
+00041 \textcolor{comment}{!}
+00042 \textcolor{keywordtype}{real} :: dx, delta, v1, v2
+00043 \textcolor{keywordtype}{integer} :: i
+00044 \textcolor{comment}{!}
+00045 dx = (xmax-xmin)/\textcolor{keywordtype}{real}(nx-1)
+00046 \textcolor{comment}{!}
+00047 i = int((x-xmin)/dx)
+00048 \textcolor{keyword}{if}(i==nx)i=i-1
+00049 \textcolor{comment}{!}
+00050 delta = x-i*dx
+00051 \textcolor{comment}{!}
+00052 v1 = bilinear\_interpolation(mat(i  ,:,:),ny,nz,ymin,ymax,zmin,zmax,y,z)
+00053 v2 = bilinear\_interpolation(mat(i+1,:,:),ny,nz,ymin,ymax,zmin,zmax,y,z)
+00054 \textcolor{comment}{!}
+00055 trilinear\_interpolation = (1.E0-delta)*v1+delta*v2 
+00056 \textcolor{comment}{!}
+00057 \textcolor{comment}{!----------------------------------}
+00058 \textcolor{keyword}{end function trilinear\_iterpolation}
+00059 \textcolor{comment}{!----------------------------------}
+00060 \textcolor{comment}{!}
+00061 \textcolor{comment}{! @author Yder MASSON}
+00062 \textcolor{comment}{! @date November 12, 2014}
+00063 \textcolor{comment}{! @brief Preforms 2D bilinear interpolation }
+00064 \textcolor{comment}{!}
+00065 \textcolor{comment}{!----------------------------------------------------------------------}
+\hypertarget{module__interpolation_8f90_source_l00066}{}\hyperlink{classmodule__interpolation_ad2c12cef852fdbaceaae5999778eb885}{00066} \textcolor{keyword}{real }\textcolor{keyword}{function }bilinear\_interpolation(mat,nx,ny,xmin,xmax,ymin,ymax,x,y)
+00067 \textcolor{comment}{!----------------------------------------------------------------------}
+00068 \textcolor{comment}{!}
+00069 \textcolor{keyword}{implicit none}
+00070 \textcolor{comment}{!}
+00071 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(0:nx-1,0:ny-1)} :: mat \textcolor{comment}{!< 2D matrix of real values }
+00072 \textcolor{comment}{!}
+00073 \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< Number of grid points in the x direction}
+00074 \textcolor{keywordtype}{integer} :: ny \textcolor{comment}{!< Number of grid points in the y direction}
+00075 \textcolor{comment}{!}
+00076 \textcolor{keywordtype}{real} :: xmin \textcolor{comment}{!< Lower bound of grid extent in the x direction}
+00077 \textcolor{keywordtype}{real} :: xmax \textcolor{comment}{!< Upper bound of grid extent in the x direction}
+00078 \textcolor{keywordtype}{real} :: ymin \textcolor{comment}{!< Lower bound of grid extent in the y direction}
+00079 \textcolor{keywordtype}{real} :: ymax \textcolor{comment}{!< Upper bound of grid extent in the y direction}
+00080 \textcolor{comment}{!}
+00081 \textcolor{keywordtype}{real} :: x \textcolor{comment}{!< x coordinate of the interpolation point }
+00082 \textcolor{keywordtype}{real} :: y \textcolor{comment}{!< y coordinate of the interpolation point }
+00083 \textcolor{comment}{!}
+00084 \textcolor{comment}{! Internal variables}
+00085 \textcolor{comment}{!}
+00086 \textcolor{keywordtype}{real} :: dx, delta, v1, v2
+00087 \textcolor{keywordtype}{integer} :: i
+00088 \textcolor{comment}{!}
+00089 dx = (xmax-xmin)/\textcolor{keywordtype}{real}(nx-1)
+00090 \textcolor{comment}{!}
+00091 i = int((x-xmin)/dx)
+00092 \textcolor{keyword}{if}(i==nx)i=i-1
+00093 \textcolor{comment}{!}
+00094 delta = x-i*dx
+00095 \textcolor{comment}{!}
+00096 v1 = linear\_interpolation(mat(i  ,:),ny,ymin,ymax,y)
+00097 v2 = linear\_interpolation(mat(i+1,:),ny,ymin,ymax,y)
+00098 \textcolor{comment}{!}
+00099 bilinear\_interpolation = (1.E0-delta)*v1+delta*v2 
+00100 \textcolor{comment}{! }
+00101 \textcolor{comment}{!----------------------------------}
+00102 \textcolor{keyword}{end function bilinear\_interpolation}
+00103 \textcolor{comment}{!----------------------------------}
+00104 \textcolor{comment}{!}
+00105 \textcolor{comment}{! @author Yder MASSON}
+00106 \textcolor{comment}{! @date November 12, 2014}
+00107 \textcolor{comment}{! @brief Preforms 1D linear interpolation }
+00108 \textcolor{comment}{!}
+00109 \textcolor{comment}{!-----------------------------------------------------}
+\hypertarget{module__interpolation_8f90_source_l00110}{}\hyperlink{classmodule__interpolation_a174ca6e4c79e7b933ae04e6d4db3a348}{00110} \textcolor{keyword}{real }\textcolor{keyword}{function }linear\_interpolation(mat,nx,xmin,xmax,x)
+00111 \textcolor{comment}{!-----------------------------------------------------}
+00112 \textcolor{comment}{!}
+00113 \textcolor{keywordtype}{real}, \textcolor{keywordtype}{dimension(0:nx-1)} :: mat \textcolor{comment}{!< 1D vector of real values }
+00114 \textcolor{comment}{!}
+00115 \textcolor{keywordtype}{integer} :: nx \textcolor{comment}{!< Number of grid points }
+00116 \textcolor{comment}{!}
+00117 \textcolor{keywordtype}{real} :: xmin \textcolor{comment}{!< Lower bound of grid extent }
+00118 \textcolor{keywordtype}{real} :: xmax \textcolor{comment}{!< Upper bound of grid extent}
+00119 \textcolor{comment}{!}
+00120 \textcolor{keywordtype}{real} :: x \textcolor{comment}{!< x coordinate of the interpolation point }
+00121 \textcolor{comment}{!}
+00122 \textcolor{comment}{! Internal variables}
+00123 \textcolor{comment}{!}
+00124 \textcolor{keywordtype}{real} :: dx, delta, v1, v2
+00125 \textcolor{keywordtype}{integer} :: i
+00126 \textcolor{comment}{!}
+00127 dx = (xmax-xmin)/\textcolor{keywordtype}{real}(nx-1)
+00128 \textcolor{comment}{!}
+00129 i = int((x-xmin)/dx)
+00130 \textcolor{keyword}{if}(i==nx)i=i-1
+00131 \textcolor{comment}{!}
+00132 delta = x-i*dx
+00133 \textcolor{comment}{!}
+00134 v1 = mat(i)
+00135 v2 = mat(i+1)
+00136 \textcolor{comment}{!}
+00137 linear\_interpolation = (1.E0-delta)*v1+delta*v2
+00138 \textcolor{comment}{! }
+00139 \textcolor{comment}{!--------------------------------}
+00140 \textcolor{keyword}{end function linear\_interpolation}
+00141 \textcolor{comment}{!--------------------------------}
+00142 \textcolor{comment}{!}
+00143 \textcolor{comment}{!==============================}
+00144 \textcolor{keyword}{end module module\_interpolation}
+00145 \textcolor{comment}{!==============================}
+\end{DoxyCode}

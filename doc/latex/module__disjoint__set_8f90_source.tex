@@ -1,0 +1,150 @@
+\hypertarget{module__disjoint__set_8f90_source}{
+\section{modules/src/module\-\_\-disjoint\-\_\-set.f90}
+}
+
+\begin{DoxyCode}
+00001 \textcolor{comment}{!=============================!}
+00002 \textcolor{comment}{!                             !}
+00003 \textcolor{comment}{!                             !}
+00004 \textcolor{comment}{!     MODULE DISJOINT SET     !  }
+00005 \textcolor{comment}{!                             !}
+00006 \textcolor{comment}{!                             !}
+00007 \textcolor{comment}{!=============================!}
+00008 \textcolor{comment}{!}
+\hypertarget{module__disjoint__set_8f90_source_l00023}{}\hyperlink{classmodule__disjoint__set}{00023} \textcolor{keyword}{module} \hyperlink{classmodule__disjoint__set}{module_disjoint_set}
+00024 \textcolor{comment}{!=========================}
+00025   \textcolor{comment}{!}
+00026   \textcolor{keyword}{implicit none}
+\hypertarget{module__disjoint__set_8f90_source_l00030}{}\hyperlink{classmodule__disjoint__set_afd35cdfbb8e055e9e184b5359627bf5e}{00030}   \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)}, \textcolor{keywordtype}{allocatable} :: labels
+00031 
+\hypertarget{module__disjoint__set_8f90_source_l00033}{}\hyperlink{classmodule__disjoint__set_af861c992aa8ba85ccc2943ec786d9ceb}{00033}   \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)}, \textcolor{keywordtype}{allocatable} :: ranks
+00034 
+\hypertarget{module__disjoint__set_8f90_source_l00035}{}\hyperlink{classmodule__disjoint__set_a2ef0620ab0fd7047b16e522c4db4c590}{00035}   \textcolor{keywordtype}{integer} :: largest\_label
+00036   \textcolor{comment}{!}
+00037 \textcolor{keyword}{contains}
+00038   \textcolor{comment}{!}
+\hypertarget{module__disjoint__set_8f90_source_l00047}{}\hyperlink{classmodule__disjoint__set_a769c6fb3576cdcd2f96f2cabcf76cf10}{00047}   \textcolor{keyword}{integer }\textcolor{keyword}{function }create\_set(largest\_label)
+00048   \textcolor{comment}{!-----------------------------------------}
+00049     \textcolor{comment}{!}
+00050     \textcolor{keyword}{implicit none}
+00051     \textcolor{comment}{!}
+00053     \textcolor{keywordtype}{integer} :: largest\_label
+00054     \textcolor{comment}{!}
+00055     largest\_label = largest\_label+1
+00056     call allocate\_disjoint\_set(largest\_label)
+00057     labels(largest\_label) = largest\_label
+00058     ranks(largest\_label) = 1
+00059     create\_set = largest\_label
+00060     \textcolor{comment}{!}
+00061   \textcolor{comment}{!----------------------}
+00062 \textcolor{keyword}{  end function create\_set}
+00063   \textcolor{comment}{!----------------------}
+00064   \textcolor{comment}{!}
+\hypertarget{module__disjoint__set_8f90_source_l00073}{}\hyperlink{classmodule__disjoint__set_aab6780106768f39173390102bb951275}{00073}   \textcolor{keyword}{integer }\textcolor{keyword}{function }find(label)
+00074   \textcolor{comment}{!---------------------------}
+00075     \textcolor{comment}{!}
+00076     \textcolor{keyword}{implicit none}
+00077     \textcolor{comment}{!}
+00078     \textcolor{keywordtype}{integer} :: label \textcolor{comment}{!< label for wich we search root or canonical label or
+       class}
+00079     \textcolor{keywordtype}{integer} :: root\_label \textcolor{comment}{!< output root label, find=root\_label}
+00080 
+00082     \textcolor{keywordtype}{integer} :: save\_label 
+00083     \textcolor{comment}{!}
+00084     root\_label = label
+00085     \textcolor{comment}{!}
+00086     \textcolor{keyword}{do} \textcolor{keyword}{while}(labels(root\_label)/=root\_label)
+00087        root\_label = labels(root\_label)
+00088     \textcolor{keyword}{enddo}
+00089     \textcolor{comment}{!}
+00090     \textcolor{keyword}{do} \textcolor{keyword}{while} (labels(label)/=label)
+00091        save\_label = labels(label)
+00092        labels(label) = root\_label
+00093        label = save\_label
+00094     \textcolor{keyword}{end do}
+00095     \textcolor{comment}{!}
+00096     find = root\_label
+00097     \textcolor{comment}{!}
+00098   \textcolor{comment}{!----------------}
+00099 \textcolor{keyword}{  end function find}
+00100   \textcolor{comment}{!----------------}
+00101   \textcolor{comment}{!}
+\hypertarget{module__disjoint__set_8f90_source_l00112}{}\hyperlink{classmodule__disjoint__set_a0ce8857aac3e2281a0010c81f02d00f1}{00112}   \textcolor{keyword}{integer }\textcolor{keyword}{function }union(label1,label2)
+00113   \textcolor{comment}{!------------------------------------ }
+00114     \textcolor{comment}{!}
+00115     \textcolor{keyword}{implicit none}
+00116     \textcolor{comment}{!}
+00117     \textcolor{keywordtype}{integer} :: label1 \textcolor{comment}{!< input label 1}
+00118     \textcolor{keywordtype}{integer} :: label2 \textcolor{comment}{!< input label 2}
+00119     \textcolor{comment}{!}
+00120     label1 = find(label1)
+00121     label2 = find(label2)
+00122     \textcolor{comment}{!}
+00123     \textcolor{keyword}{if}(ranks(label1)==ranks(label2))\textcolor{keyword}{then}
+00124        ranks(label1) = ranks(label1)+1
+00125        labels(label2) = label1
+00126        union = label1
+00127     elseif(ranks(label1)>ranks(label2))\textcolor{keyword}{then}
+00128        labels(label2) = label1
+00129        union = label1
+00130     \textcolor{keyword}{else}
+00131        labels(label1) = label2
+00132        union = label2
+00133     \textcolor{keyword}{endif}
+00134     \textcolor{comment}{!}
+00135   \textcolor{comment}{!------------------}
+00136 \textcolor{keyword}{  end function  union}
+00137   \textcolor{comment}{!------------------}
+00138   \textcolor{comment}{!}
+\hypertarget{module__disjoint__set_8f90_source_l00148}{}\hyperlink{classmodule__disjoint__set_aa43d8eb044efd1e8db88393da2ebb954}{00148}   \textcolor{keyword}{subroutine }allocate\_disjoint\_set(new\_size)
+00149   \textcolor{comment}{!-----------------------------------------}
+00150     \textcolor{comment}{!}
+00151     \textcolor{keyword}{implicit none}
+00152     \textcolor{comment}{!}
+00154     \textcolor{keywordtype}{integer} :: new\_size
+00155 
+00156     \textcolor{keywordtype}{integer}, \textcolor{keywordtype}{dimension(:)}, \textcolor{keywordtype}{allocatable} :: buffer
+00157     \textcolor{comment}{!}
+00158     \textcolor{comment}{! make sure arrays are allocated}
+00159     \textcolor{comment}{!}
+00160     \textcolor{keyword}{if}(.not.\textcolor{keyword}{allocated}(labels))\textcolor{keyword}{allocate}(labels(new\_size))
+00161     \textcolor{keyword}{if}(.not.\textcolor{keyword}{allocated}(ranks))\textcolor{keyword}{allocate}(ranks(new\_size))
+00162     \textcolor{comment}{!}
+00163     \textcolor{comment}{! allocate more memory if needed}
+00164     \textcolor{comment}{! }
+00165     \textcolor{keyword}{if}(new\_size>\textcolor{keyword}{size}(labels))\textcolor{keyword}{then}
+00166        \textcolor{keyword}{allocate}(buffer(2*\textcolor{keyword}{size}(labels)))
+00167        buffer(1:\textcolor{keyword}{size}(labels)) = labels(:)
+00168        call move\_alloc(buffer,labels)
+00169     \textcolor{keyword}{endif}
+00170     \textcolor{comment}{! }
+00171     \textcolor{keyword}{if}(new\_size>\textcolor{keyword}{size}(ranks))\textcolor{keyword}{then}
+00172        \textcolor{keyword}{allocate}(buffer(2*\textcolor{keyword}{size}(ranks)))
+00173        buffer(1:\textcolor{keyword}{size}(ranks)) = ranks(:)
+00174        call move\_alloc(buffer,ranks)
+00175     \textcolor{keyword}{endif}
+00176     \textcolor{comment}{!}
+00177     return
+00178     \textcolor{comment}{!}
+00179   \textcolor{comment}{!-----------------------------------}
+00180 \textcolor{keyword}{  end subroutine allocate\_disjoint\_set}
+00181   \textcolor{comment}{!-----------------------------------}
+00182   \textcolor{comment}{!}
+\hypertarget{module__disjoint__set_8f90_source_l00188}{}\hyperlink{classmodule__disjoint__set_a717efa42d58a94fd3ba616cce27db828}{00188}   \textcolor{keyword}{subroutine }deallocate\_disjoint\_set()
+00189   \textcolor{comment}{!-----------------------------------}
+00190     \textcolor{comment}{!}
+00191     \textcolor{keyword}{implicit none}
+00192     \textcolor{comment}{!}
+00193     \textcolor{keyword}{if}(\textcolor{keyword}{allocated}(labels))\textcolor{keyword}{deallocate}(labels)
+00194     \textcolor{keyword}{if}(\textcolor{keyword}{allocated}(ranks))\textcolor{keyword}{deallocate}(ranks)
+00195     \textcolor{comment}{!}
+00196     return
+00197     \textcolor{comment}{!}
+00198   \textcolor{comment}{!-------------------------------------}
+00199 \textcolor{keyword}{  end subroutine deallocate\_disjoint\_set}
+00200   \textcolor{comment}{!-------------------------------------}
+00201   \textcolor{comment}{!}
+00202 \textcolor{comment}{!=============================}
+00203 \textcolor{keyword}{end module module\_disjoint\_set}
+00204 \textcolor{comment}{!=============================}
+\end{DoxyCode}

@@ -1,0 +1,49 @@
+\form#0:$ \theta_c $
+\form#1:$ P_i $
+\form#2:$ P_i = \frac{2 \sigma \mbox{cos} \theta_c}{a_i}-\Delta \rho g (L-z_i)$
+\form#3:$ \Delta \rho $
+\form#4:$ g $
+\form#5:$ L $
+\form#6:$ a_i $
+\form#7:$ \sigma $
+\form#8:$ \Delta x$
+\form#9:$ \Delta y$
+\form#10:$ \Delta z$
+\form#11:$ The various functions in this module compute the invasion potential $
+\form#12:$ \Delta x $
+\form#13:$ \Delta y $
+\form#14:$ \Delta z $
+\form#15:$ 1<i<nx $
+\form#16:$ 1<j<ny $
+\form#17:$ 1<k<nz $
+\form#18:$ 1<ind<nx \times ny \times nz $
+\form#19:$ 1<\mbox{ind}<\mbox{nx}\times\mbox{ny}\times\mbox{nz}$
+\form#20:$ 1<i<\mbox{nx} $
+\form#21:$ 1<j<\mbox{ny} $
+\form#22:$ 1<k<\mbox{nz} $
+\form#23:$ 1<\mbox{i}<\mbox{nx} $
+\form#24:$ 1<\mbox{j}<\mbox{ny} $
+\form#25:$ 1<\mbox{k}<\mbox{nz} $
+\form#26:$ f = exp (a/8)$
+\form#27:$ \hat{f} = exp (a/8)$
+\form#28:$ \hat{f}(k) = \kapa \left[ a^{-2}+k^2\right]^{-frac{d}{4}-frac{N}{2}} \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$
+\form#29:$ \hat{f}(k) = \kapa \left[ a^{-2}+k^2\right]^{-\frac{d}{4}-\frac{N}{2}} \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$
+\form#30:$ \hat{f}(k) = \kappa \left[ a^{-2}+k^2\right]^{-\frac{d}{4}-\frac{N}{2}} \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$
+\form#31:$ \hat{f}(k) = \kappa \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$
+\form#32:$ \hat{f}(k) = \kappa \left[ a^{-2}+k^2\right]^{-\frac{d}{4}-\frac{N}{2}} \n Exponential : $
+\form#33:$ \hat{f}(k) = \kappa k^{-\frac{d}{2}-N} \n Kummer : $
+\form#34:$ \n White noise : $
+\form#35:$ \hat{f}(k) = \kappa \left[ a^{-2}+k^2\right]^{-\frac{d}{4}-\frac{N}{2}}$
+\form#36:$ \hat{f}(k) = \kappa \left[ a^{-2}+k^2\right]^{-\frac{d+1}{4}}$
+\form#37:$ \hat{f}(k) = \kappa k^{-\frac{d}{2}-N}$
+\form#38:$ \hat{f}(k) = \kappa k^{-\frac{d}{2}-N} \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$
+\form#39:$ \hat{f}(k) = \kappa $
+\form#40:$ \hat{f}(k) = \kappa \left[ a^{-2}+k^2\right]^{-\frac{d}{4}-\frac{H}{2}} \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$
+\form#41:$ \hat{f}(k) = \kappa \left[ a^{-2}+k^2\right]^{-\frac{d}{4}-\frac{H}{2}}$
+\form#42:$ \hat{f}(k) = \kappa k^{-\frac{d}{2}-H}$
+\form#43:$ \hat{f}(k) = \kappa k^{-\frac{d}{2}-H} \mbox{exp}\left(\frac{a_G^2k^2}{8}\right)$
+\form#44:$ H $
+\form#45:$ a_G $
+\form#46:$ d = 3$
+\form#47:$ a $
+\form#48:$ d = 2$
