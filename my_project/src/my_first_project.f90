@@ -36,6 +36,12 @@ program name_of_your_project
   ! This is where you write your code
   ! See the following sections for more details
   
+  ! this is not to get -wall warnings at compilation...
+
+  a=few+reals
+  some=integers
+  etc=.true.
+
   print*, 'This is my first iPerc project !'
   
   !========!

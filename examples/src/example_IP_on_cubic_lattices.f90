@@ -31,9 +31,9 @@
 !> @brief A simple example showing how to setup and 
 !> model invasion percolation on a cubic lattice
 !
-!----------------------------
-program example_cubic_lattice
-!----------------------------
+!-----------------------------------
+program example_IP_on_cubic_lattices
+!-----------------------------------
 !
 ! 1) First load the invasion percolation module:
 ! """"""""""""""""""""""""""""""""""""""""""""""
@@ -104,9 +104,9 @@ pi = 4.*atan(1.)
 !
 ! for 2D simulations, set one of the dimension to one, e.g. ny=1
 !
-nx = 50
-ny = 1
-nz = 100
+nx = 100
+ny = 100
+nz = 200
 !
 ! 3.b) Define the grid spacing:
 ! '''''''''''''''''''''''''''''
@@ -280,6 +280,6 @@ deallocate(values,states,invasion_list)
 !
 stop
 !
-!--------------------------------
-end program example_cubic_lattice
-!--------------------------------
+!---------------------------------------
+end program example_IP_on_cubic_lattices
+!---------------------------------------
